@@ -59,11 +59,9 @@ button{font-family:inherit}
 .nb-links a:hover{color:var(--slate-800);background:var(--slate-100)}
 .nb-cta{background:linear-gradient(135deg,var(--green-500),var(--green-600))!important;color:#fff!important;padding:10px 20px!important;border-radius:24px!important;font-weight:600!important;box-shadow:0 4px 14px rgba(34,197,94,.3);transition:all var(--tf)!important;font-size:13.5px!important}
 .nb-cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(34,197,94,.4)}
-.nb-burger{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--slate-700)}
 
 @media(max-width:900px){
   .nb-links{display:none}
-  .nb-burger{display:none}
   .nb-cta{display:none!important}
 }
 @media(min-width:901px){
@@ -612,6 +610,44 @@ footer{padding:60px 32px 30px;border-top:1px solid var(--slate-100);margin-top:4
   .shop-list{grid-template-columns:1fr}
   .foot-grid{grid-template-columns:1fr}
 }
+
+/* A11Y: visible keyboard focus ring (mouse users unaffected via :focus-visible) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
+  outline:2.5px solid var(--green-600);outline-offset:2px;border-radius:8px
+}
+.search-box:focus-within,.coach-input-wrap input:focus,.prefs-exclude input:focus,.pf-row input:focus,.pf-row select:focus{
+  box-shadow:0 0 0 3px rgba(34,197,94,.22)
+}
+
+/* A11Y: respect reduced-motion preference */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+
+/* Touch target sizing (WCAG 2.5.5 ~44px) for icon-only controls */
+.modal-close{width:40px;height:40px;font-size:15px}
+.quiz-close{width:40px;height:40px}
+.ing-del{width:30px;height:30px;font-size:12px}
+.coach-send{width:44px;height:44px}
+
+/* Meal-swap control must stay discoverable on touch devices (no :hover there) */
+@media(hover:none),(max-width:900px){
+  .mcl-swap{opacity:1;background:rgba(255,255,255,.92);box-shadow:var(--s-sm)}
+}
+
+/* Small phones */
+@media(max-width:480px){
+  .htitle{font-size:30px;letter-spacing:-1px}
+  .hstats{gap:14px;flex-wrap:wrap}
+  .hstat .n{font-size:22px}
+  .hcta{gap:10px}
+  .btn-p,.btn-s{padding:14px 22px;font-size:14px}
+  .modal{max-width:100%;border-radius:var(--r-md)}
+  .modal-hd,.modal-body{padding-left:18px;padding-right:18px}
+  .quiz-grid{grid-template-columns:1fr!important}
+  .budget-row{gap:10px}
+  .budget-total{margin-left:0}
+}
 </style>
 </head>
 <body>
@@ -623,27 +659,26 @@ footer{padding:60px 32px 30px;border-top:1px solid var(--slate-100);margin-top:4
 </defs></svg>
 
 <nav class="nb" id="nb">
-  <a class="nb-logo" onclick="switchTab('accueil')">
+  <a class="nb-logo" onclick="switchTab('accueil')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')" aria-label="FODMAP+ — retour à l'accueil">
     <div class="nb-icon">🌿</div>
     <div class="nb-text">FODMAP<span>+</span></div>
   </a>
-  <ul class="nb-links" id="navLinks">
-    <li><a onclick="switchTab('accueil');closeNav()" class="tab-link" data-tablink="accueil">Accueil</a></li>
-    <li><a onclick="switchTab('menu');closeNav()" class="tab-link" data-tablink="menu">Menu</a></li>
-    <li><a onclick="switchTab('aliments');closeNav()" class="tab-link" data-tablink="aliments">Aliments</a></li>
-    <li><a onclick="switchTab('profil');closeNav()" class="tab-link" data-tablink="profil">Profil</a></li>
-    <li><a onclick="switchTab('coach');closeNav()" class="tab-link" data-tablink="coach">Coach IA</a></li>
+  <ul class="nb-links" id="navLinks" role="tablist" aria-label="Navigation principale">
+    <li><a onclick="switchTab('accueil');closeNav()" class="tab-link" data-tablink="accueil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')">Accueil</a></li>
+    <li><a onclick="switchTab('menu');closeNav()" class="tab-link" data-tablink="menu" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('menu')">Menu</a></li>
+    <li><a onclick="switchTab('aliments');closeNav()" class="tab-link" data-tablink="aliments" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('aliments')">Aliments</a></li>
+    <li><a onclick="switchTab('profil');closeNav()" class="tab-link" data-tablink="profil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('profil')">Profil</a></li>
+    <li><a onclick="switchTab('coach');closeNav()" class="tab-link" data-tablink="coach" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('coach')">Coach IA</a></li>
   </ul>
   <button class="btn-p nb-cta" onclick="switchTab('menu')">Voir mon menu</button>
-  <button class="nb-burger" onclick="document.getElementById('navLinks').classList.toggle('mobile-show')">☰</button>
 </nav>
 
-<nav class="tb" id="tabBar">
-  <button class="tb-btn" data-tablink="accueil" onclick="switchTab('accueil')"><span class="tb-ic">🏠</span><span class="tb-lbl">Accueil</span></button>
-  <button class="tb-btn" data-tablink="menu" onclick="switchTab('menu')"><span class="tb-ic">📅</span><span class="tb-lbl">Menu</span></button>
-  <button class="tb-btn" data-tablink="aliments" onclick="switchTab('aliments')"><span class="tb-ic">🥑</span><span class="tb-lbl">Aliments</span></button>
-  <button class="tb-btn" data-tablink="profil" onclick="switchTab('profil')"><span class="tb-ic">👤</span><span class="tb-lbl">Profil</span></button>
-  <button class="tb-btn" data-tablink="coach" onclick="switchTab('coach')"><span class="tb-ic">💬</span><span class="tb-lbl">Coach</span></button>
+<nav class="tb" id="tabBar" role="tablist" aria-label="Navigation">
+  <button class="tb-btn" data-tablink="accueil" onclick="switchTab('accueil')" role="tab" aria-label="Accueil"><span class="tb-ic">🏠</span><span class="tb-lbl">Accueil</span></button>
+  <button class="tb-btn" data-tablink="menu" onclick="switchTab('menu')" role="tab" aria-label="Menu"><span class="tb-ic">📅</span><span class="tb-lbl">Menu</span></button>
+  <button class="tb-btn" data-tablink="aliments" onclick="switchTab('aliments')" role="tab" aria-label="Aliments"><span class="tb-ic">🥑</span><span class="tb-lbl">Aliments</span></button>
+  <button class="tb-btn" data-tablink="profil" onclick="switchTab('profil')" role="tab" aria-label="Profil"><span class="tb-ic">👤</span><span class="tb-lbl">Profil</span></button>
+  <button class="tb-btn" data-tablink="coach" onclick="switchTab('coach')" role="tab" aria-label="Coach IA"><span class="tb-ic">💬</span><span class="tb-lbl">Coach</span></button>
 </nav>
 
 <section class="hero" id="top" data-tab="accueil">
@@ -897,7 +932,7 @@ footer{padding:60px 32px 30px;border-top:1px solid var(--slate-100);margin-top:4
       </div>
       <div class="coach-input-wrap">
         <input type="text" id="coachInput" placeholder="Écrivez votre question..." onkeydown="if(event.key==='Enter')sendCoach()">
-        <button class="coach-send" onclick="sendCoach()">➤</button>
+        <button class="coach-send" onclick="sendCoach()" aria-label="Envoyer le message">➤</button>
       </div>
     </div>
   </div>
@@ -964,7 +999,7 @@ footer{padding:60px 32px 30px;border-top:1px solid var(--slate-100);margin-top:4
   <div class="quiz-shell">
     <div class="quiz-top">
       <span class="quiz-step-lbl" id="quizStepLbl">Étape 1 sur 8</span>
-      <button class="quiz-close" onclick="closeQuiz()">✕</button>
+      <button class="quiz-close" onclick="closeQuiz()" aria-label="Fermer le quiz">✕</button>
     </div>
     <div class="quiz-progress"><div class="quiz-progress-fg" id="quizProgressFg"></div></div>
     <div class="quiz-main">
@@ -1586,14 +1621,31 @@ const RING_C = 2*Math.PI*52;
 let activeTab='accueil';
 const TAB_ROUTE={top:'accueil',phases:'accueil',faq:'accueil',profil:'profil',poids:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
 
-function switchTab(tab){
+const VALID_TABS=['accueil','menu','aliments','profil','coach'];
+const TAB_TITLES={accueil:"FODMAP+ \u2014 Coach Low FODMAP Premium",menu:"Menu \u2014 FODMAP+",aliments:"Aliments \u2014 FODMAP+",profil:"Profil \u2014 FODMAP+",coach:"Coach IA \u2014 FODMAP+"};
+function switchTab(tab,updateHistory){
+  if(updateHistory===undefined)updateHistory=true;
+  if(!VALID_TABS.includes(tab))tab='accueil';
   activeTab=tab;
   document.querySelectorAll('[data-tab]').forEach(el=>{el.classList.toggle('tab-active',el.dataset.tab===tab)});
-  document.querySelectorAll('.tab-link').forEach(el=>{el.classList.toggle('active',el.dataset.tablink===tab)});
-  document.querySelectorAll('.tb-btn').forEach(el=>{el.classList.toggle('active',el.dataset.tablink===tab)});
+  document.querySelectorAll('.tab-link').forEach(el=>{const on=el.dataset.tablink===tab;el.classList.toggle('active',on);el.setAttribute('aria-selected',on?'true':'false')});
+  document.querySelectorAll('.tb-btn').forEach(el=>{const on=el.dataset.tablink===tab;el.classList.toggle('active',on);el.setAttribute('aria-selected',on?'true':'false')});
   window.scrollTo({top:0,behavior:'auto'});
   closeNav();
+  document.title=TAB_TITLES[tab]||TAB_TITLES.accueil;
+  if(updateHistory){
+    const url=(tab==='accueil'?location.pathname+location.search:'#'+tab);
+    if(location.hash.replace('#','')!==tab)history.pushState({tab:tab},'',url);
+  }
 }
+function routeFromLocation(){
+  const h=(location.hash||'').replace('#','');
+  switchTab(VALID_TABS.includes(h)?h:'accueil',false);
+}
+window.addEventListener('popstate',(e)=>{
+  const t=(e.state&&e.state.tab)||(location.hash||'').replace('#','');
+  switchTab(VALID_TABS.includes(t)?t:'accueil',false);
+});
 function ss(id){
   const tab=TAB_ROUTE[id]||'accueil';
   const doScroll=()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})};
@@ -1789,7 +1841,7 @@ function openFoodModal(name){
   const badge=f.s==='safe'?'Safe ✅':f.s==='moderate'?'Modéré ⚠️':'À éviter 🚫';
   const tips={safe:'Vous pouvez consommer cet aliment librement dans le cadre d\'une alimentation low-FODMAP.',moderate:'Respectez la portion indiquée : au-delà, cet aliment peut devenir riche en FODMAP.',avoid:'Cet aliment est généralement mal toléré en phase d\'élimination. Essayez une alternative safe de la même catégorie.'};
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">${f.e}</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-hd"><div class="me">${f.e}</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
     <div class="modal-body">
       <div class="modal-title">${f.n}</div>
       <div class="modal-badge ${f.s}">${badge}</div>
@@ -2004,7 +2056,7 @@ function renderMenuDay(){
     const warn=mealViolatesPrefs(meal);
     const tag = warn?'⚠️ Hors préférences':(meal.customized?'✏️ Modifié':mealLabels[k]);
     return `<div class="meal-card-lg" style="animation-delay:${i*.06}s" onclick='openMealModal(${JSON.stringify(d.day)},${JSON.stringify(k)})'>
-      <button class="mcl-swap" onclick='event.stopPropagation();swapMeal(${JSON.stringify(d.day)},${JSON.stringify(k)})' title="Remplacer ce repas">🔄</button>
+      <button class="mcl-swap" onclick='event.stopPropagation();swapMeal(${JSON.stringify(d.day)},${JSON.stringify(k)})' title="Remplacer ce repas" aria-label="Remplacer ce repas">🔄</button>
       <div class="mcl-top"><div class="mcl-icon">${mealIcons[k]}</div><span class="mcl-tag ${meal.customized?'custom':''} ${warn?'warn':''}">${tag}</span></div>
       <div class="mcl-name">${meal.name}</div>
       <div class="mcl-macros"><span class="mcl-pill k">🔥 ${Math.round(mm.k)} kcal</span><span class="mcl-pill p">💪 ${Math.round(mm.pr)}g</span><span class="mcl-pill k" style="background:var(--green-100);color:var(--green-700)">💶 ${price.toFixed(2)}€</span></div>
@@ -2130,7 +2182,7 @@ function openMealModal(day,key){
   }).join('');
   const foodOptions = foods.slice().sort((a,b)=>a.n.localeCompare(b.n)).map(f=>`<option value="${f.n}">${f.e} ${f.n} (${f.s==='safe'?'safe':f.s==='moderate'?'modéré':'à éviter'})</option>`).join('');
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">${mealIcons[key]}</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-hd"><div class="me">${mealIcons[key]}</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
     <div class="modal-body">
       <div class="modal-title">${meal.name}</div>
       <div class="modal-badge safe">${mealLabels[key]} · ${d.day}</div>
@@ -2237,7 +2289,7 @@ function openShoppingList(){
   const totalAll = Object.values(priceAgg).reduce((a,b)=>a+b,0);
   const totalRemaining = items.reduce((s,n)=>s+(pantryItems.has(n)?0:priceAgg[n]),0);
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">🛒</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-hd"><div class="me">🛒</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
     <div class="modal-body">
       <div class="modal-title">Liste de courses</div>
       <div class="modal-badge safe">${items.length} articles · ~${Math.round(weekK).toLocaleString('fr-FR')} kcal / semaine · ${STORES[selectedStore].logo} ${STORES[selectedStore].label} · ${householdDiners} dîner${householdDiners>1?'s':''}</div>
@@ -2427,8 +2479,8 @@ function toast(msg){
 }
 
 /* ============ INIT ============ */
-document.addEventListener('keydown',(e)=>{if(e.key==='Escape')closeModal()});
-switchTab('accueil');
+document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){closeModal();closeQuiz();}});
+routeFromLocation();
 buildCatSelect();
 renderPrefs();
 renderFoods();
