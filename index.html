@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#16a34a">
+<meta name="theme-color" content="#14532d">
 <meta name="description" content="FODMAP+ : menus par phase FODMAP, grammages adaptés à votre objectif, budget courses par enseigne (Carrefour/Lidl/Aldi/Picard) et suivi de poids.">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,15 +22,18 @@
   --slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;--slate-300:#cbd5e1;
   --slate-400:#94a3b8;--slate-500:#64748b;--slate-600:#475569;--slate-700:#334155;
   --slate-800:#1e293b;--slate-900:#0f172a;--gold:#c9a96e;--gold-dark:#a8854f;
+  --ivory:#faf8f3;--ivory-2:#fffdf8;--hairline:#ece6da;
+  --forest:#14532d;--forest-deep:#0e3b20;
+  --gold-50:#faf5e9;--gold-200:#e9dcc0;--gold-700:#8a6d42;
   --r-sm:14px;--r-md:20px;--r-lg:28px;--r-xl:36px;
-  --s-xs:0 1px 2px rgba(15,23,42,.04);--s-sm:0 2px 8px rgba(15,23,42,.06);
-  --s-md:0 4px 16px rgba(15,23,42,.08);--s-lg:0 8px 32px rgba(15,23,42,.10);
-  --s-xl:0 16px 48px rgba(15,23,42,.12);--s-glow:0 0 40px rgba(34,197,94,.15);
+  --s-xs:0 1px 2px rgba(31,41,26,.05);--s-sm:0 2px 10px rgba(31,41,26,.06);
+  --s-md:0 6px 20px rgba(31,41,26,.08);--s-lg:0 12px 36px rgba(31,41,26,.10);
+  --s-xl:0 20px 56px rgba(31,41,26,.12);--s-glow:0 0 40px rgba(22,101,52,.12);
   --tf:.15s cubic-bezier(.4,0,.2,1);--tb:.3s cubic-bezier(.4,0,.2,1);--ts:.5s cubic-bezier(.34,1.56,.64,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,sans-serif;background:#fafafa;color:var(--slate-900);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',-apple-system,sans-serif;background:linear-gradient(180deg,#f5f1e8 0%,var(--ivory) 340px);color:var(--slate-900);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 img,svg{display:block;max-width:100%}
 button{font-family:inherit}
 
@@ -720,6 +723,54 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 /* Minimal app footer — replaces the marketing 4-column footer */
 .app-foot{max-width:1080px;margin:0 auto;padding:8px 24px 40px;font-size:11px;color:var(--slate-400);line-height:1.6}
 .app-foot-meta{margin-top:8px;color:var(--slate-300)}
+
+/* ============ PREMIUM POLISH v3 ============
+   Réchauffe l'app : ivoire + vert forêt + touches dorées, serif sur les chiffres clés.
+   Couche d'override en fin de cascade — ne pas déplacer au-dessus des règles de base. */
+
+/* Surfaces chaudes */
+.topbar{background:rgba(250,248,243,.92);border-bottom:1px solid var(--hairline)}
+.tb{background:rgba(255,253,248,.96);border-top:1px solid var(--hairline)}
+.tb-btn.active{color:var(--forest)}
+.sidebar{background:var(--ivory-2);border-right:1px solid var(--hairline)}
+.side-link.active{background:var(--forest);color:#f5f1e8;box-shadow:0 4px 14px rgba(20,83,45,.28)}
+.side-link.active:hover{background:var(--forest-deep);color:#fff}
+.sidebar-foot{border-top:1px solid var(--hairline);padding-top:14px}
+
+/* Boutons primaires : vert forêt profond plutôt que vert flashy */
+.btn-p{background:linear-gradient(135deg,var(--green-700),var(--forest-deep));box-shadow:0 8px 24px rgba(20,83,45,.30),var(--s-glow)}
+.btn-p:hover{box-shadow:0 12px 32px rgba(20,83,45,.38),var(--s-glow)}
+.nb-icon{background:linear-gradient(135deg,var(--green-600),var(--forest-deep));box-shadow:0 4px 12px rgba(20,83,45,.30)}
+.tab-link.active{color:var(--forest)!important}
+.tab-link.active::after{background:var(--forest)}
+
+/* Dashboard : cartes ivoire à liseré fin, ombre chaude, lift au survol */
+.dash-card{background:var(--ivory-2);border:1px solid var(--hairline);box-shadow:var(--s-sm);transition:box-shadow var(--tb),transform var(--tb)}
+.dash-card:hover{box-shadow:var(--s-md);transform:translateY(-2px)}
+.dash-greet{font-family:'Playfair Display',serif;font-size:27px;font-weight:600;letter-spacing:-.4px}
+.dash-badge{background:var(--gold-50);border:1px solid var(--gold-200);color:var(--gold-700)}
+.dash-weight-val{font-family:'Playfair Display',serif;font-weight:600;font-size:30px}
+.dmacro b{font-family:'Playfair Display',serif;font-weight:600;font-size:16px}
+.dmeal{background:#f6f2ea}
+.dmeal:hover{background:var(--green-50)}
+.dqa{background:var(--ivory-2);border:1px solid var(--hairline)}
+.dqa:hover{background:var(--gold-50);border-color:var(--gold-200);color:var(--gold-700)}
+.dbar{background:#eee8db}
+.dbar-fg{background:linear-gradient(90deg,var(--green-500),var(--forest))}
+.dash-footnote{background:#f4efe5;border:1px solid var(--hairline)}
+.dash-link{color:var(--forest)}
+
+/* Carte budget : ardoise froide → vert forêt profond, chiffre doré */
+.budget-card{background:linear-gradient(135deg,var(--forest-deep) 0%,#1b4d30 55%,#245c3a 100%)}
+.budget-total.ok{background:rgba(201,169,110,.16);color:#e6cf9e}
+.budget-bar-fg{background:linear-gradient(90deg,#c9a96e,#e6cf9e)}
+.budget-bar-fg.over{background:linear-gradient(90deg,var(--amber-500),#f97316)}
+
+/* Titres de section en serif pour l'élégance éditoriale */
+.sec-title,.modal-title,.quiz-title{font-family:'Playfair Display',serif;font-weight:600;letter-spacing:-.3px}
+
+/* Filet doré discret sous le hero du dashboard */
+.dash-head{border-bottom:1px solid var(--hairline);padding-bottom:16px}
 .app-foot-meta a{color:var(--slate-400);text-decoration:none}
 </style>
 </head>
@@ -1473,7 +1524,7 @@ const DISLIKE_OPTIONS = [
   {v:'fruitsacoque',l:'Fruits à coque',e:'🥜',foods:['Amandes','Noix','Noix de pécan']}
 ];
 const QUIZ_STEPS=['equip','time','disliked','budget','diners','store','diet','vibes'];
-let quizState={equip:new Set(['plaques','four']),time:999,disliked:new Set(),budget:45,diners:1,store:'carrefour',diet:{vegetarian:false,vegan:false,noPork:false,noFish:false,noNuts:false},vibe:'zen'};
+let quizState={equip:new Set(['plaques','four']),time:999,disliked:new Set(),budget:110,diners:1,store:'carrefour',diet:{vegetarian:false,vegan:false,noPork:false,noFish:false,noNuts:false},vibe:'zen'};
 let quizStepIdx=0;
 
 function initQuiz(){
@@ -1484,7 +1535,8 @@ function initQuiz(){
       quizState.equip=new Set(s.equip||['plaques','four']);
       quizState.time=s.time||999;
       quizState.disliked=new Set(s.disliked||[]);
-      quizState.budget=s.budget||45;
+      /* budgetV2 : le budget couvre le caddie complet de la semaine (l'ancien "budget" ne visait que les dîners — valeur legacy ignorée) */
+      quizState.budget=s.budgetV2||110;
       quizState.diners=s.diners||1;
       quizState.store=s.store||'carrefour';
       quizState.diet=Object.assign({vegetarian:false,vegan:false,noPork:false,noFish:false,noNuts:false},s.diet||{});
@@ -1529,11 +1581,11 @@ function quizStepHtml(step){
     <div class="quiz-chips">${DISLIKE_OPTIONS.map(o=>`<div class="quiz-chip ${quizState.disliked.has(o.v)?'on':''}" onclick="quizToggleSet('disliked','${o.v}')">${o.e} ${o.l}</div>`).join('')}
     <div class="quiz-chip all ${quizState.disliked.size===0?'on':''}" onclick="quizClearDisliked()">Je mange de tout</div></div>`;
   } else if(step==='budget'){
-    body=`<div class="quiz-title">Votre budget courses / semaine</div><div class="quiz-sub">Pour vos dîners, pas le caddie complet — on s'y tiendra.</div>
+    body=`<div class="quiz-title">Votre budget courses / semaine</div><div class="quiz-sub">Le caddie complet des 4 repas par jour du menu — on s'y tiendra.</div>
     <div class="quiz-slider-box">
       <div class="quiz-slider-val">${quizState.budget}€ <span>/ semaine</span></div>
-      <input type="range" min="20" max="120" step="5" value="${quizState.budget}" oninput="quizSetBudget(this.value)">
-      <div class="quiz-slider-minmax"><span>20€</span><span>120€</span></div>
+      <input type="range" min="60" max="250" step="5" value="${quizState.budget}" oninput="quizSetBudget(this.value)">
+      <div class="quiz-slider-minmax"><span>60€</span><span>250€</span></div>
     </div>`;
   } else if(step==='diners'){
     body=`<div class="quiz-title">Combien de dîners à table ?</div><div class="quiz-sub">On ajuste les quantités de la liste de courses (les grammages nutritionnels restent calculés par personne).</div>
@@ -1615,7 +1667,7 @@ function renderQuizSummary(){
       <div class="qsum-row"><span>Budget</span><span>${quizState.budget}€ / semaine</span></div>
       <div class="qsum-row"><span>Régime</span><span style="font-size:11px;text-align:right;max-width:140px">${dietLabel}</span></div>
       <div class="qsum-row"><span>Vibe</span><span>${vibeLabels[quizState.vibe]}</span></div>
-      <div class="qsum-price">~${(quizState.budget/7).toFixed(2)}€ / dîner</div>
+      <div class="qsum-price">~${(quizState.budget/7).toFixed(2)}€ / jour</div>
     </div>`;
 }
 
@@ -1638,7 +1690,7 @@ function quizFinish(){
   lsSet('fodmapOnboarded','1');
   lsSet('fodmapQuizState', JSON.stringify({
     equip:[...quizState.equip], time:quizState.time, disliked:[...quizState.disliked],
-    budget:quizState.budget, diners:quizState.diners, store:quizState.store, diet:quizState.diet, vibe:quizState.vibe
+    budgetV2:quizState.budget, diners:quizState.diners, store:quizState.store, diet:quizState.diet, vibe:quizState.vibe
   }));
   document.getElementById('quizOv').classList.remove('show');
   renderPrefs();
@@ -1666,7 +1718,7 @@ const faqData = [
 /* ============ STATE ============ */
 let currentFilter='all', currentCat='all', visibleCount=12, selectedDay='Lun', currentPhase='elimination';
 let profile={bmr:0,tdee:0,calTarget:1800,protTarget:100};
-let weeklyBudget=45, pantryItems=new Set(), householdDiners=1, maxCookTime=999;
+let weeklyBudget=110, pantryItems=new Set(), householdDiners=1, maxCookTime=999;
 const RING_C = 2*Math.PI*52;
 
 /* ============ TAB NAVIGATION ============ */
@@ -1830,12 +1882,16 @@ function mealPrice(d,key){
   return meal.ingr.reduce((s,ing)=>{const g=scaledGrams(meal,ing,scale);const f=findFood(ing.n);return s+(f?f.price/f.g*g*storeMult(f.c):0)},0);
 }
 function dayPrice(d){ return Object.keys(d.meals).reduce((s,k)=>s+mealPrice(d,k),0); }
-function weekPrice(){ return menuData.reduce((s,d)=>s+dayPrice(d),0); }
-function updateBudget(v){ weeklyBudget=Math.max(10,+v||45); renderBudgetBar(); }
+/* Prix du caddie de la semaine : tous les repas par personne, sauf le dîner qui est
+   multiplié par le nombre de convives à table (householdDiners). Même règle que la liste de courses. */
+function weekPrice(){
+  return menuData.reduce((s,d)=>s+Object.keys(d.meals).reduce((a,k)=>a+mealPrice(d,k)*(k==='dinner'?Math.max(1,householdDiners):1),0),0);
+}
+function updateBudget(v){ weeklyBudget=Math.max(10,+v||110); renderBudgetBar(); }
 function setStore(s){ selectedStore=STORES[s]?s:'carrefour'; renderBudgetBar(); toast('Magasin : '+STORES[selectedStore].label+' 🛒'); }
 function renderBudgetBar(){
   const el=document.getElementById('budgetBar'); if(!el) return;
-  const total=weekPrice()*Math.max(1,householdDiners);
+  const total=weekPrice();
   const pct=Math.min(100,Math.round((total/weeklyBudget)*100));
   const over=total>weeklyBudget;
   const storeOpts=Object.keys(STORES).map(k=>`<option value="${k}" ${k===selectedStore?'selected':''}>${STORES[k].logo} ${STORES[k].label}</option>`).join('');
@@ -1847,7 +1903,7 @@ function renderBudgetBar(){
       <span class="budget-total ${over?'over':'ok'}">${total.toFixed(2)}€ / ${weeklyBudget}€ ${over?'⚠️':'✓'}</span>
     </div>
     <div class="budget-bar-bg"><div class="budget-bar-fg ${over?'over':''}" style="width:${pct}%"></div></div>
-    <div class="budget-store-note">${STORES[selectedStore].logo} ${STORES[selectedStore].note} · pour ${householdDiners} dîner${householdDiners>1?'s':''}/repas · prix estimés, pas de tarif temps réel en magasin.</div>`;
+    <div class="budget-store-note">${STORES[selectedStore].logo} ${STORES[selectedStore].note} · caddie complet de la semaine, dîner compté pour ${householdDiners} personne${householdDiners>1?'s':''} · prix estimés, pas de tarif temps réel en magasin.</div>`;
 }
 
 /* ============ FOOD EXPLORER ============ */
@@ -2329,7 +2385,7 @@ function openShoppingList(){
       const meal=d.meals[key];
       const scale = meal.customized?1:dayScaleFactor(d);
       meal.ingr.forEach(ing=>{
-        const g=scaledGrams(meal,ing,scale)*Math.max(1,householdDiners);
+        const g=scaledGrams(meal,ing,scale)*(key==='dinner'?Math.max(1,householdDiners):1);
         const f=findFood(ing.n);
         agg[ing.n]=(agg[ing.n]||0)+g;
         priceAgg[ing.n]=(priceAgg[ing.n]||0)+(f?f.price/f.g*g*storeMult(f.c):0);
@@ -2344,7 +2400,7 @@ function openShoppingList(){
     <div class="modal-hd"><div class="me">🛒</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
     <div class="modal-body">
       <div class="modal-title">Liste de courses</div>
-      <div class="modal-badge safe">${items.length} articles · ~${Math.round(weekK).toLocaleString('fr-FR')} kcal / semaine · ${STORES[selectedStore].logo} ${STORES[selectedStore].label} · ${householdDiners} dîner${householdDiners>1?'s':''}</div>
+      <div class="modal-badge safe">${items.length} articles · ~${Math.round(weekK).toLocaleString('fr-FR')} kcal / semaine · ${STORES[selectedStore].logo} ${STORES[selectedStore].label} · dîner pour ${householdDiners} pers.</div>
       <ul class="shop-list">${items.map(n=>{
         const g=agg[n];
         const qty = g>=1000?(g/1000).toFixed(2).replace(/\\.?0+$/,'')+' kg':Math.round(g)+' g';
