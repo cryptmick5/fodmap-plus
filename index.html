@@ -795,6 +795,52 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .coach-input-wrap input:focus{border-color:var(--forest)}
 .coach-send{background:linear-gradient(135deg,var(--green-700),var(--forest-deep))}
 .coach-send:hover{background:var(--forest-deep)}
+
+/* ============ EFFETS ANIMÉS PREMIUM ============
+   Compteurs et jauges sont animés côté JS (animNum/animBar) ; ici les entrées
+   en cascade, le tracé de la sparkline et le liseré doré du coach.
+   Le kill-switch global prefers-reduced-motion neutralise le tout. */
+
+/* Entrée en cascade des cartes du dashboard (rejoue à chaque retour sur l'accueil,
+   car le panneau passe de display:none à block) */
+.dash-grid .dash-card{animation:fadeUp .55s var(--tb) backwards}
+.dash-grid .dash-card:nth-child(1){animation-delay:.05s}
+.dash-grid .dash-card:nth-child(2){animation-delay:.14s}
+.dash-grid .dash-card:nth-child(3){animation-delay:.23s}
+.dash-grid .dash-card:nth-child(4){animation-delay:.32s}
+.dash-head{animation:fadeUp .5s var(--tb) backwards}
+
+/* Repas du jour : apparition en escalier */
+.dmeal{animation:popIn .4s var(--ts) backwards}
+.dmeal:nth-child(1){animation-delay:.30s}
+.dmeal:nth-child(2){animation-delay:.40s}
+.dmeal:nth-child(3){animation-delay:.50s}
+.dmeal:nth-child(4){animation-delay:.60s}
+
+/* Sparkline poids : la courbe se trace, puis le point doré apparaît */
+.spark-path{stroke-dasharray:1;stroke-dashoffset:1;animation:sparkDraw 1s cubic-bezier(.4,0,.2,1) .35s forwards}
+.spark-dot{opacity:0;animation:fadeIn .4s ease 1.15s forwards}
+@keyframes sparkDraw{to{stroke-dashoffset:0}}
+
+/* Actions rapides : micro-interaction ressort au survol */
+.dqa{transition:all var(--tf),transform .18s var(--ts)}
+.dqa:hover{transform:translateY(-2px)}
+.dqa:active{transform:scale(.96)}
+
+/* Carte coach : fin liseré doré rotatif (signature "IA premium") */
+@property --cwa{syntax:'<angle>';initial-value:0deg;inherits:false}
+.coach-wrap{border:1px solid transparent;
+  background:linear-gradient(var(--ivory-2),var(--ivory-2)) padding-box,
+  conic-gradient(from var(--cwa),var(--hairline) 0%,var(--gold) 10%,#e6cf9e 14%,var(--hairline) 26%,var(--hairline) 100%) border-box;
+  animation:cwSpin 7s linear infinite}
+@keyframes cwSpin{to{--cwa:360deg}}
+
+/* Badge Monash : reflet doré qui balaie doucement */
+.dash-badge{position:relative;overflow:hidden}
+.dash-badge::after{content:'';position:absolute;top:0;left:-80%;width:60%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(201,169,110,.28),transparent);
+  animation:badgeSheen 4.5s ease-in-out infinite}
+@keyframes badgeSheen{0%,55%{left:-80%}75%,100%{left:120%}}
 .app-foot-meta a{color:var(--slate-400);text-decoration:none}
 </style>
 </head>
@@ -2542,6 +2588,22 @@ function refreshWeight(){
 }
 
 /* ============ DASHBOARD (accueil) ============ */
+/* Animations premium : compteurs, jauges et sparkline rejouent à chaque visite de l'accueil.
+   Tout est court-circuité si l'utilisateur préfère un mouvement réduit. */
+const PREFERS_REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function animNum(el,target,fmt,dur){
+  if(!el)return; fmt=fmt||(v=>Math.round(v).toString()); dur=dur||900;
+  if(PREFERS_REDUCED_MOTION){el.textContent=fmt(target);return}
+  const t0=performance.now();
+  const step=t=>{const p=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-p,3);el.textContent=fmt(target*e);if(p<1)requestAnimationFrame(step)};
+  requestAnimationFrame(step);
+}
+function animBar(el,pct){
+  if(!el)return;
+  if(PREFERS_REDUCED_MOTION){el.style.width=pct+'%';return}
+  el.style.width='0%'; void el.offsetWidth;
+  el.style.width=pct+'%';
+}
 function greetingWord(){
   const h=new Date().getHours();
   return h<5?'Bonne nuit':h<12?'Bonjour':h<18?'Bon après-midi':'Bonsoir';
@@ -2562,8 +2624,8 @@ function renderDashSpark(){
   const yFor = w => H-pad - ((w-minW)/((maxW-minW)||1))*(H-2*pad);
   const pts = sorted.map((e,i)=>({x:pad+i*stepX,y:yFor(e.w)}));
   const path = pts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
-  svgEl.innerHTML = (pts.length>1?`<path d="${path}" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:'')+
-    `<circle cx="${pts[pts.length-1].x.toFixed(1)}" cy="${pts[pts.length-1].y.toFixed(1)}" r="4" fill="#15803d"/>`;
+  svgEl.innerHTML = (pts.length>1?`<path class="spark-path" pathLength="1" d="${path}" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:'')+
+    `<circle class="spark-dot" cx="${pts[pts.length-1].x.toFixed(1)}" cy="${pts[pts.length-1].y.toFixed(1)}" r="4" fill="#c9a96e"/>`;
 }
 function renderHome(){
   const greetEl=document.getElementById('dashGreet');
@@ -2577,21 +2639,26 @@ function renderHome(){
 
   const totals=dayDisplayTotals(day);
   const calPct=Math.min(100,Math.round((totals.k/profile.calTarget)*100)||0);
-  document.getElementById('dashCalVal').textContent = Math.round(totals.k).toLocaleString('fr-FR');
+  animNum(document.getElementById('dashCalVal'), totals.k, v=>Math.round(v).toLocaleString('fr-FR'));
   document.getElementById('dashCalTarget').textContent = profile.calTarget.toLocaleString('fr-FR');
   const ring=document.getElementById('dashRingCal');
   ring.style.strokeDasharray=RING_C;
-  ring.style.strokeDashoffset=RING_C*(1-calPct/100);
+  if(PREFERS_REDUCED_MOTION){
+    ring.style.strokeDashoffset=RING_C*(1-calPct/100);
+  }else{
+    ring.style.strokeDashoffset=RING_C; void ring.getBoundingClientRect();
+    ring.style.strokeDashoffset=RING_C*(1-calPct/100);
+  }
 
   const protPct=Math.min(100,Math.round((totals.pr/profile.protTarget)*100)||0);
-  document.getElementById('dashProtVal').textContent = Math.round(totals.pr)+' g / '+profile.protTarget+' g';
-  document.getElementById('dashProtBar').style.width=protPct+'%';
+  animNum(document.getElementById('dashProtVal'), totals.pr, v=>Math.round(v)+' g / '+profile.protTarget+' g');
+  animBar(document.getElementById('dashProtBar'), protPct);
 
   const spent=weekPrice();
   const budgetPct=Math.min(100,Math.round((spent/weeklyBudget)*100)||0);
-  document.getElementById('dashBudgetVal').textContent = spent.toFixed(2)+' € / '+weeklyBudget+' €';
+  animNum(document.getElementById('dashBudgetVal'), spent, v=>v.toFixed(2)+' € / '+weeklyBudget+' €');
   const bBar=document.getElementById('dashBudgetBar');
-  bBar.style.width=budgetPct+'%';
+  animBar(bBar, budgetPct);
   bBar.classList.toggle('over',spent>weeklyBudget);
 
   document.getElementById('dashMealList').innerHTML = Object.keys(day.meals).map(key=>{
@@ -2608,7 +2675,7 @@ function renderHome(){
   if(sortedW.length){
     const last=sortedW[sortedW.length-1].w, first=sortedW[0].w;
     const delta=Math.round((last-first)*10)/10;
-    document.getElementById('dashWeightVal').textContent=last.toFixed(1)+' kg';
+    animNum(document.getElementById('dashWeightVal'), last, v=>v.toFixed(1)+' kg');
     const dEl=document.getElementById('dashWeightDelta');
     dEl.textContent=(delta>0?'+':'')+delta+' kg';
     dEl.style.color = delta===0?'var(--slate-400)':(delta<0?'var(--green-600)':'var(--amber-700)');
