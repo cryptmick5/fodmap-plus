@@ -733,8 +733,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .tb{background:rgba(255,253,248,.96);border-top:1px solid var(--hairline)}
 .tb-btn.active{color:var(--forest)}
 .sidebar{background:var(--ivory-2);border-right:1px solid var(--hairline)}
-.side-link.active{background:var(--forest);color:#f5f1e8;box-shadow:0 4px 14px rgba(20,83,45,.28)}
-.side-link.active:hover{background:var(--forest-deep);color:#fff}
+/* Les liens de sidebar sont aussi .tab-link : il faut re-forcer la couleur claire
+   par-dessus le color:!important de .tab-link.active (pastille vert forêt). */
+.side-link.active,.side-link.tab-link.active{background:var(--forest);color:#f5f1e8!important;box-shadow:0 4px 14px rgba(20,83,45,.28)}
+.side-link.active:hover,.side-link.tab-link.active:hover{background:var(--forest-deep);color:#fff!important}
+.side-link.active::after{display:none}
 .sidebar-foot{border-top:1px solid var(--hairline);padding-top:14px}
 
 /* Boutons primaires : vert forêt profond plutôt que vert flashy */
