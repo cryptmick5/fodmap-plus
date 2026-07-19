@@ -1,5 +1,5 @@
 /* FODMAP+ — service worker : cache l'app shell pour un fonctionnement hors-ligne (Android + web). */
-const CACHE_NAME = 'fodmap-plus-v5';
+const CACHE_NAME = 'fodmap-plus-v6';
 const APP_SHELL = [
   './',
   './index.html',
