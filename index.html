@@ -139,11 +139,11 @@ button{font-family:inherit}
 .fc1{top:8%;left:-14%;animation-delay:.4s}.fc2{bottom:16%;right:-16%;animation-delay:1s}
 
 /* SECTION SHELL */
-.sec{padding:100px 32px;position:relative}
-.sec-h{max-width:640px;margin:0 auto 56px;text-align:center}
-.sec-tag{display:inline-block;color:var(--green-600);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
-.sec-title{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;color:var(--slate-900);letter-spacing:-1px;line-height:1.15;margin-bottom:16px}
-.sec-sub{font-size:16px;color:var(--slate-500);line-height:1.7}
+.sec{padding:56px 32px;position:relative}
+.sec-h{max-width:none;margin:0 0 28px;text-align:left}
+.sec-tag{display:inline-block;color:var(--green-600);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.sec-title{font-family:'Inter',sans-serif;font-weight:800;font-size:24px;color:var(--slate-900);letter-spacing:-.3px;line-height:1.25;margin-bottom:8px}
+.sec-sub{font-size:14px;color:var(--slate-500);line-height:1.6;max-width:640px}
 .inner{max-width:1280px;margin:0 auto}
 
 /* SEARCH */
@@ -602,8 +602,8 @@ footer{padding:60px 32px 30px;border-top:1px solid var(--slate-100);margin-top:4
   .weight-wrap{grid-template-columns:1fr}
 }
 @media(max-width:720px){
-  .sec{padding:70px 20px}
-  .sec-title{font-size:30px}
+  .sec{padding:40px 20px}
+  .sec-title{font-size:20px}
   .htitle{font-size:36px}
   .hstats{gap:20px}
   .week-grid-compact{grid-template-columns:repeat(2,1fr)}
@@ -648,6 +648,79 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .budget-row{gap:10px}
   .budget-total{margin-left:0}
 }
+
+/* APP SHELL v2: sidebar (desktop) + slim topbar (mobile), replacing the marketing navbar+CTA pill */
+.sidebar{display:none}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;padding:0 18px;display:flex;align-items:center;gap:10px;background:rgba(250,250,250,.92);backdrop-filter:blur(20px)saturate(1.6);-webkit-backdrop-filter:blur(20px)saturate(1.6);border-bottom:1px solid var(--slate-200)}
+.topbar-logo{display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none}
+.topbar-logo .nb-icon{width:28px;height:28px;font-size:13px;border-radius:9px}
+.topbar-logo .nb-text{font-size:16px}
+.topbar-sep{width:1px;height:16px;background:var(--slate-200)}
+.topbar-title{font-size:13.5px;font-weight:700;color:var(--slate-500)}
+@media(min-width:901px){
+  .topbar{display:none}
+  .sidebar{display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;width:224px;padding:22px 14px;background:#fff;border-right:1px solid var(--slate-100);z-index:1000;gap:2px;overflow-y:auto}
+  .sidebar-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;padding:4px 10px 22px}
+  .sidebar-nav{display:flex;flex-direction:column;gap:2px}
+  .side-link{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:var(--slate-500);font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all var(--tf)}
+  .side-link:hover{background:var(--slate-100);color:var(--slate-800)}
+  .side-link.active{background:var(--green-50);color:var(--green-700)}
+  .side-ic{font-size:16px;width:18px;text-align:center;flex-shrink:0}
+  .sidebar-foot{margin-top:auto;padding:10px;font-size:11px;color:var(--slate-400);line-height:1.5}
+  body{margin-left:224px}
+  .tb{display:none!important}
+}
+
+/* DASHBOARD (home tab) — replaces the marketing hero/testimonials/CTA banner */
+.dash{padding:88px 24px 60px;position:relative}
+@media(min-width:901px){.dash{padding:36px 32px 48px}}
+.dash-wrap{max-width:1080px;margin:0 auto}
+.dash-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.dash-greet{font-size:22px;font-weight:800;color:var(--slate-900);letter-spacing:-.3px}
+.dash-date{font-size:13px;color:var(--slate-400);margin-top:2px;text-transform:capitalize}
+.dash-badge{display:inline-flex;align-items:center;gap:8px;background:var(--green-50);color:var(--green-700);padding:7px 14px;border-radius:20px;font-size:11.5px;font-weight:600;border:1px solid var(--green-200);white-space:nowrap}
+.dash-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+.dash-card{background:#fff;border:1px solid var(--slate-100);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--s-xs)}
+.dash-card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.dash-card-hd h3{font-size:14px;font-weight:700;color:var(--slate-900)}
+.dash-daylabel{font-size:11.5px;color:var(--slate-400);font-weight:600}
+.dash-link{background:none;border:none;color:var(--green-600);font-size:12px;font-weight:700;cursor:pointer;padding:2px}
+.dash-link:hover{color:var(--green-700);text-decoration:underline}
+.dash-today{grid-row:span 2}
+.dash-rings{display:flex;flex-direction:column;align-items:center;gap:18px}
+.dring{position:relative;width:132px}
+.dash-macro-list{width:100%;display:flex;flex-direction:column;gap:14px}
+.dmacro{font-size:12px;color:var(--slate-500);font-weight:600}
+.dmacro b{display:block;color:var(--slate-900);font-size:14px;margin:2px 0 6px}
+.dbar{height:6px;background:var(--slate-100);border-radius:4px;overflow:hidden}
+.dbar-fg{height:100%;width:0%;border-radius:4px;background:linear-gradient(90deg,var(--green-400),var(--green-600));transition:width .5s var(--tb)}
+.dbar-fg.over{background:linear-gradient(90deg,var(--amber-500),#f97316)}
+.dash-meal-list{display:flex;flex-direction:column;gap:8px}
+.dmeal{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--slate-50);border-radius:12px;cursor:pointer;transition:background var(--tf)}
+.dmeal:hover{background:var(--green-50)}
+.dmeal-ic{font-size:19px;width:30px;text-align:center;flex-shrink:0}
+.dmeal-info{flex:1;min-width:0}
+.dmeal-info b{display:block;font-size:11px;color:var(--slate-400);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.dmeal-info span{display:block;font-size:13px;color:var(--slate-800);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dmeal-k{font-size:12px;color:var(--slate-500);font-weight:700;white-space:nowrap}
+.dash-weight-row{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.dash-weight-val{font-size:26px;font-weight:800;color:var(--slate-900)}
+.dash-weight-delta{font-size:12.5px;font-weight:700}
+.dash-spark{width:100%;height:52px}
+.dash-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dqa{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px;border-radius:12px;background:var(--slate-50);border:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--slate-700);text-align:left;transition:all var(--tf)}
+.dqa:hover{background:var(--green-50);color:var(--green-700)}
+.dqa span{font-size:18px}
+.dash-footnote{margin-top:20px;padding:14px 18px;background:var(--slate-50);border-radius:14px;font-size:11.5px;color:var(--slate-500);line-height:1.6}
+@media(max-width:760px){
+  .dash-grid{grid-template-columns:1fr}
+  .dash-today{grid-row:auto}
+}
+
+/* Minimal app footer — replaces the marketing 4-column footer */
+.app-foot{max-width:1080px;margin:0 auto;padding:8px 24px 40px;font-size:11px;color:var(--slate-400);line-height:1.6}
+.app-foot-meta{margin-top:8px;color:var(--slate-300)}
+.app-foot-meta a{color:var(--slate-400);text-decoration:none}
 </style>
 </head>
 <body>
@@ -658,20 +731,29 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </linearGradient>
 </defs></svg>
 
-<nav class="nb" id="nb">
-  <a class="nb-logo" onclick="switchTab('accueil')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')" aria-label="FODMAP+ — retour à l'accueil">
+<aside class="sidebar" aria-label="Navigation principale">
+  <a class="sidebar-logo" onclick="switchTab('accueil')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')" aria-label="FODMAP+ — retour à l'accueil">
     <div class="nb-icon">🌿</div>
     <div class="nb-text">FODMAP<span>+</span></div>
   </a>
-  <ul class="nb-links" id="navLinks" role="tablist" aria-label="Navigation principale">
-    <li><a onclick="switchTab('accueil');closeNav()" class="tab-link" data-tablink="accueil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')">Accueil</a></li>
-    <li><a onclick="switchTab('menu');closeNav()" class="tab-link" data-tablink="menu" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('menu')">Menu</a></li>
-    <li><a onclick="switchTab('aliments');closeNav()" class="tab-link" data-tablink="aliments" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('aliments')">Aliments</a></li>
-    <li><a onclick="switchTab('profil');closeNav()" class="tab-link" data-tablink="profil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('profil')">Profil</a></li>
-    <li><a onclick="switchTab('coach');closeNav()" class="tab-link" data-tablink="coach" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('coach')">Coach IA</a></li>
-  </ul>
-  <button class="btn-p nb-cta" onclick="switchTab('menu')">Voir mon menu</button>
-</nav>
+  <nav class="sidebar-nav" id="navLinks" role="tablist" aria-label="Navigation principale">
+    <a onclick="switchTab('accueil')" class="side-link tab-link" data-tablink="accueil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')"><span class="side-ic">🏠</span>Accueil</a>
+    <a onclick="switchTab('menu')" class="side-link tab-link" data-tablink="menu" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('menu')"><span class="side-ic">📅</span>Menu</a>
+    <a onclick="switchTab('aliments')" class="side-link tab-link" data-tablink="aliments" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('aliments')"><span class="side-ic">🥑</span>Aliments</a>
+    <a onclick="switchTab('profil')" class="side-link tab-link" data-tablink="profil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('profil')"><span class="side-ic">👤</span>Profil</a>
+    <a onclick="switchTab('coach')" class="side-link tab-link" data-tablink="coach" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('coach')"><span class="side-ic">💬</span>Coach IA</a>
+  </nav>
+  <div class="sidebar-foot">⚕️ Outil éducatif, seuils Monash University — ne remplace pas un avis médical.</div>
+</aside>
+
+<header class="topbar" id="topbar">
+  <a class="topbar-logo" onclick="switchTab('accueil')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')" aria-label="FODMAP+ — retour à l'accueil">
+    <div class="nb-icon">🌿</div>
+    <div class="nb-text">FODMAP<span>+</span></div>
+  </a>
+  <div class="topbar-sep"></div>
+  <span class="topbar-title" id="topbarTitle">Accueil</span>
+</header>
 
 <nav class="tb" id="tabBar" role="tablist" aria-label="Navigation">
   <button class="tb-btn" data-tablink="accueil" onclick="switchTab('accueil')" role="tab" aria-label="Accueil"><span class="tb-ic">🏠</span><span class="tb-lbl">Accueil</span></button>
@@ -681,57 +763,60 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   <button class="tb-btn" data-tablink="coach" onclick="switchTab('coach')" role="tab" aria-label="Coach IA"><span class="tb-ic">💬</span><span class="tb-lbl">Coach</span></button>
 </nav>
 
-<section class="hero" id="top" data-tab="accueil">
-  <div class="hb1"></div><div class="hb2"></div>
-  <div class="hc">
-    <div>
-      <div class="hbadge af"><span class="pdot"></span> Basé sur les seuils Monash University</div>
-      <h1 class="htitle af ad1">Mangez sans<br>craindre votre<br><span class="hl">digestion.</span></h1>
-      <p class="hsub af ad2">FODMAP+ classe 131 aliments avec calories, protéines et grammage, adapte vos portions à vos objectifs et suit votre poids dans le temps.</p>
-      <div class="hstats af ad3">
-        <div class="hstat"><div class="n" data-count="131">0</div><div class="l">aliments classés</div></div>
-        <div class="hstat"><div class="n" data-count="28">0</div><div class="l">repas / semaine</div></div>
-        <div class="hstat"><div class="n" data-count="94">0</div><div class="l">% satisfaction</div></div>
+<section class="dash" data-tab="accueil">
+  <div class="dash-wrap">
+    <div class="dash-head">
+      <div>
+        <div class="dash-greet" id="dashGreet">Bonjour 👋</div>
+        <div class="dash-date" id="dashDate"></div>
       </div>
-      <div class="hcta af ad4">
-        <button class="btn-p" onclick="ss('profil')">🎯 Calculer mes objectifs</button>
-        <button class="btn-s" onclick="ss('menu')">📅 Voir le menu type</button>
-      </div>
+      <div class="dash-badge"><span class="pdot"></span> Seuils Monash University</div>
     </div>
-    <div class="hv af ad3">
-      <span class="ffl">🍓</span><span class="ffl">🥑</span><span class="ffl">🍌</span>
-      <span class="ffl">🧄</span><span class="ffl">🥕</span><span class="ffl">🍎</span><span class="ffl">🌾</span>
-      <div class="fchip fc1">✅ 69 aliments sûrs</div>
-      <div class="fchip fc2">📏 Grammage sur chaque aliment</div>
-      <div class="hpm">
-        <div class="pn"></div>
-        <div class="ps">
-          <div class="ph"><h4>Scan rapide</h4><p>Résultats instantanés</p></div>
-          <div class="psch">🔍 Rechercher un aliment...</div>
-          <div class="pl">
-            <div class="pi safe"><div class="pie">🍓</div><div class="pit"><b>Fraise</b><span>150g · 48 kcal · 1g prot.</span></div><div class="pib">Safe</div></div>
-            <div class="pi moderate"><div class="pie">🥑</div><div class="pit"><b>Avocat</b><span>30g · 48 kcal</span></div><div class="pib">Modéré</div></div>
-            <div class="pi avoid"><div class="pie">🧄</div><div class="pit"><b>Ail</b><span>Riche en fructanes</span></div><div class="pib">Éviter</div></div>
-            <div class="pi safe"><div class="pie">🍗</div><div class="pit"><b>Poulet</b><span>150g · 248 kcal · 46g prot.</span></div><div class="pib">Safe</div></div>
+
+    <div class="dash-grid">
+      <div class="dash-card dash-today">
+        <div class="dash-card-hd"><h3>Aujourd'hui</h3><span class="dash-daylabel" id="dashDayLabel"></span></div>
+        <div class="dash-rings">
+          <div class="dring">
+            <svg viewBox="0 0 120 120" class="ring-svg">
+              <circle class="ring-bg" cx="60" cy="60" r="52"/>
+              <circle class="ring-fg" id="dashRingCal" cx="60" cy="60" r="52"/>
+            </svg>
+            <div class="ring-center"><b id="dashCalVal">0</b><span>/ <span id="dashCalTarget">0</span> kcal</span></div>
+          </div>
+          <div class="dash-macro-list">
+            <div class="dmacro"><span>Protéines</span><b id="dashProtVal">0 g</b><div class="dbar"><div class="dbar-fg" id="dashProtBar"></div></div></div>
+            <div class="dmacro"><span>Budget de la semaine</span><b id="dashBudgetVal">—</b><div class="dbar"><div class="dbar-fg" id="dashBudgetBar"></div></div></div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
 
-<section class="sec" id="phases" data-tab="accueil">
-  <div class="inner">
-    <div class="sec-h">
-      <span class="sec-tag">Méthode</span>
-      <h2 class="sec-title">Les 3 phases du régime FODMAP</h2>
-      <p class="sec-sub">Une approche clinique en trois temps, développée par l'Université Monash. Chaque phase est reliée à votre menu de la semaine, onglet « Menu ».</p>
+      <div class="dash-card dash-meals">
+        <div class="dash-card-hd"><h3>Repas du jour</h3><button class="dash-link" onclick="switchTab('menu')">Voir le menu →</button></div>
+        <div class="dash-meal-list" id="dashMealList"></div>
+      </div>
+
+      <div class="dash-card dash-weight">
+        <div class="dash-card-hd"><h3>Poids</h3><button class="dash-link" onclick="ss('poids')">Détails →</button></div>
+        <div class="dash-weight-row">
+          <div class="dash-weight-val" id="dashWeightVal">—</div>
+          <div class="dash-weight-delta" id="dashWeightDelta">—</div>
+        </div>
+        <svg id="dashWeightSpark" viewBox="0 0 240 60" class="dash-spark" preserveAspectRatio="none"></svg>
+      </div>
+
+      <div class="dash-card dash-quick">
+        <div class="dash-card-hd"><h3>Actions rapides</h3></div>
+        <div class="dash-actions">
+          <button class="dqa" onclick="switchTab('aliments')"><span>🔍</span>Chercher un aliment</button>
+          <button class="dqa" onclick="switchTab('coach')"><span>💬</span>Demander au coach</button>
+          <button class="dqa" onclick="openShoppingList()"><span>🛒</span>Liste de courses</button>
+          <button class="dqa" onclick="openQuiz()"><span>⚙️</span>Refaire le quiz</button>
+        </div>
+      </div>
     </div>
-    <div class="phases">
-      <div class="phase-card"><div class="phase-num">01</div><div class="phase-icon">🚫</div><h3>Élimination</h3><p>Suppression stricte des aliments riches en FODMAP pendant une période courte, pour laisser le système digestif se calmer.</p><span class="phase-dur">2 à 6 semaines</span><button class="phase-link" onclick="goToPhase('elimination')">Voir dans mon menu →</button></div>
-      <div class="phase-card"><div class="phase-num">02</div><div class="phase-icon">🔄</div><h3>Réintroduction</h3><p>Chaque famille de FODMAP est réintroduite une à une, à dose croissante, pour repérer précisément vos seuils de tolérance.</p><span class="phase-dur">6 à 8 semaines</span><button class="phase-link" onclick="goToPhase('reintroduction')">Voir mon protocole →</button></div>
-      <div class="phase-card"><div class="phase-num">03</div><div class="phase-icon">🌿</div><h3>Personnalisation</h3><p>Construction de votre régime durable sur mesure, aussi varié que possible, en évitant seulement vos réels déclencheurs.</p><span class="phase-dur">Long terme</span><button class="phase-link" onclick="goToPhase('personnalisation')">Voir dans mon menu →</button></div>
-    </div>
+
+    <div class="dash-footnote">⚕️ FODMAP+ est un outil éducatif basé sur les seuils Monash University — il ne remplace pas un avis médical ou diététique. <button class="dash-link" onclick="ss('phases')">En savoir plus sur la méthode →</button></div>
   </div>
 </section>
 
@@ -821,6 +906,23 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="weight-log" id="weightLogList"></div>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="sec" data-tab="profil" style="background:#f8fafc">
+  <div class="inner">
+    <div class="sec-h">
+      <span class="sec-tag">Aide &amp; méthode</span>
+      <h2 class="sec-title">Comment fonctionne FODMAP+</h2>
+      <p class="sec-sub">Rappel de la méthode clinique en trois phases (Université Monash) et réponses aux questions fréquentes.</p>
+    </div>
+    <div class="phases" id="phases">
+      <div class="phase-card"><div class="phase-num">01</div><div class="phase-icon">🚫</div><h3>Élimination</h3><p>Suppression stricte des aliments riches en FODMAP pendant une période courte, pour laisser le système digestif se calmer.</p><span class="phase-dur">2 à 6 semaines</span><button class="phase-link" onclick="goToPhase('elimination')">Voir dans mon menu →</button></div>
+      <div class="phase-card"><div class="phase-num">02</div><div class="phase-icon">🔄</div><h3>Réintroduction</h3><p>Chaque famille de FODMAP est réintroduite une à une, à dose croissante, pour repérer précisément vos seuils de tolérance.</p><span class="phase-dur">6 à 8 semaines</span><button class="phase-link" onclick="goToPhase('reintroduction')">Voir mon protocole →</button></div>
+      <div class="phase-card"><div class="phase-num">03</div><div class="phase-icon">🌿</div><h3>Personnalisation</h3><p>Construction de votre régime durable sur mesure, aussi varié que possible, en évitant seulement vos réels déclencheurs.</p><span class="phase-dur">Long terme</span><button class="phase-link" onclick="goToPhase('personnalisation')">Voir dans mon menu →</button></div>
+    </div>
+    <div id="faq"></div>
+    <div class="faq-wrap" id="faqWrap" style="margin-top:36px"></div>
   </div>
 </section>
 
@@ -938,61 +1040,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </div>
 </section>
 
-<section class="sec" data-tab="accueil">
-  <div class="inner">
-    <div class="stats-bar">
-      <div class="stat-item"><div class="num" data-count="131">0</div><div class="lbl">Aliments référencés</div></div>
-      <div class="stat-item"><div class="num" data-count="28">0</div><div class="lbl">Repas planifiés / semaine</div></div>
-      <div class="stat-item"><div class="num" data-count="12000">0</div><div class="lbl">Utilisatrices et utilisateurs actifs</div></div>
-      <div class="stat-item"><div class="num" data-count="94">0</div><div class="lbl">% de satisfaction</div></div>
-    </div>
-  </div>
-</section>
 
-<section class="sec" data-tab="accueil" style="background:#fff">
-  <div class="inner">
-    <div class="sec-h">
-      <span class="sec-tag">Témoignages</span>
-      <h2 class="sec-title">Ils ont retrouvé le confort digestif</h2>
-    </div>
-    <div class="testi-grid">
-      <div class="testi-card"><div class="stars">★★★★★</div><p>"Les portions qui s'ajustent automatiquement à mon objectif, c'est bluffant. Je n'ai plus besoin de calculer moi-même."</p><div class="testi-user"><div class="testi-avatar">C</div><div><b>Camille R.</b><span>SII depuis 2019</span></div></div></div>
-      <div class="testi-card"><div class="stars">★★★★★</div><p>"Pouvoir retirer un ingrédient que je n'aime pas et en ajouter un autre directement dans la recette, personne d'autre ne propose ça."</p><div class="testi-user"><div class="testi-avatar">T</div><div><b>Thomas L.</b><span>Utilisateur depuis 8 mois</span></div></div></div>
-      <div class="testi-card"><div class="stars">★★★★★</div><p>"Le protocole de réintroduction structuré, famille par famille, m'a enfin permis d'avancer sans stress."</p><div class="testi-user"><div class="testi-avatar">S</div><div><b>Sarah M.</b><span>Diététicienne</span></div></div></div>
-    </div>
-  </div>
-</section>
 
-<section class="sec" id="faq" data-tab="accueil">
-  <div class="inner">
-    <div class="sec-h">
-      <span class="sec-tag">Questions</span>
-      <h2 class="sec-title">Tout savoir sur le régime FODMAP</h2>
-    </div>
-    <div class="faq-wrap" id="faqWrap"></div>
-  </div>
-</section>
-
-<section class="sec" data-tab="accueil">
-  <div class="cta-sec">
-    <h2>Prêt à reprendre le contrôle de votre digestion ?</h2>
-    <p>Rejoignez des milliers de personnes qui mangent enfin sans appréhension.</p>
-    <button class="btn-p" onclick="ss('profil')">Calculer mes objectifs →</button>
-  </div>
-</section>
-
-<footer>
-  <div class="foot-grid">
-    <div class="foot-brand">
-      <div class="nb-logo"><div class="nb-icon">🌿</div><div class="nb-text">FODMAP<span>+</span></div></div>
-      <p>L'application de référence pour manger sereinement avec le syndrome de l'intestin irritable et les sensibilités digestives.</p>
-    </div>
-    <div class="foot-col"><h5>Produit</h5><a onclick="ss('explorer')">Aliments</a><a onclick="ss('profil')">Profil</a><a onclick="ss('poids')">Suivi de poids</a><a onclick="ss('menu')">Menu</a></div>
-    <div class="foot-col"><h5>Ressources</h5><a onclick="ss('faq')">FAQ</a><a onclick="ss('phases')">Méthode Monash</a></div>
-    <div class="foot-col"><h5>Contact</h5><a href="mailto:contact@fodmapplus.app">contact@fodmapplus.app</a></div>
-  </div>
-  <div class="foot-disclaimer">⚕️ Avertissement : FODMAP+ est un outil éducatif et ne remplace pas un avis médical ou diététique professionnel. Les classifications FODMAP, grammages, valeurs nutritionnelles (calories, protéines, IMC) et prix sont indicatifs et basés sur des moyennes générales — pas de prix d'enseigne en temps réel ; consultez un diététicien spécialisé et l'application officielle Monash FODMAP pour un suivi personnalisé, en particulier pendant la phase de réintroduction.</div>
-  <div class="foot-bottom"><span>© 2026 FODMAP+. Tous droits réservés.</span><span>Fait avec 🌿 pour votre confort digestif</span></div>
+<footer class="app-foot">
+  <p>⚕️ FODMAP+ est un outil éducatif et ne remplace pas un avis médical ou diététique professionnel. Classifications FODMAP, grammages, valeurs nutritionnelles et prix sont indicatifs — consultez un diététicien spécialisé et l'application officielle Monash FODMAP pour un suivi personnalisé, en particulier pendant la phase de réintroduction.</p>
+  <p class="app-foot-meta">© 2026 FODMAP+ · <a href="mailto:contact@fodmapplus.app">contact@fodmapplus.app</a></p>
 </footer>
 
 <div class="quiz-ov" id="quizOv">
@@ -1619,10 +1671,11 @@ const RING_C = 2*Math.PI*52;
 
 /* ============ TAB NAVIGATION ============ */
 let activeTab='accueil';
-const TAB_ROUTE={top:'accueil',phases:'accueil',faq:'accueil',profil:'profil',poids:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
+const TAB_ROUTE={phases:'profil',faq:'profil',profil:'profil',poids:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
 
 const VALID_TABS=['accueil','menu','aliments','profil','coach'];
 const TAB_TITLES={accueil:"FODMAP+ \u2014 Coach Low FODMAP Premium",menu:"Menu \u2014 FODMAP+",aliments:"Aliments \u2014 FODMAP+",profil:"Profil \u2014 FODMAP+",coach:"Coach IA \u2014 FODMAP+"};
+const TAB_LABELS={accueil:'Accueil',menu:'Menu',aliments:'Aliments',profil:'Profil',coach:'Coach IA'};
 function switchTab(tab,updateHistory){
   if(updateHistory===undefined)updateHistory=true;
   if(!VALID_TABS.includes(tab))tab='accueil';
@@ -1633,6 +1686,9 @@ function switchTab(tab,updateHistory){
   window.scrollTo({top:0,behavior:'auto'});
   closeNav();
   document.title=TAB_TITLES[tab]||TAB_TITLES.accueil;
+  const topbarTitleEl=document.getElementById('topbarTitle');
+  if(topbarTitleEl)topbarTitleEl.textContent=TAB_LABELS[tab]||'';
+  if(tab==='accueil')renderHome();
   if(updateHistory){
     const url=(tab==='accueil'?location.pathname+location.search:'#'+tab);
     if(location.hash.replace('#','')!==tab)history.pushState({tab:tab},'',url);
@@ -1652,10 +1708,6 @@ function ss(id){
   if(activeTab!==tab){switchTab(tab);setTimeout(doScroll,60)}else{doScroll()}
 }
 function closeNav(){document.getElementById('navLinks').classList.remove('mobile-show')}
-
-window.addEventListener('scroll',()=>{
-  document.getElementById('nb').classList.toggle('s',window.scrollY>40);
-});
 
 const obs=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('af');obs.unobserve(e.target)}});
@@ -2406,6 +2458,82 @@ function refreshWeight(){
     document.getElementById('pfWeight').value = sorted[sorted.length-1].w;
     updateProfile();
   }
+  renderHome();
+}
+
+/* ============ DASHBOARD (accueil) ============ */
+function greetingWord(){
+  const h=new Date().getHours();
+  return h<5?'Bonne nuit':h<12?'Bonjour':h<18?'Bon après-midi':'Bonsoir';
+}
+function todayDayCode(){
+  const map=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  return map[new Date().getDay()];
+}
+function renderDashSpark(){
+  const svgEl=document.getElementById('dashWeightSpark');
+  if(!svgEl)return;
+  const sorted=[...weightLog].sort((a,b)=>a.date.localeCompare(b.date)).slice(-8);
+  if(!sorted.length){svgEl.innerHTML='';return}
+  const ws=sorted.map(e=>e.w);
+  const minW=Math.min(...ws)-0.3, maxW=Math.max(...ws)+0.3;
+  const W=240,H=60,pad=6;
+  const stepX = sorted.length>1 ? (W-2*pad)/(sorted.length-1) : 0;
+  const yFor = w => H-pad - ((w-minW)/((maxW-minW)||1))*(H-2*pad);
+  const pts = sorted.map((e,i)=>({x:pad+i*stepX,y:yFor(e.w)}));
+  const path = pts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
+  svgEl.innerHTML = (pts.length>1?`<path d="${path}" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:'')+
+    `<circle cx="${pts[pts.length-1].x.toFixed(1)}" cy="${pts[pts.length-1].y.toFixed(1)}" r="4" fill="#15803d"/>`;
+}
+function renderHome(){
+  const greetEl=document.getElementById('dashGreet');
+  if(!greetEl)return;
+  greetEl.textContent = greetingWord()+' 👋';
+  document.getElementById('dashDate').textContent = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+
+  const code=todayDayCode();
+  const day=menuData.find(d=>d.day===code)||menuData[0];
+  document.getElementById('dashDayLabel').textContent = fullDayNames[day.day]||day.day;
+
+  const totals=dayDisplayTotals(day);
+  const calPct=Math.min(100,Math.round((totals.k/profile.calTarget)*100)||0);
+  document.getElementById('dashCalVal').textContent = Math.round(totals.k).toLocaleString('fr-FR');
+  document.getElementById('dashCalTarget').textContent = profile.calTarget.toLocaleString('fr-FR');
+  const ring=document.getElementById('dashRingCal');
+  ring.style.strokeDasharray=RING_C;
+  ring.style.strokeDashoffset=RING_C*(1-calPct/100);
+
+  const protPct=Math.min(100,Math.round((totals.pr/profile.protTarget)*100)||0);
+  document.getElementById('dashProtVal').textContent = Math.round(totals.pr)+' g / '+profile.protTarget+' g';
+  document.getElementById('dashProtBar').style.width=protPct+'%';
+
+  const spent=weekPrice();
+  const budgetPct=Math.min(100,Math.round((spent/weeklyBudget)*100)||0);
+  document.getElementById('dashBudgetVal').textContent = spent.toFixed(2)+' € / '+weeklyBudget+' €';
+  const bBar=document.getElementById('dashBudgetBar');
+  bBar.style.width=budgetPct+'%';
+  bBar.classList.toggle('over',spent>weeklyBudget);
+
+  document.getElementById('dashMealList').innerHTML = Object.keys(day.meals).map(key=>{
+    const meal=day.meals[key];
+    const mm=mealDisplayMacros(day,key);
+    return `<div class="dmeal" onclick='openMealModal(${JSON.stringify(day.day)},${JSON.stringify(key)})'>
+      <div class="dmeal-ic">${mealIcons[key]}</div>
+      <div class="dmeal-info"><b>${mealLabels[key].replace(/^\S+\s/,'')}</b><span>${meal.name}</span></div>
+      <div class="dmeal-k">${Math.round(mm.k)} kcal</div>
+    </div>`;
+  }).join('');
+
+  const sortedW=[...weightLog].sort((a,b)=>a.date.localeCompare(b.date));
+  if(sortedW.length){
+    const last=sortedW[sortedW.length-1].w, first=sortedW[0].w;
+    const delta=Math.round((last-first)*10)/10;
+    document.getElementById('dashWeightVal').textContent=last.toFixed(1)+' kg';
+    const dEl=document.getElementById('dashWeightDelta');
+    dEl.textContent=(delta>0?'+':'')+delta+' kg';
+    dEl.style.color = delta===0?'var(--slate-400)':(delta<0?'var(--green-600)':'var(--amber-700)');
+  }
+  renderDashSpark();
 }
 
 /* ============ FAQ ============ */
@@ -2493,6 +2621,7 @@ renderWeightStats();
 renderWeightLogList();
 updateProfile();
 renderProgram();
+renderHome();
 initQuiz();
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
