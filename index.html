@@ -835,6 +835,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   animation:cwSpin 7s linear infinite}
 @keyframes cwSpin{to{--cwa:360deg}}
 
+/* Créateur de repas perso + bibliothèque « Mes repas » */
+.bld-name{width:100%;margin:12px 0 14px;padding:12px 16px;border:1.5px solid var(--hairline);border-radius:14px;font-size:14px;font-family:'Playfair Display',serif;font-weight:600;background:#fff;outline:none;transition:border var(--tf)}
+.bld-name:focus{border-color:var(--forest)}
+.bld-chip{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:1px;letter-spacing:.2px}
+.bld-chip.safe{background:var(--green-100);color:var(--green-700)}
+.bld-chip.moderate{background:var(--amber-100);color:var(--amber-700)}
+.bld-chip.avoid{background:var(--red-100);color:var(--red-600)}
+.mymeals-box{margin:14px 0 4px;padding:14px 16px;background:var(--gold-50);border:1px solid var(--gold-200);border-radius:14px}
+.mymeals-title{font-size:12px;font-weight:700;color:var(--gold-700);margin-bottom:10px}
+.mymeal-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--gold-200)}
+.mymeal-row:first-of-type{border-top:none}
+.mymeal-name{flex:1;font-size:13px;font-weight:600;color:var(--slate-800);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mymeal-use{background:var(--forest);color:#f5f1e8;border:none;padding:7px 14px;border-radius:10px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background var(--tf)}
+.mymeal-use:hover{background:var(--forest-deep)}
+
 /* Badge Monash : reflet doré qui balaie doucement */
 .dash-badge{position:relative;overflow:hidden}
 .dash-badge::after{content:'';position:absolute;top:0;left:-80%;width:60%;height:100%;
@@ -1449,7 +1464,10 @@ const menuTemplateC = [
   dinner:{name:'Bouillon de poulet, nouilles de riz, carotte, poireau vert',ingr:[{n:'Poulet',g:150},{n:'Nouilles de riz',g:150},{n:'Carotte',g:100},{n:'Poireau (partie verte)',g:40}]}}}
 ];
 const menuTemplates = [menuTemplateA, menuTemplateB, menuTemplateC];
+/* Les personnalisations de repas survivent au rechargement (localStorage). */
 let weekOverrides = {};
+try{ weekOverrides = JSON.parse(lsGet('fodmapWeekOverrides')||'{}')||{}; }catch(e){ weekOverrides={}; }
+function persistWeekOverrides(){ lsSet('fodmapWeekOverrides', JSON.stringify(weekOverrides)); }
 function templateForWeek(week){ return menuTemplates[(week-1+menuTemplates.length*100)%menuTemplates.length]; }
 function loadWeekMenu(week){
   const tmpl = templateForWeek(week);
@@ -1469,9 +1487,11 @@ function saveWeekOverride(day,key){
   if(!weekOverrides[programWeek]) weekOverrides[programWeek]={};
   if(!weekOverrides[programWeek][day]) weekOverrides[programWeek][day]={};
   weekOverrides[programWeek][day][key]=JSON.parse(JSON.stringify(d.meals[key]));
+  persistWeekOverrides();
 }
 function clearWeekOverride(day,key){
   if(weekOverrides[programWeek] && weekOverrides[programWeek][day]) delete weekOverrides[programWeek][day][key];
+  persistWeekOverrides();
 }
 let menuData = JSON.parse(JSON.stringify(menuTemplateA));
 let menuDataOriginal = JSON.parse(JSON.stringify(menuTemplateA));
@@ -2371,8 +2391,19 @@ function openMealModal(day,key){
       <div class="modal-row"><span>Coût estimé</span><span>${price.toFixed(2)} €</span></div>
       <div class="modal-actions-row">
         <button class="reset-btn" onclick="swapMeal('${day}','${key}')">🔄 Remplacer ce repas</button>
+        <button class="reset-btn" onclick="openMealBuilder('${day}','${key}',${meal.customized?'true':'false'})">✏️ Créer un repas perso</button>
         ${meal.customized?`<button class="reset-btn" onclick="resetMeal('${day}','${key}')">↺ Réinitialiser la recette d'origine</button>`:''}
       </div>
+      ${(function(){
+        const mine=myMeals.filter(m=>m.slot===key);
+        if(!mine.length) return '';
+        return `<div class="mymeals-box"><div class="mymeals-title">📔 Mes repas (${mealLabels[key].replace(/^\S+\s/,'')})</div>`+
+          mine.map(m=>`<div class="mymeal-row">
+            <span class="mymeal-name">${m.name}</span>
+            <button class="mymeal-use" onclick="applyMyMeal('${day}','${key}',${m.id})">Utiliser</button>
+            <button class="ing-del" onclick="deleteMyMeal('${day}','${key}',${m.id})" title="Supprimer">✕</button>
+          </div>`).join('')+`</div>`;
+      })()}
       <div class="recipe-box">
         <div class="recipe-title">👩‍🍳 Comment la préparer</div>
         <ol class="recipe-steps">${recipeSteps.map(s=>`<li>${s}</li>`).join('')}</ol>
@@ -2446,6 +2477,139 @@ function swapMeal(day,key){
   if(document.getElementById('modalBg').classList.contains('show')) openMealModal(day,key);
   renderMenuDay();
   toast('Repas remplacé 🔄');
+}
+
+/* ============ MES REPAS PERSOS ============
+   Repas créés par l'utilisateur, composés uniquement d'aliments de la base
+   (les « à éviter » sont exclus du créateur : un repas perso reste low-FODMAP).
+   Bibliothèque persistée, réutilisable sur n'importe quel jour. */
+let myMeals = [];
+try{ myMeals = JSON.parse(lsGet('fodmapMyMeals')||'[]')||[]; }catch(e){ myMeals=[]; }
+function persistMyMeals(){ lsSet('fodmapMyMeals', JSON.stringify(myMeals)); }
+let builderState = null;
+
+function openMealBuilder(day,key,fromCurrent){
+  const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
+  builderState = {day,key,name:'',ingr:[]};
+  if(fromCurrent){
+    const scale = meal.customized?1:dayScaleFactor(d);
+    builderState.name = meal.customized? meal.name : '';
+    builderState.ingr = meal.ingr
+      .filter(ing=>{const f=findFood(ing.n);return !f||f.s!=='avoid'})
+      .map(ing=>({n:ing.n,g:scaledGrams(meal,ing,scale)}));
+  }
+  renderMealBuilder();
+}
+function builderTotals(){
+  return builderState.ingr.reduce((acc,ing)=>{
+    const f=findFood(ing.n);
+    if(f){acc.k+=f.k/f.g*ing.g;acc.pr+=f.pr/f.g*ing.g;acc.price+=f.price/f.g*ing.g*storeMult(f.c);}
+    return acc;
+  },{k:0,pr:0,price:0});
+}
+function builderFodmapStatus(){
+  let overs=[], hasModerate=false;
+  builderState.ingr.forEach(ing=>{
+    const f=findFood(ing.n); if(!f) return;
+    if(f.s==='moderate'){hasModerate=true; if(ing.g>f.g) overs.push(f.n);}
+  });
+  if(overs.length) return {cls:'avoid', txt:'⚠️ Seuil Monash dépassé : '+overs.join(', ')};
+  if(hasModerate) return {cls:'moderate', txt:'🟡 Contient des aliments modérés — seuils respectés'};
+  return {cls:'safe', txt:'✅ 100% compatible phase d\'élimination'};
+}
+function renderMealBuilder(){
+  const t=builderTotals(); const st=builderFodmapStatus();
+  const rows = builderState.ingr.map((ing,idx)=>{
+    const f=findFood(ing.n);
+    const over = f && f.s==='moderate' && ing.g>f.g;
+    const chip = !f?'':f.s==='safe'
+      ? '<span class="bld-chip safe">safe</span>'
+      : `<span class="bld-chip ${over?'avoid':'moderate'}">modéré · ≤${f.g}g</span>`;
+    const ik = f? Math.round(f.k/f.g*ing.g):0;
+    return `<li class="ing-row">
+      <span class="ing-name">${f?f.e+' ':''}${ing.n} ${chip}</span>
+      <input type="number" class="ing-g-input" value="${ing.g}" min="5" step="5" onchange="builderSetG(${idx},this.value)">
+      <span class="ing-unit">g</span>
+      <span class="ing-kcal">${ik} kcal</span>
+      <button class="ing-del" onclick="builderDelIng(${idx})" title="Retirer">✕</button>
+    </li>`;
+  }).join('');
+  const foodOptions = foods.slice()
+    .filter(f=>f.s!=='avoid' && !dietPrefs.excluded.has(f.n.toLowerCase()))
+    .sort((a,b)=>a.n.localeCompare(b.n))
+    .map(f=>`<option value="${f.n}">${f.e} ${f.n} (${f.s==='safe'?'safe':'modéré ≤'+f.g+'g'})</option>`).join('');
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-hd"><div class="me">✏️</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-title">Mon repas perso</div>
+      <div class="modal-badge safe">${mealLabels[builderState.key]} · ${builderState.day}</div>
+      <span class="modal-badge ${st.cls}">${st.txt}</span>
+      <input type="text" id="bldName" class="bld-name" placeholder="Nom du repas (ex : Ma salade riz-thon)" value="${builderState.name.replace(/"/g,'&quot;')}" oninput="builderState.name=this.value">
+      <div class="modal-row"><span>Calories</span><span>${Math.round(t.k)} kcal</span></div>
+      <div class="modal-row"><span>Protéines</span><span>${Math.round(t.pr)} g</span></div>
+      <div class="modal-row"><span>Coût estimé</span><span>${t.price.toFixed(2)} €</span></div>
+      <div class="ing-editor-title">Ingrédients <span class="ing-scale-note">· uniquement safe & modérés — un repas perso reste low-FODMAP</span></div>
+      <ul class="ing-list-edit">${rows || '<li class="ing-row" style="justify-content:center;color:var(--slate-400)">Ajoutez vos ingrédients ci-dessous</li>'}</ul>
+      <div class="ing-add-row">
+        <select id="bldIngSelect">${foodOptions}</select>
+        <input type="number" id="bldIngGrams" value="100" min="5" step="5">
+        <button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="builderAddIng()">+ Ajouter</button>
+      </div>
+      <div class="modal-actions-row">
+        <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="builderApply()">✓ Utiliser pour ce repas</button>
+        <button class="reset-btn" onclick="builderSaveOnly()">💾 Garder dans mes repas</button>
+        <button class="reset-btn" onclick="openMealModal('${builderState.day}','${builderState.key}')">← Retour</button>
+      </div>
+      <div class="modal-tip">💡 Les aliments « à éviter » ne sont pas proposés ici. Pour les modérés, restez sous le grammage indiqué pour rester compatible élimination.</div>
+    </div>`;
+  document.getElementById('modalBg').classList.add('show');
+}
+function builderAddIng(){
+  const name=document.getElementById('bldIngSelect').value;
+  const g=Math.max(5,+document.getElementById('bldIngGrams').value||100);
+  const existing=builderState.ingr.find(i=>i.n===name);
+  if(existing) existing.g+=g; else builderState.ingr.push({n:name,g});
+  renderMealBuilder();
+}
+function builderDelIng(idx){ builderState.ingr.splice(idx,1); renderMealBuilder(); }
+function builderSetG(idx,val){ builderState.ingr[idx].g=Math.max(5,+val||5); renderMealBuilder(); }
+function builderMealName(){
+  return (builderState.name||'').trim() || 'Repas perso '+mealLabels[builderState.key].replace(/^\S+\s/,'').toLowerCase();
+}
+function builderSaveToLibrary(){
+  if(!builderState.ingr.length){toast('Ajoutez au moins un ingrédient 🥕');return null}
+  const m={id:Date.now(), slot:builderState.key, name:builderMealName(), ingr:JSON.parse(JSON.stringify(builderState.ingr))};
+  myMeals=myMeals.filter(x=>!(x.slot===m.slot && x.name===m.name));
+  myMeals.push(m); persistMyMeals();
+  return m;
+}
+function builderApply(){
+  const m=builderSaveToLibrary(); if(!m) return;
+  const d=menuData.find(x=>x.day===builderState.day);
+  d.meals[builderState.key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true};
+  saveWeekOverride(builderState.day,builderState.key);
+  openMealModal(builderState.day,builderState.key);
+  renderMenuDay(); renderHome();
+  toast('Repas perso enregistré et appliqué 🌿');
+}
+function builderSaveOnly(){
+  const m=builderSaveToLibrary(); if(!m) return;
+  renderMealBuilder();
+  toast('Gardé dans « Mes repas » 💾');
+}
+function applyMyMeal(day,key,id){
+  const m=myMeals.find(x=>x.id===id); if(!m) return;
+  const d=menuData.find(x=>x.day===day);
+  d.meals[key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true};
+  saveWeekOverride(day,key);
+  openMealModal(day,key);
+  renderMenuDay(); renderHome();
+  toast('« '+m.name+' » appliqué 🌿');
+}
+function deleteMyMeal(day,key,id){
+  myMeals=myMeals.filter(x=>x.id!==id); persistMyMeals();
+  openMealModal(day,key);
+  toast('Repas perso supprimé 🗑️');
 }
 
 function openShoppingList(){
