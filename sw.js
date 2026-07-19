@@ -1,5 +1,5 @@
 /* FODMAP+ — service worker : cache l'app shell pour un fonctionnement hors-ligne (Android + web). */
-const CACHE_NAME = 'fodmap-plus-v1';
+const CACHE_NAME = 'fodmap-plus-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -25,10 +25,30 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Stratégie : cache d'abord pour l'app shell (tout tourne en local, aucune donnée serveur),
-// avec repli réseau si une ressource n'est pas encore en cache.
+// Stratégie : réseau d'abord pour la page HTML (l'app se met à jour dès qu'un nouveau
+// déploiement est en ligne), avec repli sur le cache hors-ligne. Cache d'abord pour les
+// autres assets (icônes, manifest) qui changent rarement.
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const isHTML = event.request.mode === 'navigate' ||
+    (event.request.headers.get('accept') || '').includes('text/html');
+
+  if (isHTML) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
