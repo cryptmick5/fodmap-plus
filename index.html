@@ -942,6 +942,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .ccard{background:var(--surface);border:1px solid var(--hairline);border-radius:16px;padding:14px 16px;box-shadow:var(--s-sm);animation:popIn .4s var(--ts)}
 .ccard-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
 .ccard-hd b{font-family:'Playfair Display',serif;font-size:15px;color:var(--slate-900)}
+.ccard-quip{font-size:11.5px;font-style:italic;color:var(--gold-700);margin:-4px 0 8px;line-height:1.5}
 .ccard-slot{font-size:10px;font-weight:700;color:var(--gold-700);background:var(--gold-50);border:1px solid var(--gold-200);padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
 .ccard-ings{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .ccard-ing{font-size:12px;background:var(--surface-dim);border:1px solid var(--hairline);padding:5px 10px;border-radius:10px;color:var(--slate-700)}
@@ -1414,14 +1415,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="coach-wrap">
       <div class="coach-hd"><div class="coach-avatar">🌿</div><div><b>Coach FODMAP</b><span>● En ligne</span></div></div>
       <div class="coach-body" id="coachBody">
-        <div class="msg bot">Bonjour ! 👋 Demandez-moi le statut, le grammage ou les macros d'un aliment ("riz", "ail"), une idée de repas, ou "mon objectif calorique".</div>
+        <div class="msg bot">Salut ! 👋 Moi c'est ton coach FODMAP — direct, efficace, et incollable sur les 131 aliments de ta base. Demande-moi une idée de repas (« idée dîner avec poulet »), un menu complet, le statut d'un aliment, ou dis-moi « j'ai des ballonnements » et on enquête. Attention : coach IA, pas médecin 😉 Tu commences par quoi ?</div>
       </div>
       <div class="coach-suggestions" id="coachSuggestions"></div>
       <div class="coach-input-wrap">
         <input type="text" id="coachInput" placeholder="Ex : « idée dîner avec poulet et courgettes »" onkeydown="if(event.key==='Enter')sendCoach()">
         <button class="coach-send" onclick="sendCoach()" aria-label="Envoyer le message">➤</button>
       </div>
-      <div class="coach-disc">⚕️ Coach éducatif (seuils type Monash) — ne remplace pas un avis médical ou diététique.</div>
+      <div class="coach-disc">⚕️ Coach IA éducatif (seuils type Monash), pas un médecin — pour un vrai suivi, consultez un diététicien spécialisé.</div>
     </div>
   </div>
 </section>
@@ -3555,23 +3556,25 @@ function coachProposeMeal(slot,requiredNames,excludeName,opts){
 }
 function coachShowInsights(){
   const ins=computeSymptomInsights();
-  if(!ins.length){ pushMsg('Pas encore de corrélation détectable — notez vos symptômes après les repas (bouton 🩺 ou onglet Profil → Symptômes) et je croiserai avec les familles FODMAP.','bot'); return; }
-  pushHtml(`<div class="ccard"><div class="ccard-hd"><b>Vos corrélations 📈</b><span class="ccard-slot">${symptomLog.length} entrées</span></div>
+  if(!ins.length){ pushMsg('Rien à signaler pour l\'instant — et c\'est plutôt bon signe 🌿 Note tes symptômes après les repas (bouton 🩺) et je croiserai avec les familles FODMAP. Tu digères bien en ce moment ?','bot'); return; }
+  const adjustBtns=ins.filter(i=>i.count>=2&&FAM_TO_PLAN[i.fam]!==undefined&&reintroPlan[FAM_TO_PLAN[i.fam]].statut!=='reaction')
+    .map(i=>`<button class="ccard-btn" onclick="coachMarkReaction('${i.fam}')">⚠️ Marquer ${i.fam} en réaction</button>`).join('');
+  pushHtml(`<div class="ccard"><div class="ccard-hd"><b>Tes corrélations 📈</b><span class="ccard-slot">${symptomLog.length} entrées</span></div>
     <div class="ccard-list">${ins.map(i=>`<div class="ccard-li"><b>${FAMILY_LABELS[i.fam]||i.fam}</b> : ${i.label} — ${i.detail}</div>`).join('')}</div>
-    <div class="ccard-actions"><button class="ccard-btn" onclick="ss('symptomes')">📓 Ouvrir le journal complet</button></div>
-    <div class="ccard-disc">⚕️ Statistique indicative — la confirmation passe par la réintroduction encadrée.</div></div>`);
+    <div class="ccard-actions"><button class="ccard-btn" onclick="ss('symptomes')">📓 Journal complet</button>${adjustBtns}</div>
+    <div class="ccard-disc">Statistique indicative — la vraie confirmation, c'est la réintroduction encadrée. Coach IA, pas médecin.</div></div>`);
 }
 function coachPhaseReply(){
   const info=getPhaseForWeek(programWeek);
   const tol=reintroPlan.filter(r=>r.statut==='tolere').map(r=>r.famille.split(' (')[0]);
   const bad=reintroPlan.filter(r=>r.statut==='reaction').map(r=>r.famille.split(' (')[0]);
-  let msg='';
-  if(info.phase==='elimination') msg=`Vous êtes en semaine ${programWeek} : phase 1 — élimination stricte (${info.weekInPhase}/${info.totalInPhase} semaines). Objectif : calmer le système digestif en évitant tous les aliments « à éviter ». Tenez bon, la réintroduction arrive ensuite.`;
-  else if(info.phase==='reintroduction'){ const fam=reintroPlan[info.familyIndex]; msg=`Semaine ${programWeek} : phase 2 — réintroduction, famille testée : ${fam.famille} (${fam.aliment}). Protocole : ${fam.protocole}. Notez chaque symptôme via 🩺 pendant le test, c'est ce qui rend le verdict fiable.`; }
-  else msg=`Semaine ${programWeek} : phase 3 — personnalisation. Vous construisez votre régime durable.`;
-  if(tol.length) msg+=` ✅ Tolérés : ${tol.join(', ')}.`;
+  let msg=hi();
+  if(info.phase==='elimination') msg+=`Tu es en semaine ${programWeek} : phase 1, élimination stricte (${info.weekInPhase}/${info.totalInPhase} semaines). Le but : laisser ton intestin souffler en zappant tous les « à éviter ». Tiens bon, la réintroduction arrive — et là on saura enfin qui sont les vrais coupables.`;
+  else if(info.phase==='reintroduction'){ const fam=reintroPlan[info.familyIndex]; msg+=`Semaine ${programWeek} : phase 2, et cette semaine on teste ${fam.famille} avec ${fam.aliment}. ${fam.protocole}. Note chaque symptôme via 🩺 pendant le test — c'est ça qui rend le verdict fiable.`; }
+  else msg+=`Semaine ${programWeek} : phase 3, personnalisation. Tu construis ton régime durable — le plus varié possible, en évitant seulement tes vrais déclencheurs.`;
+  if(tol.length) msg+=` ✅ Tolérés jusqu'ici : ${tol.join(', ')}.`;
   if(bad.length) msg+=` ⚠️ Réactions : ${bad.join(', ')}.`;
-  return msg;
+  return msg+' Tu veux une idée de repas adaptée à ta phase ?';
 }
 function pushCoachCard(p,skipLog){
   const id=++coachSeq; coachProps[id]=p;
@@ -3581,6 +3584,7 @@ function pushCoachCard(p,skipLog){
   }).join('');
   pushHtml(`<div class="ccard">
     <div class="ccard-hd"><b>${p.name}</b><span class="ccard-slot">${SLOT_FR[p.slot]}</span></div>
+    <div class="ccard-quip">${pickOne(SLOT_QUIPS[p.slot]||[''])}</div>
     <div class="ccard-ings">${ingHtml}</div>
     <div class="ccard-tot">🔥 ${p.k} kcal <span>(cible ~${p.target})</span> · 💪 ${p.pr} g · 💶 ${p.price.toFixed(2)} €</div>
     <div class="ccard-badge ${p.hasModerate?'moderate':'safe'}">${p.hasModerate?'🟡 Modérés présents — seuils Monash respectés':'✅ 100% safe élimination'}</div>
@@ -3608,14 +3612,14 @@ function coachApply(id,day){
   d.meals[p.slot]={name:p.name,ingr:JSON.parse(JSON.stringify(p.ingr)),customized:true,prep:p.prep||''};
   saveWeekOverride(day,p.slot);
   renderMenuDay(); renderHome();
-  pushMsg(`C'est fait ! « ${p.name} » est le ${SLOT_FR[p.slot]} de ${fullDayNames[day]||day}. Retrouvez-le dans l'onglet Menu. 🌿`,'bot');
+  pushMsg(pickOne(['C\'est calé ! ','Adjugé ! ','Et voilà ! '])+`« ${p.name} » est ton ${SLOT_FR[p.slot]} de ${fullDayNames[day]||day}. La liste de courses suit toute seule. Tu veux aussi une idée pour un autre créneau ?`,'bot');
 }
 function coachOther(id){ const p=coachProps[id]; if(p) coachProposeMeal(p.slot,p.required,p.name,p.opts); }
 function coachKeep(id){
   const p=coachProps[id]; if(!p) return;
   const m={id:Date.now(),slot:p.slot,name:p.name,ingr:JSON.parse(JSON.stringify(p.ingr)),prep:p.prep||''};
   myMeals=myMeals.filter(x=>!(x.slot===m.slot&&x.name===m.name)); myMeals.push(m); persistMyMeals();
-  pushMsg(`Gardé dans « Mes repas » (${SLOT_FR[p.slot]}) — réutilisable depuis n'importe quelle fiche repas. 💾`,'bot');
+  pushMsg(`Dans la boîte 💾 — tu le retrouveras dans « Mes repas » depuis n'importe quelle fiche ${SLOT_FR[p.slot]}. Tu veux que je t'en propose un autre ?`,'bot');
 }
 function coachDayMenu(){
   pushMsg('Voici une proposition de journée complète, calée sur vos '+profile.calTarget+' kcal :','bot');
@@ -3698,8 +3702,9 @@ function coachAnalyzeRecipe(){
     <div class="ccard-tot">🔥 ${Math.round(t.k)} kcal · 💪 ${Math.round(t.pr)} g protéines · 💶 ${t.price.toFixed(2)} €</div>
     ${famLine}
     ${swaps.length?`<div class="ccard-swaps">${swaps.join('<br>')}</div>`:''}
-    ${unknown.length?`<div class="ccard-unknown">❔ Non reconnus : ${unknown.join(' · ')} — ajoutez-les via Aliments → ➕ pour une analyse complète.</div>`:''}
-    <div class="ccard-disc">⚕️ Analyse indicative (seuils type Monash) — ne remplace pas un avis diététique.</div>
+    ${unknown.length?`<div class="ccard-unknown">❔ Non reconnus : ${unknown.join(' · ')} — ajoute-les via Aliments → ➕ pour une analyse complète.</div>`:''}
+    ${(avoid.length||modOver.length)?`<div class="ccard-actions"><button class="ccard-btn primary" onclick="coachProposeMeal(slotByHour(),${JSON.stringify(rows.filter(r=>r.f.s==='safe').map(r=>r.f.n)).replace(/"/g,'&quot;')})">💡 Compose-moi une version 100% safe</button></div>`:''}
+    <div class="ccard-disc">Analyse indicative (seuils type Monash). Coach IA, pas médecin — ton diététicien reste le patron. ${(avoid.length||modOver.length)?'':'Tu veux que je l\'ajoute à ton menu ?'}</div>
   </div>`);
 }
 
@@ -3715,11 +3720,12 @@ const RESTO_TIPS={
 function coachRestaurantReply(ql){
   const kind=Object.keys(RESTO_TIPS).find(k=>k!=='default'&&ql.includes(k));
   const tips=RESTO_TIPS[kind]||RESTO_TIPS.default;
-  const title=kind?`Au restaurant ${kind} 🍽️`:'Au restaurant 🍽️';
+  const title=kind?`Resto ${kind} ce soir ? Bon choix 🍽️`:'Au restaurant 🍽️';
   pushHtml(`<div class="ccard">
     <div class="ccard-hd"><b>${title}</b><span class="ccard-slot">mode restaurant</span></div>
+    <div class="ccard-quip">La phrase magique : « sans oignon, sans ail, sauce à part ». Répète-la, c'est ton bouclier.</div>
     <div class="ccard-list">${tips.map(t=>`<div class="ccard-li">${t}</div>`).join('')}</div>
-    <div class="ccard-disc">⚕️ En phase d'élimination stricte, privilégiez les plats simples et signalez toujours « sans oignon, sans ail ».</div>
+    <div class="ccard-disc">En élimination stricte, reste sur les plats simples. Tu me diras ce que tu as pris ? Coach IA, pas médecin 😉</div>
   </div>`);
   return null;
 }
@@ -3907,6 +3913,44 @@ function exportMenuPdf(){
   window.print();
   setTimeout(done,2000);
 }
+/* ============ PERSONNALITÉ DU COACH ============
+   Direct, tutoiement, un brin d'humour, toujours utile, et une question
+   de relance pour garder la conversation vivante. */
+function pickOne(a){ return a[Math.floor(Math.random()*a.length)]; }
+let coachGreeted=false;
+function hi(){
+  if(coachGreeted) return '';
+  coachGreeted=true;
+  return pickOne(['Salut ! ','Hello ! ','Yo ! ','Re ! ']);
+}
+const FOOD_QUIPS={
+  'Ail':"On va pas se mentir : l'ail, c'est le traître de la soirée.",
+  'Oignon':"L'oignon, c'est le faux ami nº1 — il se cache dans toutes les sauces.",
+  'Champignon':"Il a l'air innocent, le champignon. Il ne l'est pas (mannitol).",
+  'Pomme':"« An apple a day »… pas pendant l'élimination, désolé.",
+  'Lait de vache':"Le lactose et toi, c'est en pause pour le moment.",
+  'Pastèque':"92% d'eau, et le reste c'est des ennuis (fructanes).",
+  'Pain de blé':"Le blé, c'est le boss de fin des fructanes."
+};
+function quipFor(f){
+  if(FOOD_QUIPS[f.n]) return FOOD_QUIPS[f.n];
+  if(f.s==='avoid') return pickOne(["Celui-là, garde-le pour la réintroduction.","Ton intestin te dira merci de patienter.","On le met sur le banc de touche pour l'instant."]);
+  if(f.s==='moderate') return "Autorisé, mais reste sous le seuil — c'est lui qui fait la loi.";
+  return '';
+}
+const SLOT_QUIPS={
+  breakfast:["Le petit-déj qui ne te trahira pas.","De quoi démarrer sans réveiller ton intestin."],
+  lunch:["Simple, calé sur tes macros, zéro embrouille digestive.","Un déjeuner qui bosse pour toi."],
+  snack:["Petite faim, zéro risque.","La collation qui passe crème (sans lactose, évidemment)."],
+  dinner:["Le dîner tranquille — pas d'addition digestive à payer 😄","Un soir sans mauvaise surprise, c'est ça le plan."]
+};
+const FAM_TO_PLAN={fructanes:0,lactose:1,fructose:2,sorbitol:3,mannitol:4,GOS:5};
+function coachMarkReaction(fam){
+  const idx=FAM_TO_PLAN[fam]; if(idx===undefined) return;
+  setReintroStatus(idx,'reaction');
+  pushMsg(`Noté : ${FAMILY_LABELS[fam]||fam} marquée en réaction dans ta réintroduction. On la laisse de côté — tu pourras retester plus tard avec ton diététicien. Courage, tu avances ! 💪`,'bot');
+}
+
 function generateCoachReply(q){
   const ql=q.toLowerCase();
   const qn=normNameFP(q);
@@ -3914,12 +3958,13 @@ function generateCoachReply(q){
   if(/resto|restaurant/.test(qn)) return coachRestaurantReply(qn);
   if(/ballonn|douleur|symptom|diarrhe|constip|reflux|nausee|mal au ventre|crampe|\bgaz\b/.test(qn)){
     const pre=SYMPTOM_TYPES.filter(([k])=>qn.includes(k.slice(0,6))).map(([k])=>k);
-    pushHtml(`<div class="ccard"><div class="ccard-hd"><b>Je note ça 📓</b><span class="ccard-slot">symptômes</span></div>
-      <div class="ccard-list"><div class="ccard-li">Enregistrons ce symptôme avec le repas concerné : plus le journal est rempli, plus mes corrélations par famille FODMAP deviennent fiables.</div></div>
+    pushHtml(`<div class="ccard"><div class="ccard-hd"><b>Aïe, pas cool 📓</b><span class="ccard-slot">symptômes</span></div>
+      <div class="ccard-list"><div class="ccard-li">On note ça avec le repas concerné — c'est comme ça qu'on démasque le coupable. Plus ton journal est rempli, plus mes corrélations par famille FODMAP deviennent fiables.</div></div>
       <div class="ccard-actions">
         <button class="ccard-btn primary" onclick='openSymptomModal(${JSON.stringify(pre)})'>🩺 Noter ce symptôme</button>
         <button class="ccard-btn" onclick="coachShowInsights()">📈 Mes corrélations</button>
-      </div></div>`);
+      </div>
+      <div class="ccard-disc">Coach IA, pas médecin — si ça persiste ou s'intensifie, vois un professionnel.</div></div>`);
     return null;
   }
   if(/correlation|insight|declencheur|sensibilite|mes symptome/.test(qn)){ coachShowInsights(); return null; }
@@ -3937,41 +3982,31 @@ function generateCoachReply(q){
     return null;
   }
   if(ql.includes('objectif')&&(ql.includes('calor')||ql.includes('mon '))){
-    return `D'après votre profil, votre objectif est d'environ ${profile.calTarget} kcal/jour et ${profile.protTarget} g de protéines/jour. Ajustez ces valeurs dans « Mon profil nutritionnel ».`;
+    return hi()+`Ton objectif tourne autour de ${profile.calTarget} kcal et ${profile.protTarget} g de protéines par jour. C'est réglable dans ton profil si ça bouge. Tu veux que je te compose une journée qui tombe pile dessus ?`;
   }
   if(ql.includes('budget')||ql.includes('coût')||ql.includes('cout')||ql.includes('prix')&&ql.includes('semaine')){
     const total=weekPrice();
-    return `Votre semaine actuelle coûte environ ${total.toFixed(2)}€, pour un budget de ${weeklyBudget}€ (${total<=weeklyBudget?'dans le budget ✅':'au-dessus du budget ⚠️'}). Ajustez le budget directement au-dessus du menu, ou tapez « remplacer » sur un repas pour en trouver un moins cher.`;
+    return hi()+`Ta semaine tourne à ${total.toFixed(2)} € pour ${weeklyBudget} € de budget — ${total<=weeklyBudget?"t'es dans les clous ✅":"ça déborde un peu ⚠️"}. Tu veux un repas pas cher pour ${total<=weeklyBudget?'garder la marge':'compenser'} ?`;
   }
-  if(ql.includes('petit')&&ql.includes('déj')||ql.includes('breakfast')){
-    const d=menuData[Math.floor(Math.random()*7)];
-    const mm=mealDisplayMacros(d,'breakfast');
-    return `Idée petit-déjeuner low-FODMAP : ${d.meals.breakfast.name} (≈${Math.round(mm.k)} kcal, ${Math.round(mm.pr)}g de protéines). Demandez « idée déjeuner » ou « idée dîner » pour d'autres suggestions !`;
-  }
-  if(ql.includes('déjeuner')||ql.includes('midi')){
-    const d=menuData[Math.floor(Math.random()*7)];
-    const mm=mealDisplayMacros(d,'lunch');
-    return `Pour le déjeuner : ${d.meals.lunch.name} (≈${Math.round(mm.k)} kcal, ${Math.round(mm.pr)}g de protéines).`;
-  }
-  if(ql.includes('dîner')||ql.includes('diner')||ql.includes('soir')){
-    const d=menuData[Math.floor(Math.random()*7)];
-    const mm=mealDisplayMacros(d,'dinner');
-    return `Pour le dîner : ${d.meals.dinner.name} (≈${Math.round(mm.k)} kcal, ${Math.round(mm.pr)}g de protéines). Bon appétit ! 🌿`;
-  }
+  /* un créneau nommé seul (« petit déjeuner ? ») → carte proposition directe */
+  if(slotTxt){ coachProposeMeal(slotTxt,[],null,{cheap}); return null; }
   if(ql.includes('remplacer')&&ql.includes('oignon')){
-    return `Pour remplacer l'oignon : utilisez la partie verte du poireau, de la ciboulette, ou de l'huile infusée à l'ail (sans les morceaux). Le goût umami peut être obtenu avec de la sauce soja.`;
+    return hi()+`L'oignon, tout le monde veut le remplacer 😄 Mes armes : la partie verte du poireau, la ciboulette, ou l'huile infusée (le goût sans les fructanes). Pour l'umami : un trait de sauce soja. Tu veux que je te compose un plat avec ?`;
   }
   const found=foods.find(f=>ql.includes(f.n.toLowerCase().split(' ')[0].replace(/[^a-zà-ü]/gi,'')));
   if(found){
-    const badge=found.s==='safe'?'✅ Safe':found.s==='moderate'?'⚠️ Modéré':'🚫 À éviter';
-    return `${found.e} ${found.n} est classé ${badge}. Pour ${found.g}g (${found.p}) → ${found.k} kcal, ${found.pr}g de protéines, environ ${found.price.toFixed(2)}€.`;
+    const badge=found.s==='safe'?'✅ safe':found.s==='moderate'?'⚠️ modéré':'🚫 à éviter';
+    const quip=quipFor(found);
+    const follow=found.s==='avoid'?`Tu veux une alternative ${catLabels[found.c].split(' ')[1].toLowerCase()} qui passe ?`:`Tu veux une idée de repas avec ?`;
+    return hi()+`${found.e} ${found.n} : ${badge}. ${found.g} g (${found.p.toLowerCase()}) → ${found.k} kcal, ${found.pr} g de protéines, ~${found.price.toFixed(2)} €. ${quip?quip+' ':''}${follow}`;
   }
   /* Repli : la question dépasse le moteur local → main tendue vers Perplexity avec tout le contexte du profil */
   pushHtml(`<div class="ccard">
-    <div class="ccard-hd"><b>Je n'ai pas la réponse en local 🤔</b></div>
-    <div class="ccard-list"><div class="ccard-li">Essayez : « idée dîner », « repas avec poulet et courgettes », « menu complet du jour », « je suis au resto italien », le nom d'un aliment, « mon budget »…</div>
-    <div class="ccard-li">Ou posez votre question à Perplexity — j'y joins automatiquement votre profil (phase, objectifs, exclusions, budget) :</div></div>
+    <div class="ccard-hd"><b>Là tu me poses une colle 🤔</b></div>
+    <div class="ccard-list"><div class="ccard-li">Mon rayon : « idée dîner », « repas avec poulet et courgettes », « menu complet du jour », « je suis au resto italien », le nom d'un aliment, « mon budget », « j'ai des ballonnements »…</div>
+    <div class="ccard-li">Pour le reste, je passe le relais à Perplexity — avec ton profil complet dans la poche (phase, objectifs, exclusions, budget) :</div></div>
     <div class="ccard-actions"><button class="ccard-btn primary" onclick="openPerplexityCoach(${JSON.stringify(q).replace(/"/g,'&quot;')})">🔮 Demander à Perplexity avec mon contexte</button></div>
+    <div class="ccard-disc">Coach IA, pas médecin — pour le sérieux, un diététicien reste ton meilleur allié.</div>
   </div>`);
   return null;
 }
