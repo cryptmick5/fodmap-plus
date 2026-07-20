@@ -930,6 +930,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .cf-grid input,.cf-grid select{padding:10px 12px;border:1.5px solid var(--hairline);border-radius:11px;font-size:13px;font-family:inherit;background:var(--surface);outline:none}
 .cf-grid input:focus,.cf-grid select:focus{border-color:var(--forest)}
 @media(max-width:480px){.cf-grid{grid-template-columns:1fr}}
+/* Contraste : libellés de la tab bar et portions d'aliments un cran plus lisibles */
+.tb-btn{color:var(--slate-500)}
+.fc-portion{color:var(--slate-500)}
 .topbar-theme{margin-left:auto;width:38px;height:38px;border:none;border-radius:12px;background:transparent;font-size:17px;cursor:pointer;transition:background var(--tf)}
 .topbar-theme:hover{background:var(--slate-100)}
 .theme-toggle{background:none;border:none;width:100%;font-family:inherit;font-size:14px;font-weight:600;text-align:left}
@@ -965,6 +968,48 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .ccard-disc{font-size:10px;color:var(--slate-400);margin-top:8px;line-height:1.5}
 .ccard-allrow{display:flex;justify-content:center;padding:2px 0}
 .coach-disc{padding:0 16px 12px;font-size:10px;color:var(--slate-400);text-align:center}
+
+/* ============ SYMPTÔMES & CORRÉLATIONS ============ */
+.symp-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:start}
+@media(max-width:900px){.symp-wrap{grid-template-columns:1fr}}
+.symp-card{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:22px;box-shadow:var(--s-sm)}
+.symp-card h4{font-size:14px;font-weight:700;color:var(--slate-900);margin-bottom:12px}
+.symp-card-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.symp-card-hd h4{margin-bottom:0}
+.symp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
+.symp-chip{padding:9px 13px;border-radius:12px;border:1px solid var(--hairline);background:var(--surface-dim);font-size:12px;font-weight:600;color:var(--slate-700);cursor:pointer;font-family:inherit;transition:all var(--tf)}
+.symp-chip.on{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
+.symp-meals{display:flex;flex-direction:column;gap:6px;margin:8px 0 14px}
+.symp-meal{text-align:left;padding:10px 13px;border-radius:11px;border:1px solid var(--hairline);background:var(--surface-dim);font-size:12px;font-weight:600;color:var(--slate-700);cursor:pointer;font-family:inherit;transition:all var(--tf)}
+.symp-meal.on{border-color:var(--forest);background:var(--green-50);color:var(--forest)}
+.symp-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--hairline)}
+.symp-row:first-child{border-top:none}
+.symp-row-main{flex:1;min-width:0}
+.symp-row-main b{display:block;font-size:12.5px;color:var(--slate-800)}
+.symp-row-main span{display:block;font-size:11px;color:var(--slate-500);margin-top:2px;line-height:1.5}
+.symp-insight{padding:11px 13px;border-radius:12px;border:1px solid var(--hairline);background:var(--surface-dim);margin-bottom:8px}
+.symp-insight.mid{border-color:var(--amber-500);background:var(--amber-100)}
+.symp-insight.strong{border-color:var(--red-500);background:var(--red-100)}
+.symp-insight b{display:block;font-size:12.5px;color:var(--slate-900)}
+.symp-insight span{display:block;font-size:11.5px;color:var(--slate-600);margin-top:3px;line-height:1.55}
+
+/* ============ EXPORT PDF (impression) ============ */
+#printArea{display:none}
+@media print{
+  body.printing{margin:0!important;padding:0!important;background:#fff!important}
+  body.printing>*:not(#printArea){display:none!important}
+  body.printing #printArea{display:block!important;padding:24px;font-family:'Inter',-apple-system,sans-serif;color:#111}
+  #printArea h1{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px}
+  #printArea h2{font-size:15px;margin:18px 0 8px}
+  .pr-meta{font-size:11px;color:#555;margin-bottom:14px}
+  .pr-table{width:100%;border-collapse:collapse;font-size:9.5px}
+  .pr-table th,.pr-table td{border:1px solid #bbb;padding:5px 6px;text-align:left;vertical-align:top}
+  .pr-table th{background:#f0ede4}
+  .pr-table small{color:#666}
+  .pr-shop{columns:3;column-gap:24px;font-size:10.5px;line-height:2}
+  .pr-shop span{display:block;break-inside:avoid}
+  .pr-disc{font-size:9px;color:#777;margin-top:16px}
+}
 
 /* ============ MODE NUIT ============
    Les primitives sont réécrites : la cascade existante suit automatiquement,
@@ -1008,6 +1053,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 [data-theme="dark"] .picker-search,[data-theme="dark"] .pplx-txt,[data-theme="dark"] .cf-grid input,[data-theme="dark"] .cf-grid select,[data-theme="dark"] .bld-name{background:var(--slate-50)}
 [data-theme="dark"] .picker-newfood:hover{background:#2e2818}
 [data-theme="dark"] .topbar-theme:hover{background:var(--slate-100)}
+/* Fix contraste : les .on utilisaient slate-900 (devenu clair en dark) avec texte blanc */
+[data-theme="dark"] .fbtn.on,[data-theme="dark"] .cbtn.on{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
+[data-theme="dark"] .fbtn.on.safe{background:var(--green-700);border-color:var(--green-700);color:#0e2015}
+[data-theme="dark"] .fbtn.on.moderate{background:var(--amber-500);border-color:var(--amber-500);color:#2b2005}
+[data-theme="dark"] .fbtn.on.avoid{background:var(--red-500);border-color:var(--red-500);color:#fff}
+[data-theme="dark"] .tb-btn.active{color:var(--green-700)}
+[data-theme="dark"] .fc-portion{color:var(--slate-500)}
 [data-theme="dark"] .mcl-swap{background:rgba(20,24,15,.92);color:var(--slate-800)}
 [data-theme="dark"] .day-tab.on{background:linear-gradient(135deg,var(--green-700),#1a6b3a)}
 [data-theme="dark"] .sidebar{background:var(--surface-dim)}
@@ -1121,6 +1173,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <button class="dqa" onclick="switchTab('aliments')"><span>🔍</span>Chercher un aliment</button>
           <button class="dqa" onclick="switchTab('coach')"><span>💬</span>Demander au coach</button>
           <button class="dqa" onclick="openShoppingList()"><span>🛒</span>Liste de courses</button>
+          <button class="dqa" onclick="openSymptomModal()"><span>🩺</span>Noter un symptôme</button>
+          <button class="dqa" onclick="exportMenuPdf()"><span>🖨️</span>Exporter le menu PDF</button>
           <button class="dqa" onclick="openQuiz()"><span>⚙️</span>Refaire le quiz</button>
         </div>
       </div>
@@ -1219,7 +1273,28 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </div>
 </section>
 
-<section class="sec" data-tab="profil" style="background:#f8fafc">
+<section class="sec" id="symptomes" data-tab="profil">
+  <div class="inner">
+    <div class="sec-h">
+      <span class="sec-tag">Journal</span>
+      <h2 class="sec-title">Symptômes &amp; corrélations</h2>
+      <p class="sec-sub">Notez vos symptômes après les repas : FODMAP+ croise automatiquement vos entrées avec les familles FODMAP des aliments consommés pour repérer vos déclencheurs probables.</p>
+    </div>
+    <div class="symp-wrap">
+      <div class="symp-card">
+        <div class="symp-card-hd"><h4>📓 Journal</h4><button class="btn-p" style="padding:10px 18px;font-size:13px" onclick="openSymptomModal()">🩺 Noter un symptôme</button></div>
+        <div id="sympList" class="symp-list"></div>
+      </div>
+      <div class="symp-card">
+        <h4>📈 Corrélations détectées</h4>
+        <div id="sympInsights" class="symp-insights"></div>
+        <div class="ccard-disc" style="margin-top:12px">⚕️ Corrélations statistiques indicatives — seule la réintroduction encadrée (idéalement avec un diététicien) confirme une sensibilité.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-tab="profil">
   <div class="inner">
     <div class="sec-h">
       <span class="sec-tag">Aide &amp; méthode</span>
@@ -1315,6 +1390,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="week-actions-row">
         <button class="btn-s" onclick="openShoppingList()">🛒 Liste de courses de la semaine</button>
         <button class="btn-s" id="toggleWeekBtn" onclick="toggleWeekView()">📊 Vue semaine complète</button>
+        <button class="btn-s" onclick="exportMenuPdf()">🖨️ Exporter en PDF</button>
       </div>
       <div class="week-grid-compact" id="weekGridCompact" style="display:none"></div>
     </div>
@@ -1987,7 +2063,7 @@ const RING_C = 2*Math.PI*52;
 
 /* ============ TAB NAVIGATION ============ */
 let activeTab='accueil';
-const TAB_ROUTE={phases:'profil',faq:'profil',profil:'profil',poids:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
+const TAB_ROUTE={phases:'profil',faq:'profil',profil:'profil',poids:'profil',symptomes:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
 
 const VALID_TABS=['accueil','menu','aliments','profil','coach'];
 const TAB_TITLES={accueil:"FODMAP+ \u2014 Coach Low FODMAP Premium",menu:"Menu \u2014 FODMAP+",aliments:"Aliments \u2014 FODMAP+",profil:"Profil \u2014 FODMAP+",coach:"Coach IA \u2014 FODMAP+"};
@@ -3402,14 +3478,19 @@ function detectFoodsInText(t){
 function mealTotalsOf(ingr){
   return ingr.reduce((a,i)=>{const f=findFood(i.n);if(f){a.k+=f.k/f.g*i.g;a.pr+=f.pr/f.g*i.g;a.price+=f.price/f.g*i.g*storeMult(f.c);}return a;},{k:0,pr:0,price:0});
 }
-function genMealProposal(slot,required){
-  required=(required||[]).slice(0,4);
+function genMealProposal(slot,required,opts){
+  required=(required||[]).slice(0,4); opts=opts||{};
   const pool=eligibleCoachFoods();
+  /* assaisonnements : jamais en ingrédient principal d'une proposition */
+  const SEASONINGS=['Citron','Gingembre','Poireau (partie verte)'];
   const pick=(cat,excl)=>{
-    let c=pool.filter(f=>f.c===cat&&!excl.some(x=>x.n===f.n));
+    let c=pool.filter(f=>f.c===cat&&!excl.some(x=>x.n===f.n)&&!SEASONINGS.includes(f.n));
     if(!c.length) return null;
     const safes=c.filter(f=>f.s==='safe');
     if(safes.length&&Math.random()<0.8) c=safes;
+    if(opts.cheap){ /* biais économique : parmi les 40% les moins chers au gramme */
+      c=c.slice().sort((a,b)=>a.price/a.g-b.price/b.g).slice(0,Math.max(1,Math.ceil(c.length*.4)));
+    }
     return c[Math.floor(Math.random()*c.length)];
   };
   const tmpl = slot==='breakfast'?['cereale','fruit','laitier']
@@ -3458,18 +3539,39 @@ function matchRecipes(slot,required){
   }).filter(s=>s.have>0&&!mealViolatesPrefs(s.r)).sort((a,b)=>b.have-a.have);
 }
 let coachProps={}, coachSeq=0, lastDayMenuIds=[];
-function coachProposeMeal(slot,requiredNames,excludeName){
+function coachProposeMeal(slot,requiredNames,excludeName,opts){
   const required=(requiredNames||[]).map(n=>findFood(n)).filter(Boolean);
   let prop=null;
-  if(required.length){
+  if(required.length&&!(opts&&opts.cheap)){
     /* une recette existante n'est proposée que si elle contient TOUS les ingrédients demandés */
     const m=matchRecipes(slot,required).filter(s=>s.r.name!==excludeName&&s.have===required.length);
     if(m.length) prop=proposalFromRecipe(slot,m[0].r);
   }
-  if(!prop||prop.name===excludeName) prop=genMealProposal(slot,required);
+  if(!prop||prop.name===excludeName) prop=genMealProposal(slot,required,opts);
   if(!prop){ pushMsg('Je n\'ai pas réussi à composer un repas avec ces contraintes — essayez avec d\'autres aliments 😕','bot'); return; }
   prop.required=requiredNames||[];
+  prop.opts=opts||{};
   pushCoachCard(prop);
+}
+function coachShowInsights(){
+  const ins=computeSymptomInsights();
+  if(!ins.length){ pushMsg('Pas encore de corrélation détectable — notez vos symptômes après les repas (bouton 🩺 ou onglet Profil → Symptômes) et je croiserai avec les familles FODMAP.','bot'); return; }
+  pushHtml(`<div class="ccard"><div class="ccard-hd"><b>Vos corrélations 📈</b><span class="ccard-slot">${symptomLog.length} entrées</span></div>
+    <div class="ccard-list">${ins.map(i=>`<div class="ccard-li"><b>${FAMILY_LABELS[i.fam]||i.fam}</b> : ${i.label} — ${i.detail}</div>`).join('')}</div>
+    <div class="ccard-actions"><button class="ccard-btn" onclick="ss('symptomes')">📓 Ouvrir le journal complet</button></div>
+    <div class="ccard-disc">⚕️ Statistique indicative — la confirmation passe par la réintroduction encadrée.</div></div>`);
+}
+function coachPhaseReply(){
+  const info=getPhaseForWeek(programWeek);
+  const tol=reintroPlan.filter(r=>r.statut==='tolere').map(r=>r.famille.split(' (')[0]);
+  const bad=reintroPlan.filter(r=>r.statut==='reaction').map(r=>r.famille.split(' (')[0]);
+  let msg='';
+  if(info.phase==='elimination') msg=`Vous êtes en semaine ${programWeek} : phase 1 — élimination stricte (${info.weekInPhase}/${info.totalInPhase} semaines). Objectif : calmer le système digestif en évitant tous les aliments « à éviter ». Tenez bon, la réintroduction arrive ensuite.`;
+  else if(info.phase==='reintroduction'){ const fam=reintroPlan[info.familyIndex]; msg=`Semaine ${programWeek} : phase 2 — réintroduction, famille testée : ${fam.famille} (${fam.aliment}). Protocole : ${fam.protocole}. Notez chaque symptôme via 🩺 pendant le test, c'est ce qui rend le verdict fiable.`; }
+  else msg=`Semaine ${programWeek} : phase 3 — personnalisation. Vous construisez votre régime durable.`;
+  if(tol.length) msg+=` ✅ Tolérés : ${tol.join(', ')}.`;
+  if(bad.length) msg+=` ⚠️ Réactions : ${bad.join(', ')}.`;
+  return msg;
 }
 function pushCoachCard(p,skipLog){
   const id=++coachSeq; coachProps[id]=p;
@@ -3508,7 +3610,7 @@ function coachApply(id,day){
   renderMenuDay(); renderHome();
   pushMsg(`C'est fait ! « ${p.name} » est le ${SLOT_FR[p.slot]} de ${fullDayNames[day]||day}. Retrouvez-le dans l'onglet Menu. 🌿`,'bot');
 }
-function coachOther(id){ const p=coachProps[id]; if(p) coachProposeMeal(p.slot,p.required,p.name); }
+function coachOther(id){ const p=coachProps[id]; if(p) coachProposeMeal(p.slot,p.required,p.name,p.opts); }
 function coachKeep(id){
   const p=coachProps[id]; if(!p) return;
   const m={id:Date.now(),slot:p.slot,name:p.name,ingr:JSON.parse(JSON.stringify(p.ingr)),prep:p.prep||''};
@@ -3570,10 +3672,16 @@ function coachAnalyzeRecipe(){
   const modOver=rows.filter(r=>r.f.s==='moderate'&&r.g>r.f.g);
   const modOk=rows.filter(r=>r.f.s==='moderate'&&r.g<=r.f.g);
   const t=mealTotalsOf(rows.map(r=>({n:r.f.n,g:r.g})));
+  /* stacking par famille FODMAP : deux sources de la même famille s'additionnent */
+  const famCount={};
+  rows.forEach(r=>{ if(r.f.s!=='safe') familiesOf(r.f).forEach(fam=>{ (famCount[fam]=famCount[fam]||[]).push(r.f.n); }); });
+  const stacked=Object.keys(famCount).filter(f=>famCount[f].length>=2);
   const verdict = avoid.length||modOver.length ? {cls:'avoid',txt:'🚫 Incompatible élimination en l\'état'}
-    : modOk.length>=2 ? {cls:'moderate',txt:'🟠 Attention au stacking : plusieurs modérés dans le même repas'}
+    : stacked.length ? {cls:'moderate',txt:'🟠 Stacking '+stacked.map(f=>FAMILY_LABELS[f]||f).join(' + ')+' : les doses de la même famille s\'additionnent'}
+    : modOk.length>=2 ? {cls:'moderate',txt:'🟠 Plusieurs modérés dans le même repas — restez sous les seuils'}
     : modOk.length ? {cls:'moderate',txt:'🟡 Compatible si les seuils sont respectés'}
     : {cls:'safe',txt:'✅ 100% compatible phase d\'élimination'};
+  const famLine=Object.keys(famCount).length?`<div class="ccard-unknown">Familles FODMAP présentes : ${Object.keys(famCount).map(f=>(FAMILY_LABELS[f]||f)+' — '+famCount[f].join(', ')).join(' · ')}</div>`:'';
   const rowHtml=rows.map(r=>{
     const st=r.f.s==='avoid'?'🚫':(r.f.s==='moderate'?(r.g>r.f.g?'🔴':'🟡'):'✅');
     const note=r.f.s==='moderate'?` <i class="ccard-mod">seuil ≤${r.f.g}g${r.g>r.f.g?' — dépassé !':''}</i>`:'';
@@ -3588,6 +3696,7 @@ function coachAnalyzeRecipe(){
     <div class="ccard-badge ${verdict.cls}">${verdict.txt}</div>
     <div class="ccard-ings">${rowHtml}</div>
     <div class="ccard-tot">🔥 ${Math.round(t.k)} kcal · 💪 ${Math.round(t.pr)} g protéines · 💶 ${t.price.toFixed(2)} €</div>
+    ${famLine}
     ${swaps.length?`<div class="ccard-swaps">${swaps.join('<br>')}</div>`:''}
     ${unknown.length?`<div class="ccard-unknown">❔ Non reconnus : ${unknown.join(' · ')} — ajoutez-les via Aliments → ➕ pour une analyse complète.</div>`:''}
     <div class="ccard-disc">⚕️ Analyse indicative (seuils type Monash) — ne remplace pas un avis diététique.</div>
@@ -3619,15 +3728,20 @@ function coachRestaurantReply(ql){
 function updateCoachSuggestions(){
   const el=document.getElementById('coachSuggestions'); if(!el) return;
   const slot=slotByHour();
+  const info=getPhaseForWeek(programWeek);
   const chips=[
     [`💡 Idée ${SLOT_FR[slot]}`,`idée ${SLOT_FR[slot]}`],
     ['🎲 Repas aléatoire','propose-moi un repas aléatoire'],
     ['📅 Menu complet du jour','menu complet du jour'],
+    ['💶 Repas pas cher','idée de repas pas cher'],
     ['📋 Analyser une recette','__analyze'],
-    ['🍽️ Au restaurant','je suis au restaurant'],
-    ['💰 Mon budget','mon budget']
+    ['🩺 Noter un symptôme','__symptom'],
+    info.phase==='reintroduction'?['🧪 Ma réintroduction','où en est ma réintroduction ?']:['🍽️ Au restaurant','je suis au restaurant']
   ];
-  el.innerHTML=chips.map(c=>`<button class="csug" onclick="${c[1]==='__analyze'?'analyzeRecipeModal()':`askCoach(${JSON.stringify(c[1]).replace(/"/g,'&quot;')})`}">${c[0]}</button>`).join('');
+  el.innerHTML=chips.map(c=>{
+    const action=c[1]==='__analyze'?'analyzeRecipeModal()':c[1]==='__symptom'?'openSymptomModal()':`askCoach(${JSON.stringify(c[1]).replace(/"/g,'&quot;')})`;
+    return `<button class="csug" onclick="${action}">${c[0]}</button>`;
+  }).join('');
 }
 function openPerplexityCoach(q){
   const ctx=`Contexte : je suis en régime low FODMAP (phase ${currentPhase||'élimination'}, seuils Monash), objectif ${profile.calTarget} kcal et ${profile.protTarget} g de protéines par jour, budget courses ${weeklyBudget}€/semaine, sans oignon ni ail ni lactose${dietPrefs.vegan?', vegan':dietPrefs.vegetarian?', végétarien':''}${dietPrefs.noPork?', sans porc':''}${dietPrefs.noFish?', sans poisson':''}${dietPrefs.noNuts?', sans fruits à coque':''}. `;
@@ -3642,19 +3756,184 @@ function restoreCoachLog(){
     else if(e.text) pushMsg(e.text,e.who||'bot',true);
   });
 }
+
+/* ============ FAMILLES FODMAP (pour stacking + corrélations) ============ */
+const FODMAP_FAMILIES={
+  'Oignon':['fructanes'],'Ail':['fructanes'],'Pain de blé':['fructanes'],'Pâtes de blé':['fructanes'],
+  'Orge':['fructanes'],'Seigle':['fructanes'],'Couscous (blé)':['fructanes'],'Poireau (partie blanche)':['fructanes'],
+  'Artichaut':['fructanes'],'Asperge':['fructanes'],'Chou de Bruxelles':['fructanes'],'Pastèque':['fructanes'],
+  'Banane mûre':['fructanes'],'Fruits secs (dattes, figues)':['fructanes'],'Grenade':['fructanes'],'Pamplemousse':['fructanes'],
+  'Brocoli (tête)':['fructanes'],'Betterave':['GOS','fructanes'],'Flocons d\'avoine':['fructanes','GOS'],
+  'Champignon':['mannitol'],'Chou-fleur':['mannitol'],'Céleri':['mannitol'],'Patate douce':['mannitol'],'Courge butternut':['GOS','mannitol'],
+  'Pomme':['fructose','sorbitol'],'Poire':['fructose','sorbitol'],'Mangue':['fructose'],'Miel':['fructose'],
+  'Cerise':['sorbitol','fructose'],'Abricot':['sorbitol'],'Pêche':['sorbitol'],'Prune':['sorbitol'],'Litchi':['sorbitol'],
+  'Avocat':['sorbitol'],'Maïs doux':['sorbitol'],'Lait de coco':['sorbitol'],
+  'Lait de vache':['lactose'],'Yaourt classique':['lactose'],'Fromage frais / Ricotta':['lactose'],'Brie / Camembert':['lactose'],'Crème fraîche':['lactose'],
+  'Lentilles (en conserve, rincées)':['GOS'],'Pois chiches (en conserve, rincés)':['GOS'],'Haricots rouges':['GOS'],
+  'Haricots blancs':['GOS'],'Edamame':['GOS'],'Petit pois':['GOS','fructanes'],'Tofu soyeux':['GOS']
+};
+function familiesOf(f){
+  if(!f) return [];
+  if(FODMAP_FAMILIES[f.n]) return FODMAP_FAMILIES[f.n];
+  if(f.s==='safe') return [];
+  if(f.c==='legumineuse') return ['GOS'];
+  if(f.c==='laitier') return ['lactose'];
+  return [];
+}
+const FAMILY_LABELS={fructanes:'Fructanes (blé, oignon, ail…)',lactose:'Lactose',fructose:'Fructose en excès',sorbitol:'Sorbitol (polyol)',mannitol:'Mannitol (polyol)',GOS:'GOS (légumineuses…)'};
+
+/* ============ SUIVI DES SYMPTÔMES + CORRÉLATIONS ============ */
+let symptomLog=[];
+try{ symptomLog=JSON.parse(lsGet('fodmapSymptoms')||'[]')||[]; }catch(e){ symptomLog=[]; }
+function persistSymptoms(){ lsSet('fodmapSymptoms', JSON.stringify(symptomLog.slice(-200))); }
+const SYMPTOM_TYPES=[['ballonnements','🎈 Ballonnements'],['douleurs','⚡ Douleurs'],['gaz','💨 Gaz'],['diarrhee','🚽 Diarrhée'],['constipation','🧱 Constipation'],['reflux','🔥 Reflux'],['nausee','🤢 Nausée'],['fatigue','😴 Fatigue']];
+let sympDraft=null;
+function recentMealsForSymptom(){
+  /* repas candidats : ceux d'aujourd'hui déjà passés + le dîner d'hier */
+  const out=[]; const now=new Date(); const h=now.getHours();
+  const today=menuData.find(d=>d.day===todayDayCode());
+  const yIdx=(now.getDay()+6)%7; /* Lun=0 */
+  const yesterday=menuData[(yIdx+6)%7];
+  if(yesterday) out.push({label:'Hier soir · '+yesterday.meals.dinner.name, day:yesterday.day, slot:'dinner', meal:yesterday.meals.dinner});
+  if(today){
+    const slots=[['breakfast',7],['lunch',12],['snack',16],['dinner',19]];
+    slots.forEach(([s,hh])=>{ if(h>=hh) out.push({label:SLOT_FR[s].charAt(0).toUpperCase()+SLOT_FR[s].slice(1)+' · '+today.meals[s].name, day:today.day, slot:s, meal:today.meals[s]}); });
+  }
+  return out.reverse(); /* le plus récent en premier */
+}
+function openSymptomModal(prefTypes){
+  sympDraft={types:new Set(prefTypes||[]),severity:2,mealIdx:0,meals:recentMealsForSymptom()};
+  renderSymptomModal();
+}
+function renderSymptomModal(){
+  const d=sympDraft;
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-hd"><div class="me">🩺</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-title">Noter un symptôme</div>
+      <div class="ing-editor-title">Quels symptômes ?</div>
+      <div class="symp-chips">${SYMPTOM_TYPES.map(([k,l])=>`<button class="symp-chip ${d.types.has(k)?'on':''}" onclick="sympDraft.types.has('${k}')?sympDraft.types.delete('${k}'):sympDraft.types.add('${k}');renderSymptomModal()">${l}</button>`).join('')}</div>
+      <div class="ing-editor-title">Intensité</div>
+      <div class="symp-chips">${[[1,'😐 Léger'],[2,'😣 Moyen'],[3,'😖 Fort']].map(([v,l])=>`<button class="symp-chip ${d.severity===v?'on':''}" onclick="sympDraft.severity=${v};renderSymptomModal()">${l}</button>`).join('')}</div>
+      <div class="ing-editor-title">Après quel repas ?</div>
+      <div class="symp-meals">${d.meals.length?d.meals.map((m,i)=>`<button class="symp-meal ${d.mealIdx===i?'on':''}" onclick="sympDraft.mealIdx=${i};renderSymptomModal()">${m.label}</button>`).join(''):'<span class="picker-empty">Aucun repas récent trouvé</span>'}
+        <button class="symp-meal ${d.mealIdx===-1?'on':''}" onclick="sympDraft.mealIdx=-1;renderSymptomModal()">Autre / hors menu</button>
+      </div>
+      <input type="text" id="sympNote" class="bld-name" style="font-family:Inter" placeholder="Note libre (optionnel)" value="${(d.note||'').replace(/"/g,'&quot;')}" oninput="sympDraft.note=this.value">
+      <button class="btn-p" style="width:100%;justify-content:center;margin-top:8px" onclick="saveSymptomEntry()">Enregistrer</button>
+      <div class="ccard-disc">⚕️ Journal personnel indicatif — parlez-en à votre médecin si les symptômes persistent.</div>
+    </div>`;
+  document.getElementById('modalBg').classList.add('show');
+}
+function saveSymptomEntry(){
+  const d=sympDraft;
+  if(!d.types.size){ toast('Sélectionnez au moins un symptôme 🩺'); return; }
+  const m=d.mealIdx>=0?d.meals[d.mealIdx]:null;
+  symptomLog.push({
+    id:Date.now(), date:new Date().toISOString().slice(0,10), h:new Date().getHours(),
+    types:[...d.types], severity:d.severity, note:(d.note||'').trim(),
+    meal:m?{day:m.day,slot:m.slot,name:m.meal.name,ingr:m.meal.ingr.map(i=>i.n)}:null
+  });
+  persistSymptoms(); closeModal(); renderSymptoms();
+  toast('Symptôme noté 📓');
+  const ins=computeSymptomInsights();
+  if(ins.length&&ins[0].count>=2){
+    switchTab('coach');
+    pushMsg(`J'ai noté vos symptômes. Signal détecté : ${ins[0].label} — ${ins[0].detail}`,'bot');
+  }
+}
+function deleteSymptom(id){ symptomLog=symptomLog.filter(s=>s.id!==id); persistSymptoms(); renderSymptoms(); }
+function computeSymptomInsights(){
+  /* croise chaque entrée liée à un repas avec les familles FODMAP de ses ingrédients */
+  const famStats={}, foodStats={};
+  symptomLog.filter(s=>s.meal).forEach(s=>{
+    const fams=new Set(), badFoods=new Set();
+    s.meal.ingr.forEach(n=>{
+      const f=findFood(n); if(!f) return;
+      familiesOf(f).forEach(fam=>{ fams.add(fam); badFoods.add(f.n); });
+    });
+    fams.forEach(fam=>{ famStats[fam]=famStats[fam]||{count:0,sev:0,foods:new Set()}; famStats[fam].count++; famStats[fam].sev+=s.severity;
+      badFoods.forEach(bf=>{ if(familiesOf(findFood(bf)).includes(fam)) famStats[fam].foods.add(bf); }); });
+  });
+  const total=symptomLog.filter(s=>s.meal).length;
+  return Object.keys(famStats).map(fam=>{
+    const st=famStats[fam];
+    const tol=reintroPlan.find(r=>r.famille.toLowerCase().startsWith(fam.slice(0,4).toLowerCase())&&r.statut==='tolere');
+    return {fam, count:st.count, total, sevAvg:st.sev/st.count,
+      label:`${st.count}× symptômes après des repas contenant des ${FAMILY_LABELS[fam]||fam}`,
+      detail:`aliments concernés : ${[...st.foods].join(', ')}${tol?' · ⚠️ pourtant marquée tolérée en réintroduction':''} → sensibilité ${st.count>=3?'probable':'possible'} aux ${fam}.`};
+  }).sort((a,b)=>b.count-a.count||b.sevAvg-a.sevAvg);
+}
+function renderSymptoms(){
+  const list=document.getElementById('sympList'), insEl=document.getElementById('sympInsights');
+  if(!list) return;
+  const recent=symptomLog.slice(-12).reverse();
+  list.innerHTML=recent.length?recent.map(s=>`
+    <div class="symp-row">
+      <div class="symp-row-main">
+        <b>${s.types.map(t=>(SYMPTOM_TYPES.find(x=>x[0]===t)||[t,t])[1]).join(' · ')}</b>
+        <span>${s.date} · ${'▮'.repeat(s.severity)}${s.meal?' · après '+SLOT_FR[s.meal.slot]+' « '+s.meal.name+' »':''}${s.note?' · '+s.note:''}</span>
+      </div>
+      <button class="ing-del" onclick="deleteSymptom(${s.id})" title="Supprimer">✕</button>
+    </div>`).join(''):'<div class="picker-empty">Aucun symptôme noté — c\'est plutôt bon signe 🌿</div>';
+  const ins=computeSymptomInsights();
+  insEl.innerHTML=ins.length?ins.map(i=>`
+    <div class="symp-insight ${i.count>=3?'strong':i.count>=2?'mid':''}">
+      <b>${FAMILY_LABELS[i.fam]||i.fam}</b>
+      <span>${i.count}/${i.total} repas symptomatiques · ${i.detail}</span>
+    </div>`).join(''):'<div class="picker-empty">Pas encore assez de données — notez vos symptômes après les repas pour faire émerger des corrélations.</div>';
+}
+
+/* ============ EXPORT PDF (impression navigateur) ============ */
+function exportMenuPdf(){
+  const cont=document.getElementById('printArea')||(()=>{const d=document.createElement('div');d.id='printArea';document.body.appendChild(d);return d})();
+  const agg={};
+  menuData.forEach(d=>Object.keys(d.meals).forEach(k=>{
+    const meal=d.meals[k]; const scale=meal.customized?1:dayScaleFactor(d);
+    meal.ingr.forEach(ing=>{ agg[ing.n]=(agg[ing.n]||0)+scaledGrams(meal,ing,scale)*(k==='dinner'?Math.max(1,householdDiners):1); });
+  }));
+  cont.innerHTML=`
+    <h1>FODMAP+ — Menu de la semaine ${programWeek}</h1>
+    <p class="pr-meta">Objectif ${profile.calTarget} kcal · ${profile.protTarget} g protéines / jour · budget ${weeklyBudget} € · ${STORES[selectedStore].label} · généré le ${new Date().toLocaleDateString('fr-FR')}</p>
+    <table class="pr-table"><tr><th>Jour</th><th>🌅 Petit-déj</th><th>☀️ Déjeuner</th><th>🍏 Collation</th><th>🌙 Dîner</th><th>Total</th></tr>
+    ${menuData.map(d=>{const t=dayDisplayTotals(d);return `<tr><td><b>${fullDayNames[d.day]}</b></td>${Object.keys(d.meals).map(k=>{const mm=mealDisplayMacros(d,k);return `<td>${d.meals[k].name}<br><small>${Math.round(mm.k)} kcal · ${Math.round(mm.pr)}g</small></td>`}).join('')}<td><b>${Math.round(t.k)} kcal</b><br><small>${Math.round(t.pr)}g prot · ${dayPrice(d).toFixed(2)}€</small></td></tr>`}).join('')}
+    </table>
+    <h2>🛒 Liste de courses (${Object.keys(agg).length} articles · ~${weekPrice().toFixed(2)} €)</h2>
+    <div class="pr-shop">${Object.keys(agg).sort().map(n=>`<span>☐ ${n} — ${agg[n]>=1000?(agg[n]/1000).toFixed(1)+' kg':Math.round(agg[n])+' g'}</span>`).join('')}</div>
+    <p class="pr-disc">⚕️ FODMAP+ est un outil éducatif (seuils type Monash) — ne remplace pas un avis médical ou diététique. Prix estimés.</p>`;
+  document.body.classList.add('printing');
+  const done=()=>{document.body.classList.remove('printing');window.removeEventListener('afterprint',done)};
+  window.addEventListener('afterprint',done);
+  window.print();
+  setTimeout(done,2000);
+}
 function generateCoachReply(q){
   const ql=q.toLowerCase();
   const qn=normNameFP(q);
-  /* — Intentions v2 : générateur de repas, menu complet, restaurant — */
+  /* — Intentions v2 : générateur de repas, menu complet, restaurant, symptômes, phase — */
   if(/resto|restaurant/.test(qn)) return coachRestaurantReply(qn);
+  if(/ballonn|douleur|symptom|diarrhe|constip|reflux|nausee|mal au ventre|crampe|\bgaz\b/.test(qn)){
+    const pre=SYMPTOM_TYPES.filter(([k])=>qn.includes(k.slice(0,6))).map(([k])=>k);
+    pushHtml(`<div class="ccard"><div class="ccard-hd"><b>Je note ça 📓</b><span class="ccard-slot">symptômes</span></div>
+      <div class="ccard-list"><div class="ccard-li">Enregistrons ce symptôme avec le repas concerné : plus le journal est rempli, plus mes corrélations par famille FODMAP deviennent fiables.</div></div>
+      <div class="ccard-actions">
+        <button class="ccard-btn primary" onclick='openSymptomModal(${JSON.stringify(pre)})'>🩺 Noter ce symptôme</button>
+        <button class="ccard-btn" onclick="coachShowInsights()">📈 Mes corrélations</button>
+      </div></div>`);
+    return null;
+  }
+  if(/correlation|insight|declencheur|sensibilite|mes symptome/.test(qn)){ coachShowInsights(); return null; }
+  if(/ou en (suis|est)|reintroduction|ma phase|quelle phase/.test(qn)) return coachPhaseReply();
   if(/menu (complet|du jour)|journee (complete|entiere)|menu complet/.test(qn)){ coachDayMenu(); return null; }
   const slotTxt=slotFromText(qn);
+  const cheap=/pas cher|econom|petit budget|moins cher/.test(qn);
   const wantsMeal=/(idee|propose|genere|suggere|fais moi|fais un|cree|aleatoire|invente)/.test(qn)
     || /(repas|menu|manger|plat) avec/.test(qn)
+    || (cheap&&/(repas|idee|plat|menu|manger)/.test(qn))
     || (slotTxt&&/(idee|repas|menu|manger|plat|quoi)/.test(qn));
   if(wantsMeal){
     const req=detectFoodsInText(q);
-    coachProposeMeal(slotTxt||slotByHour(), req.map(f=>f.n));
+    coachProposeMeal(slotTxt||slotByHour(), req.map(f=>f.n), null, {cheap});
     return null;
   }
   if(ql.includes('objectif')&&(ql.includes('calor')||ql.includes('mon '))){
@@ -3766,6 +4045,7 @@ renderProgram();
 renderHome();
 updateCoachSuggestions();
 restoreCoachLog();
+renderSymptoms();
 initQuiz();
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
