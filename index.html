@@ -858,6 +858,114 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   background:linear-gradient(100deg,transparent,rgba(201,169,110,.28),transparent);
   animation:badgeSheen 4.5s ease-in-out infinite}
 @keyframes badgeSheen{0%,55%{left:-80%}75%,100%{left:120%}}
+
+/* ============ CARTES PREMIUM : animations nouvelle génération ============ */
+/* Survol ralenti et adouci (retour utilisateur : trop rapide avant) */
+.food-card{transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1),border-color .5s;background:var(--ivory-2);border-color:var(--hairline)}
+.food-card:hover{transform:translateY(-6px)scale(1.015);box-shadow:var(--s-lg)}
+.food-card::before{transition:width .5s cubic-bezier(.22,1,.36,1),opacity .5s}
+.food-card .fc-emoji{transition:transform .55s cubic-bezier(.34,1.4,.64,1)}
+.food-card:hover .fc-emoji{transform:scale(1.15)rotate(6deg)}
+.fc-custom{font-size:11px;opacity:.7}
+.meal-card-lg{transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1),border-color .5s;background:var(--ivory-2);border-color:var(--hairline)}
+.meal-card-lg:hover{transform:translateY(-6px)scale(1.01)}
+/* Ouverture des fiches ralentie et plus fluide */
+.modal{animation:popIn .55s cubic-bezier(.22,1,.36,1)}
+.modal-bg.show{animation:fadeIn .4s ease}
+/* Spotlight : halo doré qui suit le curseur (coordonnées posées en JS) */
+.food-card::after,.meal-card-lg::after,.dash-card::after,.day-col::after{
+  content:'';position:absolute;inset:0;opacity:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(201,169,110,.16),transparent 65%);
+  transition:opacity .5s ease}
+.food-card:hover::after,.meal-card-lg:hover::after,.dash-card:hover::after,.day-col:hover::after{opacity:1}
+.dash-card,.day-col,.meal-card-lg{position:relative;overflow:hidden}
+
+/* ============ VUE SEMAINE PREMIUM ============ */
+.week-grid-compact{gap:16px}
+.day-col{background:var(--ivory-2);border:1px solid var(--hairline);border-radius:var(--r-lg);box-shadow:var(--s-sm);transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s;animation:fadeUp .55s var(--tb) backwards}
+.day-col:hover{transform:translateY(-4px);box-shadow:var(--s-md)}
+.day-col.today{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),var(--s-md)}
+.day-col.today .day-head .d{color:var(--gold-700)}
+.day-head{position:relative;border-bottom:1px solid var(--hairline)}
+.day-safe{position:absolute;top:0;right:0;font-size:13px}
+.meal:hover{background:var(--gold-50);border-color:var(--gold-200)}
+.meal .mtag{color:var(--forest)}
+.day-cal{border-top:1px solid var(--hairline)}
+.day-cal b{color:var(--forest)}
+
+/* ============ SÉLECTEUR D'INGRÉDIENTS + ASSISTANT PERPLEXITY ============ */
+.food-count-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.add-food-btn{padding:10px 18px;font-size:13px}
+.ing-picker{margin-top:10px;border:1px solid var(--hairline);border-radius:16px;padding:12px;background:var(--ivory-2)}
+.picker-search{width:100%;padding:11px 14px;border:1.5px solid var(--hairline);border-radius:12px;font-size:13.5px;font-family:inherit;background:#fff;outline:none;transition:border var(--tf)}
+.picker-search:focus{border-color:var(--forest)}
+.picker-cats{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.pcat{padding:6px 11px;border-radius:11px;border:1px solid var(--hairline);background:transparent;font-size:11px;font-weight:600;color:var(--slate-500);cursor:pointer;transition:all var(--tf)}
+.pcat.on{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
+.picker-results{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.pick-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:10px;background:transparent;cursor:pointer;font-family:inherit;font-size:13px;text-align:left;transition:background var(--tf);width:100%}
+.pick-row:hover{background:var(--gold-50)}
+.pick-emoji{font-size:16px;flex-shrink:0}
+.pick-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--slate-800)}
+.pick-custom{font-style:normal;font-size:10px;opacity:.7}
+.pick-add{font-size:11.5px;font-weight:700;color:var(--forest);background:var(--green-50);padding:4px 10px;border-radius:9px;flex-shrink:0}
+.pick-row:hover .pick-add{background:var(--forest);color:#f5f1e8}
+.picker-empty{padding:12px;text-align:center;font-size:12px;color:var(--slate-400)}
+.picker-newfood{width:100%;margin-top:10px;padding:11px;border:1.5px dashed var(--gold-200);border-radius:12px;background:var(--gold-50);color:var(--gold-700);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:all var(--tf)}
+.picker-newfood:hover{border-color:var(--gold);background:#f5ecd8}
+.pplx-box{margin:12px 0;padding:12px 14px;background:var(--gold-50);border:1px solid var(--gold-200);border-radius:14px;font-size:12px;line-height:1.6;color:var(--slate-600)}
+.pplx-box b{color:var(--gold-700)}
+.pplx-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.pplx-row .btn-s,.pplx-row .btn-p{padding:10px 14px;font-size:12px}
+.pplx-txt{width:100%;min-height:64px;padding:11px 14px;border:1.5px solid var(--hairline);border-radius:12px;font-size:12px;font-family:inherit;background:#fff;outline:none;resize:vertical;transition:border var(--tf)}
+.pplx-txt:focus{border-color:var(--forest)}
+.cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.cf-grid label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;font-weight:700;color:var(--slate-500)}
+.cf-grid input,.cf-grid select{padding:10px 12px;border:1.5px solid var(--hairline);border-radius:11px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.cf-grid input:focus,.cf-grid select:focus{border-color:var(--forest)}
+@media(max-width:480px){.cf-grid{grid-template-columns:1fr}}
+.topbar-theme{margin-left:auto;width:38px;height:38px;border:none;border-radius:12px;background:transparent;font-size:17px;cursor:pointer;transition:background var(--tf)}
+.topbar-theme:hover{background:var(--slate-100)}
+.theme-toggle{background:none;border:none;width:100%;font-family:inherit;font-size:14px;font-weight:600;text-align:left}
+
+/* ============ MODE NUIT ============
+   Les primitives sont réécrites : la cascade existante suit automatiquement,
+   puis quelques surfaces codées en dur sont reprises ci-dessous. */
+:root[data-theme="dark"]{
+  --ivory:#12140f;--ivory-2:#191c15;--hairline:#2b2f25;
+  --gold-50:#242012;--gold-200:#4a4026;--gold-700:#d9bc86;
+  --slate-50:#1e221a;--slate-100:#242920;--slate-200:#343a2e;--slate-300:#4a5142;
+  --slate-400:#8f977f;--slate-500:#a8b096;--slate-600:#c2c9b0;--slate-700:#d6dcc6;
+  --slate-800:#e6ead9;--slate-900:#f2f4e8;
+  --green-50:#1b2a1f;--green-100:#22371f;--green-200:#2e4a2c;
+  --amber-100:#3a2f12;--red-100:#3a1c1c;
+  --s-xs:0 1px 2px rgba(0,0,0,.3);--s-sm:0 2px 10px rgba(0,0,0,.35);
+  --s-md:0 6px 20px rgba(0,0,0,.4);--s-lg:0 12px 36px rgba(0,0,0,.45);
+  --s-xl:0 20px 56px rgba(0,0,0,.5);
+}
+[data-theme="dark"] body{background:linear-gradient(180deg,#161910 0%,var(--ivory) 340px);color:var(--slate-900)}
+[data-theme="dark"] .topbar{background:rgba(18,20,15,.92);border-bottom-color:var(--hairline)}
+[data-theme="dark"] .tb{background:rgba(25,28,21,.96);border-top-color:var(--hairline)}
+[data-theme="dark"] .modal,[data-theme="dark"] .day-tab,[data-theme="dark"] .btn-s,
+[data-theme="dark"] .search-box,[data-theme="dark"] .search-results,[data-theme="dark"] .quiz-opt,
+[data-theme="dark"] .pi,[data-theme="dark"] .coach-body{background:var(--ivory-2);border-color:var(--hairline);color:var(--slate-800)}
+[data-theme="dark"] .quiz-ov{background:var(--ivory)}
+[data-theme="dark"] .dash-card{background:var(--ivory-2)}
+[data-theme="dark"] .dmeal{background:#20241b}
+[data-theme="dark"] .dmeal:hover{background:var(--green-50)}
+[data-theme="dark"] .dash-footnote{background:#1d2018;border-color:var(--hairline)}
+[data-theme="dark"] .msg.bot{background:#232720;border-color:var(--hairline);color:var(--slate-800)}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:var(--slate-50);color:var(--slate-900);border-color:var(--slate-200)}
+[data-theme="dark"] .budget-row input{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)}
+[data-theme="dark"] .coach-wrap{background:linear-gradient(var(--ivory-2),var(--ivory-2)) padding-box,conic-gradient(from var(--cwa),var(--hairline) 0%,var(--gold) 10%,#e6cf9e 14%,var(--hairline) 26%,var(--hairline) 100%) border-box}
+[data-theme="dark"] .side-link.active,[data-theme="dark"] .side-link.tab-link.active{background:var(--forest);color:#f5f1e8!important}
+[data-theme="dark"] .ring-bg{stroke:var(--slate-100)}
+[data-theme="dark"] .food-card::after,[data-theme="dark"] .meal-card-lg::after,[data-theme="dark"] .dash-card::after,[data-theme="dark"] .day-col::after{
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(217,188,134,.10),transparent 65%)}
+[data-theme="dark"] .nb-text{color:var(--slate-900)}
+[data-theme="dark"] .picker-search,[data-theme="dark"] .pplx-txt,[data-theme="dark"] .cf-grid input,[data-theme="dark"] .cf-grid select,[data-theme="dark"] .bld-name{background:var(--slate-50)}
+[data-theme="dark"] .picker-newfood:hover{background:#2e2818}
+[data-theme="dark"] .topbar-theme:hover{background:var(--slate-100)}
 .app-foot-meta a{color:var(--slate-400);text-decoration:none}
 </style>
 </head>
@@ -881,6 +989,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <a onclick="switchTab('profil')" class="side-link tab-link" data-tablink="profil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('profil')"><span class="side-ic">👤</span>Profil</a>
     <a onclick="switchTab('coach')" class="side-link tab-link" data-tablink="coach" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('coach')"><span class="side-ic">💬</span>Coach IA</a>
   </nav>
+  <button class="side-link theme-toggle" onclick="toggleTheme()" aria-label="Basculer le mode nuit"><span class="side-ic" id="themeIcSide">🌙</span><span id="themeLblSide">Mode nuit</span></button>
   <div class="sidebar-foot">⚕️ Outil éducatif, seuils Monash University — ne remplace pas un avis médical.</div>
 </aside>
 
@@ -891,6 +1000,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </a>
   <div class="topbar-sep"></div>
   <span class="topbar-title" id="topbarTitle">Accueil</span>
+  <button class="topbar-theme" onclick="toggleTheme()" aria-label="Basculer le mode nuit" id="themeIcTop">🌙</button>
 </header>
 
 <nav class="tb" id="tabBar" role="tablist" aria-label="Navigation">
@@ -1095,7 +1205,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <button class="fbtn avoid" data-f="avoid" onclick="ff('avoid')">🚫 À éviter</button>
     </div>
     <div class="cat-select" id="catSelect"></div>
-    <div class="food-count" id="foodCount"></div>
+    <div class="food-count-row">
+      <div class="food-count" id="foodCount"></div>
+      <button class="btn-s add-food-btn" onclick="openCustomFoodModal()">➕ Ajouter un aliment</button>
+    </div>
     <div class="food-grid" id="fg"></div>
     <button class="load-more" id="loadMoreBtn" onclick="loadMore()">Voir plus d'aliments</button>
   </div>
@@ -2029,7 +2142,7 @@ function renderFoods(){
     const badge=f.s==='safe'?'Safe':f.s==='moderate'?'Modéré':'À éviter';
     return `<div class="food-card ${f.s}" style="animation:fadeUp .5s var(--tb) backwards;animation-delay:${(i%12)*.04}s" onclick='openFoodModal(${JSON.stringify(f.n)})'>
       <div class="fc-top"><div class="fc-emoji">${f.e}</div><div class="fc-badge ${f.s}">${badge}</div></div>
-      <div class="fc-name">${f.n}</div><div class="fc-portion">${f.p}</div>
+      <div class="fc-name">${f.n}${f.custom?' <span class="fc-custom" title="Aliment personnalisé">✏️</span>':''}</div><div class="fc-portion">${f.p}</div>
       <div class="fc-macros"><span class="fc-pill g">📏 ${f.g}g</span><span class="fc-pill k">🔥 ${f.k} kcal</span><span class="fc-pill p">💪 ${f.pr}g</span><span class="fc-pill p" style="background:var(--slate-100);color:var(--slate-600)">💶 ${f.price.toFixed(2)}€</span></div>
     </div>`;
   }).join('');
@@ -2052,6 +2165,7 @@ function openFoodModal(name){
       <div class="modal-row"><span>Protéines</span><span>${f.pr} g</span></div>
       <div class="modal-row"><span>Prix estimé</span><span>${f.price.toFixed(2)} €</span></div>
       <div class="modal-tip">💡 ${tips[f.s]}</div>
+      ${f.custom?`<button class="reset-btn" style="margin-top:12px" onclick="deleteCustomFood(${JSON.stringify(f.n).replace(/"/g,'&quot;')})">🗑️ Supprimer cet aliment personnalisé</button>`:''}
     </div>`;
   document.getElementById('modalBg').classList.add('show');
 }
@@ -2367,7 +2481,7 @@ function openMealModal(day,key){
   const protPct=Math.round((macros.pr/profile.protTarget)*100);
   const warn=mealViolatesPrefs(meal);
   const ingWithGrams = meal.ingr.map(ing=>({n:ing.n,g:scaledGrams(meal,ing,scale),f:findFood(ing.n)}));
-  const recipeSteps = buildRecipeSteps(meal,ingWithGrams,key);
+  const recipeSteps = meal.prep ? [meal.prep] : buildRecipeSteps(meal,ingWithGrams,key);
   const rows = meal.ingr.map((ing,idx)=>{
      const g=scaledGrams(meal,ing,scale);
      const f=findFood(ing.n);
@@ -2380,7 +2494,6 @@ function openMealModal(day,key){
        <button class="ing-del" onclick="removeIngredient('${day}','${key}',${idx})" title="Retirer">✕</button>
      </li>`;
   }).join('');
-  const foodOptions = foods.slice().sort((a,b)=>a.n.localeCompare(b.n)).map(f=>`<option value="${f.n}">${f.e} ${f.n} (${f.s==='safe'?'safe':f.s==='moderate'?'modéré':'à éviter'})</option>`).join('');
   document.getElementById('modalContent').innerHTML=`
     <div class="modal-hd"><div class="me">${mealIcons[key]}</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
     <div class="modal-body">
@@ -2412,14 +2525,11 @@ function openMealModal(day,key){
       </div>
       <div class="ing-editor-title">Ingrédients ${!meal.customized?'<span class="ing-scale-note">· ajustés à '+Math.round(scale*100)+'% selon votre objectif</span>':''}</div>
       <ul class="ing-list-edit">${rows}</ul>
-      <div class="ing-add-row">
-        <select id="addIngSelect">${foodOptions}</select>
-        <input type="number" id="addIngGrams" value="100" min="0" step="5">
-        <button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="addIngredient('${day}','${key}')">+ Ajouter</button>
-      </div>
+      ${pickerHtml({slot:key,target:'meal',day:day,key:key})}
       <div class="modal-tip">💡 Modifier, ajouter ou retirer un ingrédient rend la recette personnalisée : elle ne sera plus recalculée automatiquement selon votre objectif, sauf réinitialisation.</div>
     </div>`;
   document.getElementById('modalBg').classList.add('show');
+  renderPickerResults();
 }
 function bakeIfNeeded(d,meal){
   if(!meal.customized){
@@ -2444,19 +2554,6 @@ function removeIngredient(day,key,idx){
   openMealModal(day,key);
   renderMenuDay();
   toast('Ingrédient retiré 🗑️');
-}
-function addIngredient(day,key){
-  const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
-  const name=document.getElementById('addIngSelect').value;
-  const g=+document.getElementById('addIngGrams').value||100;
-  bakeIfNeeded(d,meal);
-  meal.ingr.push({n:name,g});
-  saveWeekOverride(day,key);
-  openMealModal(day,key);
-  renderMenuDay();
-  const f=findFood(name);
-  if(f && f.s==='avoid'){toast('⚠️ '+name+' est classé « à éviter » en phase d\'élimination');}
-  else{toast(name+' ajouté au repas 🌿');}
 }
 function resetMeal(day,key){
   const d=menuData.find(x=>x.day===day);
@@ -2492,10 +2589,11 @@ let builderState = null;
 
 function openMealBuilder(day,key,fromCurrent){
   const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
-  builderState = {day,key,name:'',ingr:[]};
+  builderState = {day,key,name:'',ingr:[],prep:''};
   if(fromCurrent){
     const scale = meal.customized?1:dayScaleFactor(d);
     builderState.name = meal.customized? meal.name : '';
+    builderState.prep = meal.prep||'';
     builderState.ingr = meal.ingr
       .filter(ing=>{const f=findFood(ing.n);return !f||f.s!=='avoid'})
       .map(ing=>({n:ing.n,g:scaledGrams(meal,ing,scale)}));
@@ -2536,27 +2634,29 @@ function renderMealBuilder(){
       <button class="ing-del" onclick="builderDelIng(${idx})" title="Retirer">✕</button>
     </li>`;
   }).join('');
-  const foodOptions = foods.slice()
-    .filter(f=>f.s!=='avoid' && !dietPrefs.excluded.has(f.n.toLowerCase()))
-    .sort((a,b)=>a.n.localeCompare(b.n))
-    .map(f=>`<option value="${f.n}">${f.e} ${f.n} (${f.s==='safe'?'safe':'modéré ≤'+f.g+'g'})</option>`).join('');
   document.getElementById('modalContent').innerHTML=`
     <div class="modal-hd"><div class="me">✏️</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
     <div class="modal-body">
       <div class="modal-title">Mon repas perso</div>
       <div class="modal-badge safe">${mealLabels[builderState.key]} · ${builderState.day}</div>
       <span class="modal-badge ${st.cls}">${st.txt}</span>
+      <div class="pplx-box">
+        <b>🔮 Assistant Perplexity :</b> 1) ouvre la demande pré-remplie (adaptée à ton objectif, tes régimes et tes exclusions), 2) copie toute la réponse, 3) « Coller &amp; importer » — nom, ingrédients et préparation se remplissent seuls, les aliments inconnus sont ajoutés à la base.
+      </div>
+      <div class="pplx-row">
+        <button class="btn-s" onclick="openPerplexityRecipeFP()">1. Ouvrir Perplexity (pré-rempli)</button>
+        <button class="btn-p pplx-import" onclick="pasteAndImportRecipeFP()">2. Coller &amp; importer</button>
+        <button class="btn-s" onclick="openPerplexityIdeesFP()">💡 Idées repas</button>
+      </div>
+      <textarea id="bldImpTxt" class="pplx-txt" placeholder="…ou colle la réponse ici (lignes NOM: / TYPE: / INGREDIENT: / PREPARATION:)"></textarea>
+      <div class="pplx-row"><button class="btn-s" style="font-size:12px" onclick="importRecipeTextFP()">Importer le texte collé</button></div>
       <input type="text" id="bldName" class="bld-name" placeholder="Nom du repas (ex : Ma salade riz-thon)" value="${builderState.name.replace(/"/g,'&quot;')}" oninput="builderState.name=this.value">
       <div class="modal-row"><span>Calories</span><span>${Math.round(t.k)} kcal</span></div>
       <div class="modal-row"><span>Protéines</span><span>${Math.round(t.pr)} g</span></div>
       <div class="modal-row"><span>Coût estimé</span><span>${t.price.toFixed(2)} €</span></div>
       <div class="ing-editor-title">Ingrédients <span class="ing-scale-note">· uniquement safe & modérés — un repas perso reste low-FODMAP</span></div>
       <ul class="ing-list-edit">${rows || '<li class="ing-row" style="justify-content:center;color:var(--slate-400)">Ajoutez vos ingrédients ci-dessous</li>'}</ul>
-      <div class="ing-add-row">
-        <select id="bldIngSelect">${foodOptions}</select>
-        <input type="number" id="bldIngGrams" value="100" min="5" step="5">
-        <button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="builderAddIng()">+ Ajouter</button>
-      </div>
+      ${pickerHtml({slot:builderState.key,target:'builder'})}
       <div class="modal-actions-row">
         <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="builderApply()">✓ Utiliser pour ce repas</button>
         <button class="reset-btn" onclick="builderSaveOnly()">💾 Garder dans mes repas</button>
@@ -2565,13 +2665,7 @@ function renderMealBuilder(){
       <div class="modal-tip">💡 Les aliments « à éviter » ne sont pas proposés ici. Pour les modérés, restez sous le grammage indiqué pour rester compatible élimination.</div>
     </div>`;
   document.getElementById('modalBg').classList.add('show');
-}
-function builderAddIng(){
-  const name=document.getElementById('bldIngSelect').value;
-  const g=Math.max(5,+document.getElementById('bldIngGrams').value||100);
-  const existing=builderState.ingr.find(i=>i.n===name);
-  if(existing) existing.g+=g; else builderState.ingr.push({n:name,g});
-  renderMealBuilder();
+  renderPickerResults();
 }
 function builderDelIng(idx){ builderState.ingr.splice(idx,1); renderMealBuilder(); }
 function builderSetG(idx,val){ builderState.ingr[idx].g=Math.max(5,+val||5); renderMealBuilder(); }
@@ -2580,7 +2674,7 @@ function builderMealName(){
 }
 function builderSaveToLibrary(){
   if(!builderState.ingr.length){toast('Ajoutez au moins un ingrédient 🥕');return null}
-  const m={id:Date.now(), slot:builderState.key, name:builderMealName(), ingr:JSON.parse(JSON.stringify(builderState.ingr))};
+  const m={id:Date.now(), slot:builderState.key, name:builderMealName(), ingr:JSON.parse(JSON.stringify(builderState.ingr)), prep:builderState.prep||''};
   myMeals=myMeals.filter(x=>!(x.slot===m.slot && x.name===m.name));
   myMeals.push(m); persistMyMeals();
   return m;
@@ -2588,7 +2682,7 @@ function builderSaveToLibrary(){
 function builderApply(){
   const m=builderSaveToLibrary(); if(!m) return;
   const d=menuData.find(x=>x.day===builderState.day);
-  d.meals[builderState.key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true};
+  d.meals[builderState.key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true, prep:m.prep||''};
   saveWeekOverride(builderState.day,builderState.key);
   openMealModal(builderState.day,builderState.key);
   renderMenuDay(); renderHome();
@@ -2602,7 +2696,7 @@ function builderSaveOnly(){
 function applyMyMeal(day,key,id){
   const m=myMeals.find(x=>x.id===id); if(!m) return;
   const d=menuData.find(x=>x.day===day);
-  d.meals[key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true};
+  d.meals[key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true, prep:m.prep||''};
   saveWeekOverride(day,key);
   openMealModal(day,key);
   renderMenuDay(); renderHome();
@@ -2612,6 +2706,317 @@ function deleteMyMeal(day,key,id){
   myMeals=myMeals.filter(x=>x.id!==id); persistMyMeals();
   openMealModal(day,key);
   toast('Repas perso supprimé 🗑️');
+}
+
+/* ============ ALIMENTS PERSONNALISÉS + ASSISTANT PERPLEXITY ============
+   Même système que suivi-reta : demande pré-remplie ouverte dans Perplexity,
+   réponse collée au format strict, parsing et création automatique. */
+let customFoods=[];
+try{ customFoods=JSON.parse(lsGet('fodmapCustomFoods')||'[]')||[]; }catch(e){ customFoods=[]; }
+function persistCustomFoods(){ lsSet('fodmapCustomFoods', JSON.stringify(customFoods)); }
+customFoods.forEach(cf=>{ if(!foods.some(f=>f.n===cf.n)) foods.push(cf); });
+
+function normNameFP(s){ return String(s).toLowerCase().replace(/œ/g,'oe').replace(/æ/g,'ae').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
+function normCatFP(s){
+  s=normNameFP(s);
+  if(s.startsWith('prot')) return 'proteine';
+  if(s.startsWith('leg')&&s.includes('umin')) return 'legumineuse';
+  if(s.startsWith('leg')) return 'legume';
+  if(s.startsWith('fruit')) return 'fruit';
+  if(s.startsWith('cer')||s.startsWith('fec')) return 'cereale';
+  if(s.startsWith('lait')) return 'laitier';
+  if(s.startsWith('noix')||s.startsWith('grain')||s.includes('gras')||s.startsWith('mat')) return 'noix';
+  if(s.startsWith('cond')||s.startsWith('huile')||s.startsWith('epice')) return 'condiment';
+  if(s.startsWith('bois')) return 'boisson';
+  return null;
+}
+const CAT_PRICE_100G={proteine:1.60,legume:0.35,fruit:0.55,cereale:0.30,legumineuse:0.35,laitier:0.55,noix:1.30,condiment:0.90,boisson:0.25};
+/* Correspondance stricte par mots significatifs : en cas de doute on crée un nouvel aliment. */
+function findFoodLoose(name){
+  const QUAL=['cru','crue','crus','crues','cuit','cuite','cuits','cuites','frais','fraiche','nature','naturel','au','aux','de','du','des','le','la','les','sans','d','en','conserve','blanc','blanche'];
+  const toks=s=>normNameFP(s).split(' ').filter(w=>w&&!QUAL.includes(w)&&!/^\d+$/.test(w)).sort().join(' ');
+  const a=toks(name); if(!a) return null;
+  return foods.find(f=>toks(f.n)===a)||null;
+}
+function createCustomFood(o){
+  /* o: {n, c, s, g(seuil), kcal100, prot100, price100, e} — normalisé vers le format moteur (k/pr/price pour g grammes) */
+  const g=Math.max(5,Math.round(o.g||100));
+  const f={
+    n:o.n.trim(), e:o.e||'🍽️', c:o.c||'condiment', s:o.s||'safe', g,
+    k:Math.round((o.kcal100||0)*g/100), pr:Math.round((o.prot100||0)*g/100*10)/10,
+    price:Math.round(((o.price100!=null?o.price100:CAT_PRICE_100G[o.c]||0.6))*g)/100,
+    p:o.s==='safe'?'Portion libre':o.s==='moderate'?`≤ ${g} g par repas`:'À éviter en élimination',
+    custom:true
+  };
+  const exI=foods.findIndex(x=>x.n===f.n);
+  if(exI>=0){ if(!foods[exI].custom) return foods[exI]; foods[exI]=f; }
+  else foods.push(f);
+  customFoods=customFoods.filter(x=>x.n!==f.n); customFoods.push(f); persistCustomFoods();
+  return f;
+}
+function deleteCustomFood(name){
+  customFoods=customFoods.filter(x=>x.n!==name); persistCustomFoods();
+  const i=foods.findIndex(x=>x.n===name&&x.custom); if(i>=0) foods.splice(i,1);
+  closeModal(); renderFoods(); toast('Aliment supprimé 🗑️');
+}
+function parseAlimentImportFP(text){
+  const out={errors:[]};
+  String(text).split(/\r?\n/).forEach(line=>{
+    const l=line.replace(/^[-*\s#>]+/,'').trim(); if(!l) return;
+    const m=l.match(/^([A-Za-zÉÈéè]+)\s*:\s*(.+)$/); if(!m) return;
+    const key=normNameFP(m[1]).toUpperCase(); const val=m[2].trim();
+    if(key==='ALIMENT'){
+      const p=val.split('|').map(s=>s.trim());
+      if(p.length<4){ out.errors.push('Ligne ALIMENT incomplète'); return; }
+      out.c=normCatFP(p[0]); out.n=p[1];
+      out.kcal100=parseFloat(String(p[2]).replace(',','.'));
+      out.prot100=parseFloat(String(p[3]).replace(',','.'));
+      if(!out.c) out.errors.push('Catégorie inconnue : '+p[0]);
+      if(!(out.kcal100>=0)||isNaN(out.prot100)) out.errors.push('Valeurs kcal/protéines illisibles');
+    } else if(key==='FODMAP'){
+      const v=normNameFP(val);
+      if(v.includes('low')||v.includes('faible')||v.includes('basse')) out.s='safe';
+      else if(v.includes('moder')) out.s='moderate';
+      else if(v.includes('haute')||v.includes('elev')||v.includes('high')) out.s='avoid';
+      const pm=val.match(/(\d+)\s*g/); if(pm) out.seuil=+pm[1];
+    }
+  });
+  if(!out.n) out.errors.push('Aucune ligne ALIMENT trouvée');
+  return out;
+}
+let customFoodReturn=null; /* {day,key,target:'meal'|'builder'} pour revenir au repas après création */
+function openCustomFoodModal(returnCtx,prefillName){
+  customFoodReturn=returnCtx||null;
+  const catOpts=Object.keys(catLabels).map(c=>`<option value="${c}">${catLabels[c]}</option>`).join('');
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-hd"><div class="me">➕</div><button class="modal-close" onclick="${customFoodReturn?`openMealBuilderBack()`:'closeModal()'}" aria-label="Fermer">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-title">Nouvel aliment</div>
+      <div class="pplx-box">
+        <b>🔮 Assistant Perplexity :</b> 1) saisis le nom, 2) « Demander à Perplexity », 3) copie sa réponse, 4) « Coller &amp; importer » — catégorie, kcal, protéines et statut FODMAP se remplissent seuls.
+      </div>
+      <input type="text" id="cfName" class="bld-name" placeholder="Nom de l'aliment (ex : Patate douce violette)" value="${(prefillName||'').replace(/"/g,'&quot;')}">
+      <div class="pplx-row">
+        <button class="btn-s" onclick="openPerplexityAlimentFP()">1. Demander à Perplexity</button>
+        <button class="btn-p pplx-import" onclick="pasteAndImportAlimentFP()">2. Coller &amp; importer</button>
+      </div>
+      <textarea id="cfImpTxt" class="pplx-txt" placeholder="…ou colle la réponse ici (lignes ALIMENT: / FODMAP:)" oninput="if(this.value.trim())importAlimentTextFP(true)"></textarea>
+      <div class="cf-grid">
+        <label>Catégorie<select id="cfCat">${catOpts}</select></label>
+        <label>Statut FODMAP<select id="cfStatus" onchange="document.getElementById('cfSeuilWrap').style.display=this.value==='moderate'?'block':'none'">
+          <option value="safe">✅ Safe</option><option value="moderate">⚠️ Modéré</option><option value="avoid">🚫 À éviter</option>
+        </select></label>
+        <label id="cfSeuilWrap" style="display:none">Seuil (g / repas)<input type="number" id="cfSeuil" value="50" min="5" step="5"></label>
+        <label>Kcal / 100 g<input type="number" id="cfKcal" min="0" step="1" placeholder="ex : 86"></label>
+        <label>Protéines g / 100 g<input type="number" id="cfProt" min="0" step="0.1" placeholder="ex : 1.6"></label>
+        <label>Émoji (optionnel)<input type="text" id="cfEmoji" maxlength="4" placeholder="🍠"></label>
+      </div>
+      <button class="btn-p" style="width:100%;justify-content:center;margin-top:14px" onclick="saveCustomFoodFromForm()">Enregistrer l'aliment</button>
+      <div class="modal-tip">💡 Le prix est estimé automatiquement selon la catégorie. Les aliments ajoutés apparaissent dans l'explorateur avec la mention ✏️ et sont utilisables dans vos repas.</div>
+    </div>`;
+  document.getElementById('modalBg').classList.add('show');
+}
+function openMealBuilderBack(){
+  const r=customFoodReturn; customFoodReturn=null;
+  if(r&&r.target==='builder') renderMealBuilder();
+  else if(r&&r.target==='meal') openMealModal(r.day,r.key);
+  else closeModal();
+}
+function openPerplexityAlimentFP(){
+  const nom=(document.getElementById('cfName').value.trim()||"NOM DE L'ALIMENT");
+  const q=`Valeurs nutritionnelles moyennes pour 100 g de ${nom} et son statut FODMAP (Monash). Réponds STRICTEMENT en 2 lignes, sans aucun autre texte :
+ALIMENT: catégorie | ${nom} | kcal pour 100g | protéines en g pour 100g
+FODMAP: low, modérée ou haute — si modérée, indique la portion maximale low FODMAP en g
+(catégorie parmi : proteine, legume, fruit, cereale, legumineuse, laitier, noix, condiment, boisson ; valeurs des tables de composition alimentaire)`;
+  window.open('https://www.perplexity.ai/search?q='+encodeURIComponent(q),'_blank');
+}
+async function pasteAndImportAlimentFP(){
+  let txt='';
+  try{ txt=await navigator.clipboard.readText(); }
+  catch(e){ toast('Presse-papiers refusé — colle dans la zone de texte 📋'); return; }
+  if(!txt.trim()){ toast('Presse-papiers vide'); return; }
+  document.getElementById('cfImpTxt').value=txt;
+  importAlimentTextFP(false);
+}
+function importAlimentTextFP(silent){
+  const p=parseAlimentImportFP(document.getElementById('cfImpTxt').value);
+  if(!p.n){ if(!silent) toast('Format non reconnu — vérifie les lignes ALIMENT: / FODMAP:'); return; }
+  document.getElementById('cfName').value=p.n;
+  if(p.c) document.getElementById('cfCat').value=p.c;
+  if(p.kcal100>=0) document.getElementById('cfKcal').value=Math.round(p.kcal100);
+  if(!isNaN(p.prot100)) document.getElementById('cfProt').value=p.prot100;
+  if(p.s){ document.getElementById('cfStatus').value=p.s;
+    document.getElementById('cfSeuilWrap').style.display=p.s==='moderate'?'block':'none'; }
+  if(p.seuil) document.getElementById('cfSeuil').value=p.seuil;
+  if(!silent) toast('Import Perplexity réussi — vérifie puis enregistre ✅');
+}
+function saveCustomFoodFromForm(){
+  const n=document.getElementById('cfName').value.trim();
+  const kcal=+document.getElementById('cfKcal').value;
+  if(!n){ toast('Donne un nom à l\'aliment 🏷️'); return; }
+  if(!(kcal>=0)||document.getElementById('cfKcal').value===''){ toast('Renseigne les kcal / 100 g 🔥'); return; }
+  const s=document.getElementById('cfStatus').value;
+  const f=createCustomFood({
+    n, c:document.getElementById('cfCat').value, s,
+    g:s==='moderate'?(+document.getElementById('cfSeuil').value||50):100,
+    kcal100:kcal, prot100:+document.getElementById('cfProt').value||0,
+    e:document.getElementById('cfEmoji').value.trim()||'🍽️'
+  });
+  renderFoods();
+  toast('« '+f.n+' » ajouté à la base 🌿');
+  if(customFoodReturn){
+    const r=customFoodReturn; customFoodReturn=null;
+    if(r.target==='builder'){ builderState.ingr.push({n:f.n,g:f.g}); renderMealBuilder(); }
+    else if(r.target==='meal'){ addIngredientByName(r.day,r.key,f.n,f.g); }
+  } else closeModal();
+}
+
+/* ============ SÉLECTEUR D'INGRÉDIENTS INTELLIGENT ============
+   Remplace la liste déroulante interminable : recherche + catégories triées
+   selon le type de repas + accès direct à la création d'aliment. */
+const SLOT_CATS={
+  breakfast:['cereale','fruit','laitier','noix','proteine','condiment','boisson','legume','legumineuse'],
+  lunch:['proteine','cereale','legume','legumineuse','laitier','condiment','fruit','noix','boisson'],
+  dinner:['proteine','cereale','legume','legumineuse','laitier','condiment','fruit','noix','boisson'],
+  snack:['fruit','noix','laitier','cereale','condiment','proteine','boisson','legume','legumineuse']
+};
+let pickerQuery='', pickerCat='sugg', pickerCtx=null; /* {slot, target:'meal'|'builder', day, key} */
+function pickerHtml(ctx){
+  pickerCtx=ctx; pickerQuery=''; pickerCat='sugg';
+  return `<div class="ing-picker">
+    <input type="text" id="pickerSearch" class="picker-search" placeholder="🔍 Chercher un aliment…" oninput="pickerQuery=this.value;renderPickerResults()">
+    <div class="picker-cats" id="pickerCats"></div>
+    <div class="picker-results" id="pickerResults"></div>
+    <button class="picker-newfood" onclick="openCustomFoodModal({target:'${ctx.target}',day:'${ctx.day||''}',key:'${ctx.key||''}'},pickerQuery)">➕ Aliment hors liste (assistant Perplexity)</button>
+  </div>`;
+}
+function renderPickerCats(){
+  const el=document.getElementById('pickerCats'); if(!el) return;
+  const cats=SLOT_CATS[pickerCtx.slot]||Object.keys(catLabels);
+  el.innerHTML=`<button class="pcat ${pickerCat==='sugg'?'on':''}" onclick="pickerCat='sugg';renderPickerResults()">⭐ Suggérés</button>`+
+    cats.map(c=>`<button class="pcat ${pickerCat===c?'on':''}" onclick="pickerCat='${c}';renderPickerResults()">${catLabels[c]}</button>`).join('');
+}
+function renderPickerResults(){
+  renderPickerCats();
+  const el=document.getElementById('pickerResults'); if(!el) return;
+  const q=normNameFP(pickerQuery);
+  let list=foods.filter(f=>f.s!=='avoid'&&!dietPrefs.excluded.has(f.n.toLowerCase()));
+  if(q) list=list.filter(f=>normNameFP(f.n).includes(q));
+  else if(pickerCat==='sugg'){
+    const order=SLOT_CATS[pickerCtx.slot]||[];
+    list=list.slice().sort((a,b)=>{
+      const ia=order.indexOf(a.c),ib=order.indexOf(b.c);
+      return (ia<0?99:ia)-(ib<0?99:ib)||(a.s==='safe'?-1:1)-(b.s==='safe'?-1:1);
+    });
+  } else list=list.filter(f=>f.c===pickerCat);
+  if(!list.length){ el.innerHTML='<div class="picker-empty">Aucun résultat — crée-le avec le bouton ci-dessous 👇</div>'; return; }
+  el.innerHTML=list.slice(0,14).map(f=>`
+    <button class="pick-row" onclick="pickerAdd(${JSON.stringify(f.n).replace(/"/g,'&quot;')})">
+      <span class="pick-emoji">${f.e}</span>
+      <span class="pick-name">${f.n}${f.custom?' <i class="pick-custom">✏️</i>':''}</span>
+      <span class="bld-chip ${f.s==='safe'?'safe':'moderate'}">${f.s==='safe'?'safe':'≤'+f.g+'g'}</span>
+      <span class="pick-add">+${f.g}g</span>
+    </button>`).join('')+(list.length>14?`<div class="picker-empty">…${list.length-14} de plus — affine la recherche</div>`:'');
+}
+function pickerAdd(name){
+  const f=findFood(name); if(!f) return;
+  if(pickerCtx.target==='builder'){
+    const ex=builderState.ingr.find(i=>i.n===name);
+    if(ex) ex.g+=f.g; else builderState.ingr.push({n:name,g:f.g});
+    renderMealBuilder();
+  } else {
+    addIngredientByName(pickerCtx.day,pickerCtx.key,name,f.g);
+  }
+}
+function addIngredientByName(day,key,name,g){
+  const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
+  bakeIfNeeded(d,meal);
+  meal.ingr.push({n:name,g:g||100});
+  saveWeekOverride(day,key);
+  openMealModal(day,key);
+  renderMenuDay();
+  toast(name+' ajouté au repas 🌿');
+}
+
+/* ============ ASSISTANT PERPLEXITY : RECETTE COMPLÈTE ============ */
+function slotKcalTarget(slot){
+  const share={breakfast:.25,lunch:.35,snack:.10,dinner:.30}[slot]||.3;
+  return Math.round(profile.calTarget*share/50)*50;
+}
+function openPerplexityRecipeFP(){
+  const slot=builderState.key;
+  const slotFr={breakfast:'petit-déjeuner',lunch:'déjeuner',snack:'collation',dinner:'dîner'}[slot];
+  const constraints=['low FODMAP (phase d\'élimination, seuils Monash)','sans oignon','sans ail','sans lactose'];
+  if(dietPrefs.vegan) constraints.push('vegan'); else if(dietPrefs.vegetarian) constraints.push('végétarien');
+  if(dietPrefs.noPork) constraints.push('sans porc');
+  if(dietPrefs.noFish) constraints.push('sans poisson ni fruits de mer');
+  if(dietPrefs.noNuts) constraints.push('sans fruits à coque');
+  const dislikes=[...dietPrefs.excluded].slice(0,8);
+  if(dislikes.length) constraints.push('sans '+dislikes.join(', sans '));
+  const q=`Propose UNE recette ${constraints.join(', ')} pour 1 personne, type ${slotFr}, environ ${slotKcalTarget(slot)} kcal. Réponds STRICTEMENT dans ce format, une ligne par élément, sans aucun texte autour :
+NOM: nom de la recette
+TYPE: ${slot}
+INGREDIENT: catégorie | nom de l'aliment | grammes | kcal pour 100g | protéines en g pour 100g
+(une ligne INGREDIENT par aliment ; catégorie parmi : proteine, legume, fruit, cereale, legumineuse, laitier, noix, condiment, boisson ; valeurs nutritionnelles exactes des tables de composition alimentaire)
+PREPARATION: les étapes en 2-3 phrases sur une seule ligne`;
+  window.open('https://www.perplexity.ai/search?q='+encodeURIComponent(q),'_blank');
+}
+function openPerplexityIdeesFP(){
+  const slot=builderState?builderState.key:'dinner';
+  const slotFr={breakfast:'petit-déjeuner',lunch:'déjeuner',snack:'collation',dinner:'dîner'}[slot];
+  const q=`Propose-moi 5 idées de ${slotFr} low FODMAP (sans oignon, sans ail, sans lactose), pour 1 personne, environ ${slotKcalTarget(slot)} kcal, riches en protéines, simples à cuisiner.`;
+  window.open('https://www.perplexity.ai/search?q='+encodeURIComponent(q),'_blank');
+}
+function parseRecipeImportFP(text){
+  const out={nom:null,type:null,prep:null,ings:[],errors:[]};
+  String(text).split(/\r?\n/).forEach(line=>{
+    const l=line.replace(/^[-*\s#>]+/,'').trim(); if(!l) return;
+    const m=l.match(/^([A-Za-zÉÈéè]+)\s*:\s*(.+)$/); if(!m) return;
+    const key=normNameFP(m[1]).toUpperCase(); const val=m[2].trim();
+    if(key==='NOM') out.nom=val;
+    else if(key==='TYPE') out.type=val;
+    else if(key==='PREPARATION') out.prep=val;
+    else if(key==='INGREDIENT'){
+      const p=val.split('|').map(s=>s.trim());
+      if(p.length<3){ out.errors.push('Ligne ingrédient incomplète : '+val); return; }
+      const cat=normCatFP(p[0]), g=parseFloat(String(p[2]).replace(',','.'));
+      const kcal=p.length>3?parseFloat(String(p[3]).replace(',','.')):NaN;
+      const prot=p.length>4?parseFloat(String(p[4]).replace(',','.')):NaN;
+      if(!cat){ out.errors.push('Catégorie inconnue : '+p[0]); return; }
+      if(!p[1]||!(g>0)){ out.errors.push('Nom ou grammage invalide : '+val); return; }
+      out.ings.push({cat,n:p[1],g:Math.round(g),kcal100:kcal,prot100:prot});
+    }
+  });
+  return out;
+}
+function importRecipeTextFP(){
+  const txt=document.getElementById('bldImpTxt').value;
+  if(!txt.trim()){ toast('Colle d\'abord la réponse de Perplexity 📋'); return; }
+  const p=parseRecipeImportFP(txt);
+  if(!p.ings.length){ toast('Aucun ingrédient reconnu — vérifie le format NOM/TYPE/INGREDIENT'); return; }
+  let created=0;
+  builderState.ingr=[];
+  p.ings.forEach(ing=>{
+    let f=findFoodLoose(ing.n);
+    if(!f){
+      f=createCustomFood({n:ing.n,c:ing.cat,s:'safe',g:100,kcal100:ing.kcal100||0,prot100:isNaN(ing.prot100)?0:ing.prot100});
+      created++;
+    }
+    if(f.s==='avoid') return;
+    builderState.ingr.push({n:f.n,g:ing.g});
+  });
+  if(p.nom) builderState.name=p.nom;
+  if(p.prep) builderState.prep=p.prep;
+  renderMealBuilder();
+  toast(`Recette importée (${builderState.ingr.length} ingrédients${created?', '+created+' nouveaux aliments':''}) ✅`);
+}
+async function pasteAndImportRecipeFP(){
+  let txt='';
+  try{ txt=await navigator.clipboard.readText(); }
+  catch(e){ toast('Presse-papiers refusé — colle dans la zone de texte 📋'); return; }
+  if(!txt.trim()){ toast('Presse-papiers vide'); return; }
+  document.getElementById('bldImpTxt').value=txt;
+  importRecipeTextFP();
 }
 
 function openShoppingList(){
@@ -2641,7 +3046,7 @@ function openShoppingList(){
         const g=agg[n];
         const qty = g>=1000?(g/1000).toFixed(2).replace(/\\.?0+$/,'')+' kg':Math.round(g)+' g';
         const owned=pantryItems.has(n);
-        return `<li class="${owned?'owned':''}" onclick="togglePantry(${JSON.stringify(n)})">
+        return `<li class="${owned?'owned':''}" onclick="togglePantry(${JSON.stringify(n).replace(/"/g,'&quot;')})">
           <span class="ck ${owned?'checked':''}">${owned?'✓':''}</span>
           <span class="shop-name">${n}</span>
           <span class="shop-qty">${qty}</span>
@@ -2660,17 +3065,23 @@ function togglePantry(name){
   openShoppingList();
 }
 function renderWeekCompact(){
+  const today=todayDayCode();
   document.getElementById('weekGridCompact').innerHTML=menuData.map((d,i)=>{
     const t=dayDisplayTotals(d);
     const dateNum = weekDates[i]? weekDates[i].getDate() : '';
-    return `<div class="day-col">
-      <div class="day-head"><div class="d">${d.day}</div><div class="n">${dateNum}</div></div>
+    const safe=dayIsFodmapSafe(d);
+    const isToday=d.day===today;
+    return `<div class="day-col ${isToday?'today':''}" style="animation-delay:${i*.06}s">
+      <div class="day-head">
+        <div class="d">${d.day}${isToday?' · aujourd\'hui':''}</div><div class="n">${dateNum}</div>
+        <span class="day-safe ${safe?'ok':'warn'}" title="${safe?'100% FODMAP-friendly':'Contient un aliment à surveiller'}">${safe?'🌿':'⚠️'}</span>
+      </div>
       ${Object.keys(d.meals).map(k=>{
         const meal=d.meals[k]; const mm=mealDisplayMacros(d,k); const warn=mealViolatesPrefs(meal);
         return `<div class="meal" onclick='openMealModal(${JSON.stringify(d.day)},${JSON.stringify(k)})'>
-        <span class="mtag">${warn?'⚠️ ':''}${mealLabels[k]}</span><span class="mname">${meal.name}</span><span class="mmacros">🔥${Math.round(mm.k)} · 💪${Math.round(mm.pr)}g · 💶${mealPrice(d,k).toFixed(2)}€</span>
+        <span class="mtag">${warn?'⚠️ ':''}${mealIcons[k]} ${mealLabels[k].replace(/^\S+\s/,'')}${meal.customized?' ✏️':''}</span><span class="mname">${meal.name}</span><span class="mmacros">🔥 ${Math.round(mm.k)} · 💪 ${Math.round(mm.pr)}g · 💶 ${mealPrice(d,k).toFixed(2)}€</span>
       </div>`}).join('')}
-      <div class="day-cal">~<b>${Math.round(t.k)}</b> kcal · <b>${Math.round(t.pr)}</b>g prot · <b>${dayPrice(d).toFixed(2)}</b>€</div>
+      <div class="day-cal">~<b>${Math.round(t.k)}</b> kcal · <b>${Math.round(t.pr)}</b>g · <b>${dayPrice(d).toFixed(2)}</b>€</div>
     </div>`;
   }).join('');
 }
@@ -2922,6 +3333,30 @@ function toast(msg){
   const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
 }
+
+/* ============ THÈME (mode nuit) ============ */
+function applyTheme(t){
+  document.documentElement.dataset.theme=t;
+  lsSet('fodmapTheme',t);
+  const dark=t==='dark';
+  const icS=document.getElementById('themeIcSide'), lbS=document.getElementById('themeLblSide'), icT=document.getElementById('themeIcTop');
+  if(icS) icS.textContent=dark?'☀️':'🌙';
+  if(lbS) lbS.textContent=dark?'Mode jour':'Mode nuit';
+  if(icT) icT.textContent=dark?'☀️':'🌙';
+  const meta=document.querySelector('meta[name=theme-color]');
+  if(meta) meta.content=dark?'#12140f':'#14532d';
+}
+function toggleTheme(){ applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'); }
+applyTheme(lsGet('fodmapTheme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+
+/* Spotlight premium : halo doré qui suit le curseur sur les cartes */
+document.addEventListener('pointermove',(e)=>{
+  const c=e.target.closest('.food-card,.meal-card-lg,.dash-card,.day-col');
+  if(!c) return;
+  const r=c.getBoundingClientRect();
+  c.style.setProperty('--mx',(e.clientX-r.left)+'px');
+  c.style.setProperty('--my',(e.clientY-r.top)+'px');
+},{passive:true});
 
 /* ============ INIT ============ */
 document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){closeModal();closeQuiz();}});
