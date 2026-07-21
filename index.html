@@ -994,6 +994,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .symp-insight b{display:block;font-size:12.5px;color:var(--slate-900)}
 .symp-insight span{display:block;font-size:11.5px;color:var(--slate-600);margin-top:3px;line-height:1.55}
 
+/* Synchro */
+.sync-status{font-size:12.5px;font-weight:700;color:var(--slate-700);padding:10px 14px;background:var(--surface-dim);border:1px solid var(--hairline);border-radius:12px;margin-bottom:12px}
+
 /* ============ EXPORT PDF (impression) ============ */
 #printArea{display:none}
 @media print{
@@ -1290,6 +1293,31 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <h4>📈 Corrélations détectées</h4>
         <div id="sympInsights" class="symp-insights"></div>
         <div class="ccard-disc" style="margin-top:12px">⚕️ Corrélations statistiques indicatives — seule la réintroduction encadrée (idéalement avec un diététicien) confirme une sensibilité.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="sync" data-tab="profil">
+  <div class="inner">
+    <div class="sec-h">
+      <span class="sec-tag">Vos données</span>
+      <h2 class="sec-title">Sauvegarde &amp; synchronisation</h2>
+      <p class="sec-sub">Vos menus, pesées, symptômes, repas persos et réglages voyagent entre vos appareils via un gist GitHub privé — et restent exportables en un fichier à tout moment.</p>
+    </div>
+    <div class="symp-wrap">
+      <div class="symp-card">
+        <h4>☁️ Synchronisation entre appareils</h4>
+        <div id="syncCard"></div>
+      </div>
+      <div class="symp-card">
+        <h4>📦 Sauvegarde manuelle (fichier)</h4>
+        <div class="pplx-row">
+          <button class="btn-s" onclick="exportBackupFile()">📤 Exporter mes données</button>
+          <button class="btn-s" onclick="document.getElementById('importFileInput').click()">📥 Importer un fichier</button>
+          <input type="file" id="importFileInput" accept="application/json,.json" style="display:none" onchange="importBackupFile(this)">
+        </div>
+        <div class="modal-tip">💡 Le fichier JSON contient tout (menus, poids, symptômes, aliments persos…). Garde-en un de temps en temps : c'est ton filet de sécurité même sans synchro.</div>
       </div>
     </div>
   </div>
@@ -1732,6 +1760,7 @@ function loadWeekMenu(week){
       }
     });
   }
+  if(window.__appReady) persistAppSettings(); /* mémorise la semaine consultée après l'init */
 }
 function saveWeekOverride(day,key){
   const d=menuData.find(x=>x.day===day); if(!d) return;
@@ -1839,15 +1868,60 @@ function togglePref(key){
   visibleCount=12;
   renderFoods();
   refreshActiveMenuView();
+  persistAppSettings();
 }
 function updateExcluded(v){
   dietPrefs.excluded = new Set(v.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean));
   visibleCount=12;
   renderFoods();
   refreshActiveMenuView();
+  persistAppSettings();
 }
 function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function lsSet(k,v){
+  try{ localStorage.setItem(k,v); }catch(e){}
+  /* horodatage par clé + déclenchement de la synchro (une fois le moteur prêt) */
+  try{ if(window.__syncReady) stampAndSchedule(k); }catch(e){}
+}
+
+/* ============ PERSISTANCE LOCALE COMPLÈTE ============
+   Poids, profil, préférences, réintroduction, placard, réglages :
+   tout survit au rechargement (et devient synchronisable). */
+function gv(id){ const el=document.getElementById(id); return el?el.value:''; }
+function persistWeight(){ lsSet('fodmapWeight', JSON.stringify(weightLog)); }
+function persistAppSettings(){
+  lsSet('fodmapSettings', JSON.stringify({
+    budget:weeklyBudget, store:selectedStore, diners:householdDiners, time:maxCookTime,
+    programWeek, pantry:[...pantryItems],
+    diet:{vegetarian:dietPrefs.vegetarian,vegan:dietPrefs.vegan,noPork:dietPrefs.noPork,noFish:dietPrefs.noFish,noNuts:dietPrefs.noNuts,excluded:[...dietPrefs.excluded]},
+    reintro:reintroPlan.map(r=>r.statut),
+    pf:{w:gv('pfWeight'),h:gv('pfHeight'),a:gv('pfAge'),sex:gv('pfSex'),act:gv('pfActivity'),goal:gv('pfGoal')}
+  }));
+}
+function restoreAppState(){
+  try{ const w=JSON.parse(lsGet('fodmapWeight')||'null'); if(Array.isArray(w)&&w.length) weightLog=w; }catch(e){}
+  try{
+    const s=JSON.parse(lsGet('fodmapSettings')||'null'); if(!s) return;
+    if(s.budget) weeklyBudget=s.budget;
+    if(s.store&&STORES[s.store]) selectedStore=s.store;
+    if(s.diners) householdDiners=s.diners;
+    if(s.time) maxCookTime=s.time;
+    if(s.programWeek) programWeek=s.programWeek;
+    if(Array.isArray(s.pantry)) pantryItems=new Set(s.pantry);
+    if(s.diet){
+      ['vegetarian','vegan','noPork','noFish','noNuts'].forEach(k=>dietPrefs[k]=!!s.diet[k]);
+      dietPrefs.excluded=new Set(s.diet.excluded||[]);
+    }
+    if(Array.isArray(s.reintro)) s.reintro.forEach((st,i)=>{ if(reintroPlan[i]&&st) reintroPlan[i].statut=st; });
+    if(s.pf){
+      const set=(id,v)=>{ const el=document.getElementById(id); if(el&&v!==''&&v!=null) el.value=v; };
+      set('pfWeight',s.pf.w); set('pfHeight',s.pf.h); set('pfAge',s.pf.a);
+      set('pfSex',s.pf.sex); set('pfActivity',s.pf.act); set('pfGoal',s.pf.goal);
+    }
+    const exEl=document.getElementById('prefsExcludeInput');
+    if(exEl&&dietPrefs.excluded.size) exEl.value=[...dietPrefs.excluded].join(', ');
+  }catch(e){}
+}
 
 /* ============ ONBOARDING QUIZ (façon quiz Pimzi, généré pour FODMAP+) ============ */
 const DISLIKE_OPTIONS = [
@@ -2039,6 +2113,7 @@ function quizFinish(){
   renderFoods();
   renderBudgetBar();
   refreshActiveMenuView();
+  persistAppSettings();
   toast('Menu personnalisé selon vos préférences 🌿');
 }
 
@@ -2064,7 +2139,7 @@ const RING_C = 2*Math.PI*52;
 
 /* ============ TAB NAVIGATION ============ */
 let activeTab='accueil';
-const TAB_ROUTE={phases:'profil',faq:'profil',profil:'profil',poids:'profil',symptomes:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
+const TAB_ROUTE={phases:'profil',faq:'profil',profil:'profil',poids:'profil',symptomes:'profil',sync:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
 
 const VALID_TABS=['accueil','menu','aliments','profil','coach'];
 const TAB_TITLES={accueil:"FODMAP+ \u2014 Coach Low FODMAP Premium",menu:"Menu \u2014 FODMAP+",aliments:"Aliments \u2014 FODMAP+",profil:"Profil \u2014 FODMAP+",coach:"Coach IA \u2014 FODMAP+"};
@@ -2166,6 +2241,7 @@ function updateProfile(){
   ring.style.strokeDashoffset = RING_C*(1-proteinCalPct/100);
 
   if(document.getElementById('dayTabs')) refreshActiveMenuView();
+  persistAppSettings();
 }
 
 /* ============ MACROS ENGINE ============ */
@@ -2228,8 +2304,8 @@ function dayPrice(d){ return Object.keys(d.meals).reduce((s,k)=>s+mealPrice(d,k)
 function weekPrice(){
   return menuData.reduce((s,d)=>s+Object.keys(d.meals).reduce((a,k)=>a+mealPrice(d,k)*(k==='dinner'?Math.max(1,householdDiners):1),0),0);
 }
-function updateBudget(v){ weeklyBudget=Math.max(10,+v||110); renderBudgetBar(); }
-function setStore(s){ selectedStore=STORES[s]?s:'carrefour'; renderBudgetBar(); toast('Magasin : '+STORES[selectedStore].label+' 🛒'); }
+function updateBudget(v){ weeklyBudget=Math.max(10,+v||110); renderBudgetBar(); persistAppSettings(); }
+function setStore(s){ selectedStore=STORES[s]?s:'carrefour'; renderBudgetBar(); persistAppSettings(); toast('Magasin : '+STORES[selectedStore].label+' 🛒'); }
 function renderBudgetBar(){
   const el=document.getElementById('budgetBar'); if(!el) return;
   const total=weekPrice();
@@ -2448,6 +2524,7 @@ function setReintroStatus(i,status){
   reintroPlan[i].statut=status;
   toast(status==='tolere'?'Bonne nouvelle, noté ✅':'Noté, on évite cet aliment pour l\'instant ⚠️');
   renderProgram();
+  persistAppSettings();
 }
 
 /* ============ WEEKLY MENU ============ */
@@ -3199,6 +3276,7 @@ function openShoppingList(){
 function togglePantry(name){
   if(pantryItems.has(name)) pantryItems.delete(name); else pantryItems.add(name);
   openShoppingList();
+  persistAppSettings();
 }
 function renderWeekCompact(){
   const today=todayDayCode();
@@ -3284,11 +3362,13 @@ function addWeightEntry(){
   weightLog.push({date,w});
   wEl.value='';
   refreshWeight();
+  persistWeight();
   toast('Pesée ajoutée 📈');
 }
 function removeWeightEntry(idx){
   weightLog.splice(idx,1);
   refreshWeight();
+  persistWeight();
 }
 function refreshWeight(){
   renderWeightChart();renderWeightStats();renderWeightLogList();
@@ -4118,6 +4198,155 @@ function toast(msg){
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
 }
 
+/* ============ SYNCHRO CLOUD (GitHub Gist, privé) ============
+   Un gist secret « fodmap-plus-sync » porte tout l'état de l'app.
+   Fusion clé par clé : la version la plus récente gagne (horodatage posé
+   par lsSet). Le même token collé sur chaque appareil suffit — l'app
+   retrouve le gist toute seule. */
+const SYNC_KEYS=['fodmapQuizState','fodmapOnboarded','fodmapWeekOverrides','fodmapMyMeals','fodmapCustomFoods','fodmapSymptoms','fodmapCoachLog','fodmapWeight','fodmapSettings','fodmapTheme','fodmapAnims'];
+let syncCfg={token:'',gistId:'',auto:true,last:0};
+try{ syncCfg=Object.assign(syncCfg,JSON.parse(lsGet('fodmapSync')||'{}')||{}); }catch(e){}
+function persistSyncCfg(){ try{ localStorage.setItem('fodmapSync',JSON.stringify(syncCfg)); }catch(e){} }
+let keyStamps={};
+try{ keyStamps=JSON.parse(lsGet('fodmapStamps')||'{}')||{}; }catch(e){}
+let syncTimer=null, syncBusy=false;
+function stampAndSchedule(k){
+  if(!SYNC_KEYS.includes(k)) return;
+  keyStamps[k]=Date.now();
+  try{ localStorage.setItem('fodmapStamps',JSON.stringify(keyStamps)); }catch(e){}
+  if(syncCfg.token&&syncCfg.auto){ clearTimeout(syncTimer); syncTimer=setTimeout(()=>syncNow('push'),6000); }
+}
+function setSyncStatus(msg){ const el=document.getElementById('syncStatus'); if(el) el.textContent=msg; }
+function collectState(){
+  const data={};
+  SYNC_KEYS.forEach(k=>{ const v=lsGet(k); if(v!==null) data[k]=v; });
+  return {v:1, savedAt:Date.now(), stamps:keyStamps, data};
+}
+function applyRemote(remote){
+  const taken=[];
+  SYNC_KEYS.forEach(k=>{
+    const rs=(remote.stamps||{})[k]||0, ls=keyStamps[k]||0;
+    if(remote.data && remote.data[k]!==undefined && rs>ls){
+      try{ localStorage.setItem(k,remote.data[k]); }catch(e){}
+      keyStamps[k]=rs; taken.push(k);
+    }
+  });
+  try{ localStorage.setItem('fodmapStamps',JSON.stringify(keyStamps)); }catch(e){}
+  return taken;
+}
+async function gistApi(path,method,body){
+  const res=await fetch('https://api.github.com/'+path,{
+    method:method||'GET',
+    headers:{'Authorization':'Bearer '+syncCfg.token,'Accept':'application/vnd.github+json'},
+    body:body?JSON.stringify(body):undefined
+  });
+  if(res.status===401) throw new Error('token invalide ou expiré');
+  if(!res.ok) throw new Error('GitHub '+res.status);
+  return res.json();
+}
+async function findOrCreateGist(){
+  if(syncCfg.gistId){
+    try{ return await gistApi('gists/'+syncCfg.gistId); }
+    catch(e){ syncCfg.gistId=''; persistSyncCfg(); }
+  }
+  const list=await gistApi('gists?per_page=100');
+  const found=(list||[]).find(g=>g.description==='fodmap-plus-sync');
+  if(found){ syncCfg.gistId=found.id; persistSyncCfg(); return await gistApi('gists/'+found.id); }
+  const created=await gistApi('gists','POST',{description:'fodmap-plus-sync',public:false,
+    files:{'fodmap-data.json':{content:JSON.stringify(collectState())}}});
+  syncCfg.gistId=created.id; persistSyncCfg();
+  return created;
+}
+async function syncNow(mode){
+  if(!syncCfg.token){ toast('Configure d\'abord la synchro (Profil → ☁️)'); return; }
+  if(syncBusy) return; syncBusy=true;
+  setSyncStatus('⏳ Synchronisation…');
+  try{
+    const gist=await findOrCreateGist();
+    let remote=null;
+    try{
+      const f=gist.files&&gist.files['fodmap-data.json'];
+      if(f) remote=JSON.parse(f.truncated? await (await fetch(f.raw_url)).text() : f.content);
+    }catch(e){}
+    let taken=[];
+    if(remote&&mode!=='push') taken=applyRemote(remote);
+    if(mode!=='pull'){
+      await gistApi('gists/'+syncCfg.gistId,'PATCH',{files:{'fodmap-data.json':{content:JSON.stringify(collectState())}}});
+    }
+    syncCfg.last=Date.now(); persistSyncCfg();
+    setSyncStatus('✅ Synchronisé · '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}));
+    if(taken.length){ toast('Données mises à jour depuis le cloud ☁️'); setTimeout(()=>location.reload(),900); }
+  }catch(e){
+    setSyncStatus('⚠️ '+(e.message||'erreur réseau'));
+  }
+  syncBusy=false;
+}
+function connectSync(){
+  const t=document.getElementById('syncToken').value.trim();
+  if(!/^gh[pos]_|^github_pat_/.test(t)){ toast('Ce token ne ressemble pas à un token GitHub 🤔'); return; }
+  syncCfg.token=t; persistSyncCfg();
+  /* première connexion : horodater ce qui existe déjà en local */
+  SYNC_KEYS.forEach(k=>{ if(lsGet(k)!==null&&!keyStamps[k]) keyStamps[k]=Date.now(); });
+  try{ localStorage.setItem('fodmapStamps',JSON.stringify(keyStamps)); }catch(e){}
+  renderSyncCard();
+  syncNow('full');
+}
+function disconnectSync(){
+  syncCfg.token=''; syncCfg.gistId=''; persistSyncCfg();
+  renderSyncCard();
+  toast('Synchro déconnectée — les données restent sur cet appareil');
+}
+function exportBackupFile(){
+  const blob=new Blob([JSON.stringify(collectState(),null,1)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='fodmap-plus-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  toast('Sauvegarde téléchargée 📤');
+}
+function importBackupFile(input){
+  const f=input.files&&input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const remote=JSON.parse(r.result);
+      if(!remote||!remote.data) throw new Error('format');
+      SYNC_KEYS.forEach(k=>{
+        if(remote.data[k]!==undefined){ localStorage.setItem(k,remote.data[k]); keyStamps[k]=Date.now(); }
+      });
+      localStorage.setItem('fodmapStamps',JSON.stringify(keyStamps));
+      toast('Sauvegarde importée ✅');
+      setTimeout(()=>location.reload(),800);
+    }catch(e){ toast('Fichier de sauvegarde invalide 😕'); }
+  };
+  r.readAsText(f);
+  input.value='';
+}
+function renderSyncCard(){
+  const el=document.getElementById('syncCard'); if(!el) return;
+  if(syncCfg.token){
+    el.innerHTML=`
+      <div class="sync-status" id="syncStatus">${syncCfg.last?'✅ Dernière synchro : '+new Date(syncCfg.last).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Connecté — pas encore synchronisé'}</div>
+      <div class="pplx-row">
+        <button class="btn-p" style="padding:11px 18px;font-size:13px" onclick="syncNow('full')">🔄 Synchroniser maintenant</button>
+        <button class="btn-s" onclick="disconnectSync()">Déconnecter</button>
+      </div>
+      <div class="modal-tip">💡 Sauvegarde automatique quelques secondes après chaque modification, récupération à chaque ouverture. Pour un nouvel appareil : colle le même token, l'app retrouve tes données toute seule.</div>`;
+  } else {
+    el.innerHTML=`
+      <div class="sync-status" id="syncStatus">Hors ligne — données sur cet appareil uniquement</div>
+      <input type="password" id="syncToken" class="bld-name" style="font-family:Inter" placeholder="Colle ici ton token GitHub (scope « gist » uniquement)">
+      <div class="pplx-row"><button class="btn-p" style="padding:11px 18px;font-size:13px" onclick="connectSync()">☁️ Connecter la synchro</button></div>
+      <div class="modal-tip">💡 <b>Création du token (une fois)</b> : github.com → Settings → Developer settings → Personal access tokens → <b>Tokens (classic)</b> → Generate new token → coche uniquement <b>gist</b> → expiration longue → copie le token.<br>
+      Colle ensuite <b>le même token</b> sur chaque appareil (téléphone, tablette…) : vos menus, pesées, symptômes et réglages se suivent partout. Le token ne donne accès qu'aux gists — jamais à tes dépôts.</div>`;
+  }
+}
+/* rejouer les changements en attente quand l'app passe en arrière-plan */
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&syncCfg.token&&syncCfg.auto&&syncTimer){ clearTimeout(syncTimer); syncNow('push'); }
+});
+window.__syncReady=true;
+
 /* ============ THÈME (mode nuit) ============ */
 function applyTheme(t){
   document.documentElement.dataset.theme=t;
@@ -4164,6 +4393,7 @@ document.addEventListener('pointerout',(e)=>{
 
 /* ============ INIT ============ */
 document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){closeModal();closeQuiz();}});
+restoreAppState(); /* AVANT tout rendu : poids, profil, préférences, réglages */
 routeFromLocation();
 buildCatSelect();
 renderPrefs();
@@ -4181,6 +4411,9 @@ renderHome();
 updateCoachSuggestions();
 restoreCoachLog();
 renderSymptoms();
+renderSyncCard();
+window.__appReady=true;
+if(syncCfg.token) setTimeout(()=>syncNow('full'),1200); /* récupère les données des autres appareils à l'ouverture */
 initQuiz();
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
