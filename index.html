@@ -3612,7 +3612,7 @@ function coachApply(id,day){
   d.meals[p.slot]={name:p.name,ingr:JSON.parse(JSON.stringify(p.ingr)),customized:true,prep:p.prep||''};
   saveWeekOverride(day,p.slot);
   renderMenuDay(); renderHome();
-  pushMsg(pickOne(['C\'est calé ! ','Adjugé ! ','Et voilà ! '])+`« ${p.name} » est ton ${SLOT_FR[p.slot]} de ${fullDayNames[day]||day}. La liste de courses suit toute seule. Tu veux aussi une idée pour un autre créneau ?`,'bot');
+  pushMsg(pickOne(CONFIRM_POOL)+`« ${p.name} » est ton ${SLOT_FR[p.slot]} de ${fullDayNames[day]||day}. La liste de courses suit toute seule. ${pickOne(FOLLOWUP_MEAL)}`,'bot');
 }
 function coachOther(id){ const p=coachProps[id]; if(p) coachProposeMeal(p.slot,p.required,p.name,p.opts); }
 function coachKeep(id){
@@ -3921,29 +3921,75 @@ let coachGreeted=false;
 function hi(){
   if(coachGreeted) return '';
   coachGreeted=true;
-  return pickOne(['Salut ! ','Hello ! ','Yo ! ','Re ! ']);
+  const h=new Date().getHours();
+  const pool=h<5?['Encore debout ? ','Fringale nocturne ? ','Insomnie gourmande ? ']
+    :h<12?['Salut ! ','Bien dormi ? ','Hello ! ','Bonjour bonjour ! ']
+    :h<18?['Salut ! ','Re ! ','Yo ! ','Hey ! ']
+    :['Bonsoir ! ','Salut toi ! ','Re ! ','Alors, ce soir ? '];
+  return pickOne(pool);
 }
 const FOOD_QUIPS={
   'Ail':"On va pas se mentir : l'ail, c'est le traître de la soirée.",
   'Oignon':"L'oignon, c'est le faux ami nº1 — il se cache dans toutes les sauces.",
   'Champignon':"Il a l'air innocent, le champignon. Il ne l'est pas (mannitol).",
   'Pomme':"« An apple a day »… pas pendant l'élimination, désolé.",
-  'Lait de vache':"Le lactose et toi, c'est en pause pour le moment.",
+  'Poire':"Fructose + sorbitol : le combo perdant.",
+  'Lait de vache':"Le lactose et toi, c'est en pause. C'est pas toi, c'est lui.",
   'Pastèque':"92% d'eau, et le reste c'est des ennuis (fructanes).",
-  'Pain de blé':"Le blé, c'est le boss de fin des fructanes."
+  'Pain de blé':"Le blé, c'est le boss de fin des fructanes.",
+  'Miel':"Doux mais fourbe : fructose en excès.",
+  'Chou-fleur':"Le mannitol en costume de légume sage.",
+  'Banane verte (non mûre)':"Verte = amie. Mûre = drama. La nuance est capitale.",
+  'Banane mûre':"Trop mûre, trop de fructanes. Elle a changé, c'est plus la même.",
+  'Avocat':"30 g max. Oui c'est petit. Non, le guacamole entier ne passe pas.",
+  'Lentilles (en conserve, rincées)':"46 g max, bien rincées. Au-delà, les GOS font la fête sans toi.",
+  'Pois chiches (en conserve, rincés)':"Le houmous oui, mais version dégustation, pas version pot entier.",
+  'Flocons d\'avoine':"OK jusqu'à 52 g secs. Après, ça se complique.",
+  'Patate douce':"75 g max — au-delà, le mannitol s'invite à table.",
+  'Asperge':"Superbe sur la photo, fructanes dans l'assiette.",
+  'Poulet':"Valeur sûre. Le poulet n'a jamais trahi personne.",
+  'Riz blanc / basmati':"Le meilleur ami de ton intestin : fiable, discret, efficace.",
+  'Saumon':"Protéines + oméga-3, zéro FODMAP. Le premier de la classe.",
+  'Œufs':"Zéro FODMAP, prix mini. Le couteau suisse du frigo.",
+  'Tofu ferme':"Ferme = safe. Soyeux = méfiance. La texture change tout.",
+  'Quinoa':"La céréale qui coche toutes les cases.",
+  'Fraise':"Fais-toi plaisir, elle est réglo.",
+  'Courgette':"La coloc idéale : discrète et compatible avec tout le monde.",
+  'Crevettes':"Zéro FODMAP, cuites en 4 minutes. Le fast-food de l'élimination."
 };
 function quipFor(f){
   if(FOOD_QUIPS[f.n]) return FOOD_QUIPS[f.n];
-  if(f.s==='avoid') return pickOne(["Celui-là, garde-le pour la réintroduction.","Ton intestin te dira merci de patienter.","On le met sur le banc de touche pour l'instant."]);
-  if(f.s==='moderate') return "Autorisé, mais reste sous le seuil — c'est lui qui fait la loi.";
-  return '';
+  if(f.s==='avoid') return pickOne(["Celui-là, garde-le pour la réintroduction.","Ton intestin te dira merci de patienter.","On le met sur le banc de touche pour l'instant.","Pas maintenant. Plus tard, peut-être. Ton côlon décidera."]);
+  if(f.s==='moderate') return pickOne(["Autorisé, mais reste sous le seuil — c'est lui qui fait la loi.","La dose fait le poison, littéralement ici.","Ami à petite dose, ennemi à grande."]);
+  return pickOne(['','Zéro souci de ce côté-là.','Carte blanche sur celui-là.']);
 }
 const SLOT_QUIPS={
-  breakfast:["Le petit-déj qui ne te trahira pas.","De quoi démarrer sans réveiller ton intestin."],
-  lunch:["Simple, calé sur tes macros, zéro embrouille digestive.","Un déjeuner qui bosse pour toi."],
-  snack:["Petite faim, zéro risque.","La collation qui passe crème (sans lactose, évidemment)."],
-  dinner:["Le dîner tranquille — pas d'addition digestive à payer 😄","Un soir sans mauvaise surprise, c'est ça le plan."]
+  breakfast:["Le petit-déj qui ne te trahira pas.","De quoi démarrer sans réveiller ton intestin.","Objectif : de l'énergie, pas des ballonnements.","Un réveil en douceur, dedans comme dehors."],
+  lunch:["Simple, calé sur tes macros, zéro embrouille digestive.","Un déjeuner qui bosse pour toi.","De quoi tenir l'après-midi sans y penser.","Efficace, bon, et ton après-midi te dira merci."],
+  snack:["Petite faim, zéro risque.","La collation qui passe crème (sans lactose, évidemment).","Le creux de l'aprèm, version maligne.","Vite prêt, vite mangé, vite oublié par ton intestin."],
+  dinner:["Le dîner tranquille — pas d'addition digestive à payer 😄","Un soir sans mauvaise surprise, c'est ça le plan.","Ton intestin aussi a le droit à une soirée calme.","Le genre de dîner qui te laisse dormir tranquille."]
 };
+const CONFIRM_POOL=["C'est calé ! ","Adjugé ! ","Et voilà ! ","Dans la boîte ! ","Ni vu ni connu : ","Exécuté, chef ! "];
+const FOLLOWUP_MEAL=["Tu veux aussi une idée pour un autre créneau ?","On enchaîne avec un autre repas ?","Un autre créneau à caler pendant qu'on y est ?","Besoin d'autre chose — collation, dîner ?"];
+function detectAllFoodsInText(t){
+  const nt=' '+normNameFP(t)+' ';
+  const hits=[]; const usedTokens=new Set();
+  foods.forEach(f=>{
+    const toks=normNameFP(f.n).split(' ').filter(w=>w.length>=3&&!COACH_STOP.includes(w));
+    const hit=toks.find(w=>nt.includes(' '+w)&&!usedTokens.has(w));
+    if(hit){ hits.push(f); usedTokens.add(hit); }
+  });
+  return hits;
+}
+function compareFoods(a,b){
+  const line=f=>`${f.e} ${f.n} (${f.s==='safe'?'✅ safe':f.s==='moderate'?'⚠️ ≤'+f.g+'g':'🚫 à éviter'} · ${f.k} kcal/${f.g}g · ${f.pr}g prot)`;
+  const rank={safe:0,moderate:1,avoid:2};
+  let verdict;
+  if(rank[a.s]<rank[b.s]) verdict=`${a.n} gagne, easy — l'autre ${b.s==='avoid'?'joue contre ton camp':'demande de la retenue'}.`;
+  else if(rank[b.s]<rank[a.s]) verdict=`${b.n} l'emporte sans forcer.`;
+  else verdict=(a.pr/Math.max(1,a.k))>(b.pr/Math.max(1,b.k))?`Égalité FODMAP — avantage ${a.n} côté protéines.`:`Égalité FODMAP — avantage ${b.n} côté protéines.`;
+  return hi()+`Le match : ${line(a)} vs ${line(b)}. ${verdict} Tu veux un plat avec le gagnant ?`;
+}
 const FAM_TO_PLAN={fructanes:0,lactose:1,fructose:2,sorbitol:3,mannitol:4,GOS:5};
 function coachMarkReaction(fam){
   const idx=FAM_TO_PLAN[fam]; if(idx===undefined) return;
@@ -3981,6 +4027,63 @@ function generateCoachReply(q){
     coachProposeMeal(slotTxt||slotByHour(), req.map(f=>f.n), null, {cheap});
     return null;
   }
+  /* — Faim spontanée — */
+  if(/j ai faim|petit creux|petite faim|un creux/.test(qn)){
+    pushMsg(hi()+pickOne(['On règle ça tout de suite.','Un creux ? J\'ai ce qu\'il faut.','Ni une ni deux :']),'bot',false);
+    coachProposeMeal(slotByHour(),[]);
+    return null;
+  }
+  /* — Social — */
+  if(/^(salut|bonjour|bonsoir|hello|coucou|yo|hey|re)\b/.test(qn)&&qn.length<25){
+    coachGreeted=true;
+    return pickOne(['Salut ! Prêt à bien manger sans le payer après ?','Hello ! Ton intestin et moi, on t\'écoute.','Bonjour ! Café (sans lait) et au boulot.','Yo ! Alors, on mange quoi ?'])+' '+pickOne(['Une idée de repas ? Un aliment à vérifier ?','Dis-moi tout.','Tu es en quelle phase en ce moment ?']);
+  }
+  if(/merci/.test(qn)&&qn.length<30){
+    return pickOne(['Avec plaisir ! C\'est mon seul job, autant le faire bien 😄','De rien ! Ton côlon me remerciera plus tard.','Toujours là. Enfin, tant que t\'as du réseau.'])+' '+pickOne(FOLLOWUP_MEAL);
+  }
+  if(/ca va|comment vas|comment tu vas/.test(qn)&&qn.length<25){
+    return pickOne(['Nickel — zéro FODMAP dans mes circuits 😄 Et toi, la digestion, ça dit quoi ?','En pleine forme. Et toi, ton ventre est d\'accord avec toi aujourd\'hui ?']);
+  }
+  if(/^aide$|que sais tu|tu sais faire|tu peux faire|help|mode d emploi/.test(qn)){
+    return hi()+`Mon rayon : je te compose des repas (« idée dîner avec poulet »), des menus complets, j'analyse tes recettes (bouton 📋), je te briefe au resto, je traque tes symptômes et leurs coupables (🩺), je compare deux aliments (« riz ou quinoa ? »), je trouve des alternatives (« alternative à l'oignon »), et je connais ton budget, ta phase et tes 131 aliments par cœur. Par quoi on commence ?`;
+  }
+  /* — Mini-cours — */
+  if(/fodmap.*(c est quoi|quoi|definition)|c est quoi.*fodmap|que veut dire fodmap/.test(qn)){
+    return hi()+`FODMAP = des sucres fermentescibles (Fermentable Oligo-, Di-, Mono-saccharides And Polyols) que l'intestin grêle absorbe mal. Résultat chez les sensibles : fermentation, ballonnements, drama digestif. La méthode Monash : on les élimine, on les réintroduit famille par famille, on garde ce qui passe. Simple sur le papier, et je suis là pour le reste 😄 Tu veux savoir où tu en es ?`;
+  }
+  if(/stacking|cumul|s additionnent/.test(qn)){
+    return hi()+`Le stacking, c'est le piège classique : deux aliments « modérés » de la même famille dans le même repas, et leurs doses s'additionnent — chacun sous son seuil, mais le total déborde. Mon analyse de recette (📋) le calcule automatiquement par famille. Tu veux tester avec un de tes plats ?`;
+  }
+  /* — Bilan du jour — */
+  if(/calorie/.test(qn)&&/aujourd|jour|reste|combien|mange|bilan/.test(qn)){
+    const d=menuData.find(x=>x.day===todayDayCode()); const t=dayDisplayTotals(d);
+    const diff=Math.round(t.k-profile.calTarget);
+    return hi()+`Ton menu du jour : ${Math.round(t.k)} kcal pour ${profile.calTarget} visées (${diff>=0?'+':''}${diff}) et ${Math.round(t.pr)} g de protéines sur ${profile.protTarget}. ${Math.abs(diff)<=80?'Pile dans la cible 🎯 Beau travail.':'Tu veux que je réajuste un des repas ?'}`;
+  }
+  if(/proteine/.test(qn)&&/combien|assez|aujourd|jour|bilan|mes/.test(qn)){
+    const d=menuData.find(x=>x.day===todayDayCode()); const t=dayDisplayTotals(d);
+    return hi()+`Côté protéines aujourd'hui : ${Math.round(t.pr)} g au menu pour ${profile.protTarget} g visés — ${t.pr>=profile.protTarget?'objectif atteint, la machine est bien nourrie 💪':'il en manque un peu. Un repas plus protéiné pour combler ?'}`;
+  }
+  /* — Courses — */
+  if(/liste de courses|mes courses|faire les courses/.test(qn)){
+    openShoppingList();
+    return `Voilà ta liste 🛒 Coche ce que tu as déjà au placard, le total s'ajuste tout seul. Astuce : elle suit automatiquement chaque repas que tu modifies.`;
+  }
+  /* — Match X ou Y — */
+  if((' '+qn+' ').includes(' ou ')){
+    const duo=detectAllFoodsInText(q);
+    if(duo.length>=2) return compareFoods(duo[0],duo[1]);
+  }
+  /* — Alternative à n'importe quel aliment — */
+  if(/(alternative|remplac|substitu|a la place)/.test(qn)){
+    const target=detectAllFoodsInText(q)[0];
+    if(target){
+      const alts=eligibleCoachFoods().filter(f=>f.c===target.c&&f.s==='safe'&&f.n!==target.n)
+        .sort((x,y)=>Math.abs(x.k/x.g-target.k/target.g)-Math.abs(y.k/y.g-target.k/target.g)).slice(0,3);
+      const extra=target.n==='Oignon'?" Et l'astuce du chef : la partie verte du poireau ou l'huile infusée — le goût sans les fructanes.":target.n==='Ail'?" L'astuce : l'huile infusée à l'ail, tout l'arôme, zéro fructane.":'';
+      if(alts.length) return hi()+`À la place de ${target.e} ${target.n} (${target.s==='avoid'?'🚫':'⚠️'}), je te propose : ${alts.map(a=>a.e+' '+a.n).join(', ')}.${extra} ${quipFor(target)} Tu veux un plat avec l'un d'eux ?`;
+    }
+  }
   if(ql.includes('objectif')&&(ql.includes('calor')||ql.includes('mon '))){
     return hi()+`Ton objectif tourne autour de ${profile.calTarget} kcal et ${profile.protTarget} g de protéines par jour. C'est réglable dans ton profil si ça bouge. Tu veux que je te compose une journée qui tombe pile dessus ?`;
   }
@@ -3990,9 +4093,6 @@ function generateCoachReply(q){
   }
   /* un créneau nommé seul (« petit déjeuner ? ») → carte proposition directe */
   if(slotTxt){ coachProposeMeal(slotTxt,[],null,{cheap}); return null; }
-  if(ql.includes('remplacer')&&ql.includes('oignon')){
-    return hi()+`L'oignon, tout le monde veut le remplacer 😄 Mes armes : la partie verte du poireau, la ciboulette, ou l'huile infusée (le goût sans les fructanes). Pour l'umami : un trait de sauce soja. Tu veux que je te compose un plat avec ?`;
-  }
   const found=foods.find(f=>ql.includes(f.n.toLowerCase().split(' ')[0].replace(/[^a-zà-ü]/gi,'')));
   if(found){
     const badge=found.s==='safe'?'✅ safe':found.s==='moderate'?'⚠️ modéré':'🚫 à éviter';
