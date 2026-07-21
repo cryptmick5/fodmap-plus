@@ -1879,9 +1879,12 @@ function updateExcluded(v){
 }
 function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function lsSet(k,v){
+  let prev=null; try{ prev=localStorage.getItem(k); }catch(e){}
   try{ localStorage.setItem(k,v); }catch(e){}
-  /* horodatage par clé + déclenchement de la synchro (une fois le moteur prêt) */
-  try{ if(window.__syncReady) stampAndSchedule(k); }catch(e){}
+  /* horodatage UNIQUEMENT pour un vrai changement utilisateur, jamais pendant
+     l'initialisation — sinon les valeurs par défaut de l'appareil paraissent
+     « plus récentes » que les données du cloud et les bloquent. */
+  try{ if(window.__appReady && prev!==v) stampAndSchedule(k); }catch(e){}
 }
 
 /* ============ PERSISTANCE LOCALE COMPLÈTE ============
@@ -4285,9 +4288,8 @@ function connectSync(){
   const t=document.getElementById('syncToken').value.trim();
   if(!/^gh[pos]_|^github_pat_/.test(t)){ toast('Ce token ne ressemble pas à un token GitHub 🤔'); return; }
   syncCfg.token=t; persistSyncCfg();
-  /* première connexion : horodater ce qui existe déjà en local */
-  SYNC_KEYS.forEach(k=>{ if(lsGet(k)!==null&&!keyStamps[k]) keyStamps[k]=Date.now(); });
-  try{ localStorage.setItem('fodmapStamps',JSON.stringify(keyStamps)); }catch(e){}
+  /* première connexion : PAS de pré-horodatage — les données déjà présentes
+     dans le cloud doivent gagner sur les valeurs par défaut de cet appareil */
   renderSyncCard();
   syncNow('full');
 }
