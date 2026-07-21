@@ -1895,7 +1895,7 @@ function persistWeight(){ lsSet('fodmapWeight', JSON.stringify(weightLog)); }
 function persistAppSettings(){
   lsSet('fodmapSettings', JSON.stringify({
     budget:weeklyBudget, store:selectedStore, diners:householdDiners, time:maxCookTime,
-    programWeek, pantry:[...pantryItems],
+    programWeek, elimWeeks:+gv('elimWeeksSelect')||4, pantry:[...pantryItems],
     diet:{vegetarian:dietPrefs.vegetarian,vegan:dietPrefs.vegan,noPork:dietPrefs.noPork,noFish:dietPrefs.noFish,noNuts:dietPrefs.noNuts,excluded:[...dietPrefs.excluded]},
     reintro:reintroPlan.map(r=>r.statut),
     pf:{w:gv('pfWeight'),h:gv('pfHeight'),a:gv('pfAge'),sex:gv('pfSex'),act:gv('pfActivity'),goal:gv('pfGoal')}
@@ -1910,6 +1910,7 @@ function restoreAppState(){
     if(s.diners) householdDiners=s.diners;
     if(s.time) maxCookTime=s.time;
     if(s.programWeek) programWeek=s.programWeek;
+    if(s.elimWeeks){ const el=document.getElementById('elimWeeksSelect'); if(el) el.value=s.elimWeeks; }
     if(Array.isArray(s.pantry)) pantryItems=new Set(s.pantry);
     if(s.diet){
       ['vegetarian','vegan','noPork','noFish','noNuts'].forEach(k=>dietPrefs[k]=!!s.diet[k]);
