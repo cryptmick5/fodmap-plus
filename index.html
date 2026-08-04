@@ -1000,6 +1000,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .mcl-eat.on{background:var(--green-50);border-color:var(--forest);color:var(--forest)}
 .mcl-eat-box{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--slate-300);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:var(--surface)}
 .mcl-eat.on .mcl-eat-box{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
+.mcl-eat.future{opacity:.5;cursor:default;font-weight:600}
+.mcl-eat.future:hover{border-color:var(--hairline);color:var(--slate-600)}
 .meal-card-lg.eaten{border-color:var(--green-200)}
 .meal-card-lg.eaten .mcl-name{color:var(--forest)}
 .ds-eaten{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
@@ -2572,7 +2574,10 @@ function isMealEaten(dayCode,slot){
   const k=dateKeyForDay(dayCode);
   return !!(mealsEaten[k]&&mealsEaten[k][slot]);
 }
+/* un repas à venir ne peut pas avoir été mangé */
+function isFutureDay(dayCode){ return dateKeyForDay(dayCode) > isoDate(new Date()); }
 function toggleMealEaten(dayCode,slot){
+  if(isFutureDay(dayCode)){ toast('Ce jour n\'est pas encore arrivé 🙂'); return; }
   const k=dateKeyForDay(dayCode);
   mealsEaten[k]=mealsEaten[k]||{};
   if(mealsEaten[k][slot]){ delete mealsEaten[k][slot]; }
@@ -2639,7 +2644,8 @@ function renderMenuDay(){
         const pctK=Math.min(100,Math.round((e.k/profile.calTarget)*100)||0);
         const pctP=Math.min(100,Math.round((e.pr/profile.protTarget)*100)||0);
         let verdict;
-        if(!e.n) verdict={cls:'',txt:'Aucun repas validé pour l\'instant'};
+        if(isFutureDay(d.day)) verdict={cls:'',txt:'Journée à venir — validation possible le jour même'};
+        else if(!e.n) verdict={cls:'',txt:'Aucun repas validé pour l\'instant'};
         else if(e.n<nb) verdict={cls:'mid',txt:`${e.n}/${nb} repas validés · il reste ${Math.max(0,profile.calTarget-Math.round(e.k))} kcal à couvrir`};
         else if(Math.abs(e.k-profile.calTarget)<=profile.calTarget*0.07) verdict={cls:'ok',txt:'✅ Journée complète et pile dans l\'objectif'};
         else if(e.k<profile.calTarget) verdict={cls:'mid',txt:`Journée complète, mais ${Math.round(profile.calTarget-e.k)} kcal sous l'objectif`};
@@ -2660,14 +2666,16 @@ function renderMenuDay(){
     const warn=mealViolatesPrefs(meal);
     const tag = warn?'⚠️ Hors préférences':(meal.customized?'✏️ Modifié':mealLabels[k]);
     const eaten = isMealEaten(d.day,k);
+    const future = isFutureDay(d.day);
     return `<div class="meal-card-lg ${eaten?'eaten':''}" style="animation-delay:${i*.06}s" onclick='openMealModal(${JSON.stringify(d.day)},${JSON.stringify(k)})'>
       <button class="mcl-swap" onclick='event.stopPropagation();swapMeal(${JSON.stringify(d.day)},${JSON.stringify(k)})' title="Remplacer ce repas" aria-label="Remplacer ce repas">🔄</button>
       <div class="mcl-top"><div class="mcl-icon">${mealIcons[k]}</div><span class="mcl-tag ${meal.customized?'custom':''} ${warn?'warn':''}">${tag}</span></div>
       <div class="mcl-name">${meal.name}</div>
       <div class="mcl-macros"><span class="mcl-pill k">🔥 ${Math.round(mm.k)} kcal</span><span class="mcl-pill p">💪 ${Math.round(mm.pr)}g</span><span class="mcl-pill k" style="background:var(--green-100);color:var(--green-700)">💶 ${price.toFixed(2)}€</span></div>
-      <button class="mcl-eat ${eaten?'on':''}" onclick='event.stopPropagation();toggleMealEaten(${JSON.stringify(d.day)},${JSON.stringify(k)})' aria-pressed="${eaten}">
+      ${future?`<div class="mcl-eat future" aria-disabled="true"><span class="mcl-eat-box">·</span>À venir</div>`
+        :`<button class="mcl-eat ${eaten?'on':''}" onclick='event.stopPropagation();toggleMealEaten(${JSON.stringify(d.day)},${JSON.stringify(k)})' aria-pressed="${eaten}">
         <span class="mcl-eat-box">${eaten?'✓':''}</span>${eaten?'Mangé':'Marquer comme mangé'}
-      </button>
+      </button>`}
     </div>`;
   }).join('');
 }
