@@ -994,6 +994,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .symp-insight b{display:block;font-size:12.5px;color:var(--slate-900)}
 .symp-insight span{display:block;font-size:11.5px;color:var(--slate-600);margin-top:3px;line-height:1.55}
 
+/* Validation des repas */
+.mcl-eat{display:flex;align-items:center;gap:8px;width:100%;margin-top:14px;padding:10px 12px;border:1.5px solid var(--hairline);border-radius:12px;background:var(--surface-dim);font-family:inherit;font-size:12px;font-weight:700;color:var(--slate-600);cursor:pointer;transition:all var(--tf)}
+.mcl-eat:hover{border-color:var(--forest);color:var(--forest)}
+.mcl-eat.on{background:var(--green-50);border-color:var(--forest);color:var(--forest)}
+.mcl-eat-box{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--slate-300);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:var(--surface)}
+.mcl-eat.on .mcl-eat-box{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
+.meal-card-lg.eaten{border-color:var(--green-200)}
+.meal-card-lg.eaten .mcl-name{color:var(--forest)}
+.ds-eaten{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.ds-eaten.ok{border-color:var(--green-400)}
+.ds-eaten.mid{border-color:var(--amber-500)}
+.ds-eaten.over{border-color:#f97316}
+.ds-eaten-hd{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:rgba(255,255,255,.75);margin-bottom:8px}
+.ds-eaten-hd b{color:#fff;font-size:12.5px}
+.ds-eaten-row{font-size:11.5px;color:rgba(255,255,255,.8);margin-bottom:7px}
+.ds-eaten-row .dbar{margin-top:4px;background:rgba(255,255,255,.14)}
+.ds-eaten-verdict{font-size:11.5px;font-weight:700;color:#fff;margin-top:8px}
+.dmeal.eaten .dmeal-info span{color:var(--forest)}
+.dmeal-eat{font-size:13px;flex-shrink:0;opacity:.85}
+
 /* Synchro */
 .sync-status{font-size:12.5px;font-weight:700;color:var(--slate-700);padding:10px 14px;background:var(--surface-dim);border:1px solid var(--hairline);border-radius:12px;margin-bottom:12px}
 
@@ -2136,7 +2156,9 @@ const faqData = [
 ];
 
 /* ============ STATE ============ */
-let currentFilter='all', currentCat='all', visibleCount=12, selectedDay='Lun', currentPhase='elimination';
+let currentFilter='all', currentCat='all', visibleCount=12, currentPhase='elimination';
+/* le jour affiché par défaut est aujourd'hui, pas lundi */
+let selectedDay=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][new Date().getDay()];
 let profile={bmr:0,tdee:0,calTarget:1800,protTarget:100};
 let weeklyBudget=110, pantryItems=new Set(), householdDiners=1, maxCookTime=999;
 const RING_C = 2*Math.PI*52;
@@ -2161,6 +2183,8 @@ function switchTab(tab,updateHistory){
   const topbarTitleEl=document.getElementById('topbarTitle');
   if(topbarTitleEl)topbarTitleEl.textContent=TAB_LABELS[tab]||'';
   if(tab==='accueil')renderHome();
+  /* le menu s'ouvre sur le jour du jour */
+  if(tab==='menu'){ selectedDay=todayDayCode(); refreshActiveMenuView(); }
   if(updateHistory){
     const url=(tab==='accueil'?location.pathname+location.search:'#'+tab);
     if(location.hash.replace('#','')!==tab)history.pushState({tab:tab},'',url);
@@ -2533,6 +2557,38 @@ function setReintroStatus(i,status){
 
 /* ============ WEEKLY MENU ============ */
 function selectDay(day){selectedDay=day;renderMenuDay()}
+/* ============ VALIDATION DES REPAS (« mangé ») ============
+   Indexée sur la vraie date (pas le jour de semaine) : l'historique reste
+   juste d'une semaine à l'autre. Synchronisée comme le reste. */
+let mealsEaten={};
+try{ mealsEaten=JSON.parse(lsGet('fodmapMealsEaten')||'{}')||{}; }catch(e){ mealsEaten={}; }
+function persistMealsEaten(){ lsSet('fodmapMealsEaten', JSON.stringify(mealsEaten)); }
+function dateKeyForDay(dayCode){
+  const i=menuData.findIndex(d=>d.day===dayCode);
+  const wd=(weekDates&&weekDates.length)?weekDates:getWeekDates(); /* robuste si appelé avant l'init */
+  return wd[i]?isoDate(wd[i]):isoDate(new Date());
+}
+function isMealEaten(dayCode,slot){
+  const k=dateKeyForDay(dayCode);
+  return !!(mealsEaten[k]&&mealsEaten[k][slot]);
+}
+function toggleMealEaten(dayCode,slot){
+  const k=dateKeyForDay(dayCode);
+  mealsEaten[k]=mealsEaten[k]||{};
+  if(mealsEaten[k][slot]){ delete mealsEaten[k][slot]; }
+  else { mealsEaten[k][slot]=true; }
+  if(!Object.keys(mealsEaten[k]).length) delete mealsEaten[k];
+  persistMealsEaten();
+  renderMenuDay(); renderHome();
+}
+function eatenTotals(d){
+  return Object.keys(d.meals).reduce((acc,k)=>{
+    if(!isMealEaten(d.day,k)) return acc;
+    const mm=mealDisplayMacros(d,k);
+    acc.k+=mm.k; acc.pr+=mm.pr; acc.n++;
+    return acc;
+  },{k:0,pr:0,n:0});
+}
 function renderDayTabs(){
   document.getElementById('dayTabs').innerHTML = menuData.map((d,i)=>{
     const t=dayDisplayTotals(d);
@@ -2578,6 +2634,23 @@ function renderMenuDay(){
         <span class="ds-badge ${safe?'':'warn'}">${safe?'🌿 100% FODMAP-friendly':'⚠️ Contient un aliment à réintroduire'}</span>
         <span class="ds-badge alt">${statusBadge}</span>
       </div>
+      ${(function(){
+        const e=eatenTotals(d), nb=Object.keys(d.meals).length;
+        const pctK=Math.min(100,Math.round((e.k/profile.calTarget)*100)||0);
+        const pctP=Math.min(100,Math.round((e.pr/profile.protTarget)*100)||0);
+        let verdict;
+        if(!e.n) verdict={cls:'',txt:'Aucun repas validé pour l\'instant'};
+        else if(e.n<nb) verdict={cls:'mid',txt:`${e.n}/${nb} repas validés · il reste ${Math.max(0,profile.calTarget-Math.round(e.k))} kcal à couvrir`};
+        else if(Math.abs(e.k-profile.calTarget)<=profile.calTarget*0.07) verdict={cls:'ok',txt:'✅ Journée complète et pile dans l\'objectif'};
+        else if(e.k<profile.calTarget) verdict={cls:'mid',txt:`Journée complète, mais ${Math.round(profile.calTarget-e.k)} kcal sous l'objectif`};
+        else verdict={cls:'over',txt:`Journée complète, ${Math.round(e.k-profile.calTarget)} kcal au-dessus de l'objectif`};
+        return `<div class="ds-eaten ${verdict.cls}">
+          <div class="ds-eaten-hd"><b>Réellement consommé</b><span>${e.n}/${nb} repas</span></div>
+          <div class="ds-eaten-row"><span>🔥 ${Math.round(e.k)} / ${profile.calTarget} kcal</span><div class="dbar"><div class="dbar-fg" style="width:${pctK}%"></div></div></div>
+          <div class="ds-eaten-row"><span>💪 ${Math.round(e.pr)} / ${profile.protTarget} g protéines</span><div class="dbar"><div class="dbar-fg" style="width:${pctP}%"></div></div></div>
+          <div class="ds-eaten-verdict">${verdict.txt}</div>
+        </div>`;
+      })()}
     </div>`;
 
   document.getElementById('mealGridLg').innerHTML = Object.keys(d.meals).map((k,i)=>{
@@ -2586,11 +2659,15 @@ function renderMenuDay(){
     const price=mealPrice(d,k);
     const warn=mealViolatesPrefs(meal);
     const tag = warn?'⚠️ Hors préférences':(meal.customized?'✏️ Modifié':mealLabels[k]);
-    return `<div class="meal-card-lg" style="animation-delay:${i*.06}s" onclick='openMealModal(${JSON.stringify(d.day)},${JSON.stringify(k)})'>
+    const eaten = isMealEaten(d.day,k);
+    return `<div class="meal-card-lg ${eaten?'eaten':''}" style="animation-delay:${i*.06}s" onclick='openMealModal(${JSON.stringify(d.day)},${JSON.stringify(k)})'>
       <button class="mcl-swap" onclick='event.stopPropagation();swapMeal(${JSON.stringify(d.day)},${JSON.stringify(k)})' title="Remplacer ce repas" aria-label="Remplacer ce repas">🔄</button>
       <div class="mcl-top"><div class="mcl-icon">${mealIcons[k]}</div><span class="mcl-tag ${meal.customized?'custom':''} ${warn?'warn':''}">${tag}</span></div>
       <div class="mcl-name">${meal.name}</div>
       <div class="mcl-macros"><span class="mcl-pill k">🔥 ${Math.round(mm.k)} kcal</span><span class="mcl-pill p">💪 ${Math.round(mm.pr)}g</span><span class="mcl-pill k" style="background:var(--green-100);color:var(--green-700)">💶 ${price.toFixed(2)}€</span></div>
+      <button class="mcl-eat ${eaten?'on':''}" onclick='event.stopPropagation();toggleMealEaten(${JSON.stringify(d.day)},${JSON.stringify(k)})' aria-pressed="${eaten}">
+        <span class="mcl-eat-box">${eaten?'✓':''}</span>${eaten?'Mangé':'Marquer comme mangé'}
+      </button>
     </div>`;
   }).join('');
 }
@@ -3463,9 +3540,11 @@ function renderHome(){
   document.getElementById('dashMealList').innerHTML = Object.keys(day.meals).map(key=>{
     const meal=day.meals[key];
     const mm=mealDisplayMacros(day,key);
-    return `<div class="dmeal" onclick='openMealModal(${JSON.stringify(day.day)},${JSON.stringify(key)})'>
+    const eaten=isMealEaten(day.day,key);
+    return `<div class="dmeal ${eaten?'eaten':''}" onclick='openMealModal(${JSON.stringify(day.day)},${JSON.stringify(key)})'>
       <div class="dmeal-ic">${mealIcons[key]}</div>
       <div class="dmeal-info"><b>${mealLabels[key].replace(/^\S+\s/,'')}</b><span>${meal.name}</span></div>
+      ${eaten?'<span class="dmeal-eat" title="Repas validé">✅</span>':''}
       <div class="dmeal-k">${Math.round(mm.k)} kcal</div>
     </div>`;
   }).join('');
@@ -4207,7 +4286,7 @@ function toast(msg){
    Fusion clé par clé : la version la plus récente gagne (horodatage posé
    par lsSet). Le même token collé sur chaque appareil suffit — l'app
    retrouve le gist toute seule. */
-const SYNC_KEYS=['fodmapQuizState','fodmapOnboarded','fodmapWeekOverrides','fodmapMyMeals','fodmapCustomFoods','fodmapSymptoms','fodmapCoachLog','fodmapWeight','fodmapSettings','fodmapTheme','fodmapAnims'];
+const SYNC_KEYS=['fodmapQuizState','fodmapOnboarded','fodmapWeekOverrides','fodmapMyMeals','fodmapCustomFoods','fodmapSymptoms','fodmapCoachLog','fodmapWeight','fodmapSettings','fodmapMealsEaten','fodmapTheme','fodmapAnims'];
 let syncCfg={token:'',gistId:'',auto:true,last:0};
 try{ syncCfg=Object.assign(syncCfg,JSON.parse(lsGet('fodmapSync')||'{}')||{}); }catch(e){}
 function persistSyncCfg(){ try{ localStorage.setItem('fodmapSync',JSON.stringify(syncCfg)); }catch(e){} }
