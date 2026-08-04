@@ -618,8 +618,10 @@ footer{padding:60px 32px 30px;border-top:1px solid var(--slate-100);margin-top:4
 }
 
 /* A11Y: visible keyboard focus ring (mouse users unaffected via :focus-visible) */
+/* Anneau de focus doré et décalé : distinct de l'état « actif » (vert plein),
+   sinon l'œil lit deux éléments sélectionnés dans la navigation. */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
-  outline:2.5px solid var(--green-600);outline-offset:2px;border-radius:8px
+  outline:2.5px solid var(--gold);outline-offset:3px;border-radius:10px
 }
 .search-box:focus-within,.coach-input-wrap input:focus,.prefs-exclude input:focus,.pf-row input:focus,.pf-row select:focus{
   box-shadow:0 0 0 3px rgba(34,197,94,.22)
@@ -999,24 +1001,55 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
    éditorial, médaillon sobre, contrôle de validation vectoriel. */
 .meal-grid-lg{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 @media(max-width:640px){.meal-grid-lg{grid-template-columns:minmax(0,1fr)}}
-.meal-card-lg{padding:22px 24px 20px;display:flex;flex-direction:column;border-radius:24px}
-.mcl-top{align-items:center;margin-bottom:14px}
-.mcl-icon{width:46px;height:46px;border-radius:14px;font-size:23px;background:var(--surface-dim);
+/* Profondeur douce multi-couches plutôt qu'un filet plat : lecture plus
+   moderne, hiérarchie de surface plus nette (Soft UI Evolution) */
+.meal-card-lg{padding:22px 24px 20px;display:flex;flex-direction:column;border-radius:24px;
+  border:1px solid transparent;
+  box-shadow:0 1px 2px rgba(31,41,26,.05),0 6px 18px -8px rgba(31,41,26,.14),inset 0 1px 0 rgba(255,255,255,.55)}
+[data-theme="dark"] .meal-card-lg{
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 10px 26px -12px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.045)}
+.meal-card-lg:hover{box-shadow:0 2px 4px rgba(31,41,26,.06),0 18px 40px -14px rgba(31,41,26,.22),inset 0 1px 0 rgba(255,255,255,.6)}
+[data-theme="dark"] .meal-card-lg:hover{box-shadow:0 2px 6px rgba(0,0,0,.45),0 22px 48px -16px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
+.mcl-top{align-items:flex-start;margin-bottom:16px;gap:12px}
+.mcl-chips{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+/* Médaillon teinté selon le moment de la journée — repère instantané */
+.mcl-icon{width:46px;height:46px;border-radius:15px;font-size:23px;background:var(--surface-dim);
   border:1px solid var(--hairline);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+.mcl-icon.breakfast{background:linear-gradient(150deg,rgba(245,158,11,.13),transparent 70%)}
+.mcl-icon.lunch{background:linear-gradient(150deg,rgba(201,154,85,.14),transparent 70%)}
+.mcl-icon.snack{background:linear-gradient(150deg,rgba(34,197,94,.12),transparent 70%)}
+.mcl-icon.dinner{background:linear-gradient(150deg,rgba(99,102,241,.13),transparent 70%)}
 [data-theme="dark"] .mcl-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+/* Pastille de statut FODMAP : la promesse de l'app, enfin visible sur la carte */
+.mcl-fod{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;
+  letter-spacing:.7px;text-transform:uppercase;padding:5px 10px;border-radius:8px;white-space:nowrap}
+.mcl-fod i{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+/* teintes dédiées : le texte fait 9.5px, les jetons génériques ne tenaient
+   pas le 4.5:1 sur ces fonds (surtout en sombre) */
+.mcl-fod.safe{background:var(--green-100);color:var(--green-700)}
+.mcl-fod.mod{background:var(--amber-100);color:#8a5a06}
+.mcl-fod.avoid{background:var(--red-100);color:#a01818}
+[data-theme="dark"] .mcl-fod.mod{color:#f6c04f}
+[data-theme="dark"] .mcl-fod.avoid{color:#f79b9b}
+/* Part du repas dans l'objectif du jour : micro data-viz, zéro texte en plus */
+.mcl-share{height:3px;border-radius:3px;background:var(--hairline);overflow:hidden;margin-top:12px}
+.mcl-share span{display:block;height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--green-500),var(--forest));transition:width .6s var(--tb)}
 .mcl-tag{font-size:9.5px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;
   padding:5px 11px;border-radius:8px;background:var(--surface-dim);color:var(--slate-500);border:1px solid var(--hairline)}
 .mcl-tag.custom{background:var(--gold-50);color:var(--gold-700);border-color:var(--gold-200)}
 .mcl-tag.warn{background:var(--amber-100);color:var(--amber-700);border-color:transparent}
-.mcl-name{font-size:15.5px;font-weight:700;line-height:1.38;color:var(--slate-900);
-  min-height:2.76em;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-/* Strip de stats : chiffres serif, libellés discrets, filets fins — zéro couleur criarde */
-.mcl-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:auto;
-  padding:14px 0 4px;border-top:1px solid var(--hairline)}
-.mcl-stat{display:flex;flex-direction:column;gap:2px;padding-left:14px;border-left:1px solid var(--hairline)}
+.mcl-name{font-size:16px;font-weight:700;line-height:1.36;color:var(--slate-900);letter-spacing:-.15px;
+  min-height:2.4em;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Strip de stats : chiffres serif, libellés discrets, filets fins — zéro couleur criarde.
+   Colonne 1 (kcal) élargie et agrandie : c'est la métrique de pilotage. */
+.mcl-stats{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:2px;margin-top:auto;
+  padding:15px 0 2px;border-top:1px solid var(--hairline)}
+.mcl-stat{display:flex;flex-direction:column;gap:3px;padding-left:14px;border-left:1px solid var(--hairline)}
 .mcl-stat:first-child{padding-left:0;border-left:none}
-.mcl-stat-v{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;color:var(--slate-900);line-height:1;letter-spacing:-.3px}
-.mcl-stat-v i{font-style:normal;font-size:12px;font-weight:600;color:var(--slate-400);margin-left:1px}
+.mcl-stat-v{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--slate-900);line-height:1;letter-spacing:-.3px}
+.mcl-stat.lead .mcl-stat-v{font-size:23px;letter-spacing:-.6px}
+.mcl-stat-v i{font-style:normal;font-size:11.5px;font-weight:600;color:var(--slate-400);margin-left:1px}
 .mcl-stat-l{font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--slate-500)}
 /* Barre d'actions : validation + remplacement côte à côte (fini le bouton
    flottant qui chevauchait le tag au toucher) */
@@ -2611,6 +2644,21 @@ function setReintroStatus(i,status){
 
 /* ============ WEEKLY MENU ============ */
 function selectDay(day){selectedDay=day;renderMenuDay()}
+/* Statut FODMAP réel d'un repas (seuils Monash appliqués aux grammages affichés) */
+function mealFodmapStatus(d,k){
+  const meal=d.meals[k]; const scale=meal.customized?1:dayScaleFactor(d);
+  let avoid=false, over=false, mod=false;
+  meal.ingr.forEach(ing=>{
+    const f=findFood(ing.n); if(!f) return;
+    const g=scaledGrams(meal,ing,scale);
+    if(f.s==='avoid') avoid=true;
+    else if(f.s==='moderate'){ mod=true; if(g>f.g) over=true; }
+  });
+  if(avoid||over) return {cls:'avoid',txt:'À surveiller'};
+  if(mod) return {cls:'mod',txt:'Modérés'};
+  return {cls:'safe',txt:'Safe'};
+}
+
 /* Icône vectorielle (jamais d'emoji sur un contrôle : rendu stable et thémable) */
 const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 const SVG_SWAP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6M21 22v-6h-6"/><path d="M21 11.5A9 9 0 0 0 6.2 5.2L3 8M3 12.5a9 9 0 0 0 14.8 6.3L21 16"/></svg>';
@@ -2723,14 +2771,23 @@ function renderMenuDay(){
     const tag = warn?'⚠️ Hors préférences':(meal.customized?'✏️ Modifié':mealLabels[k]);
     const eaten = isMealEaten(d.day,k);
     const future = isFutureDay(d.day);
+    const fod = mealFodmapStatus(d,k);
+    const share = Math.min(100,Math.round((mm.k/profile.calTarget)*100)||0);
     return `<div class="meal-card-lg ${eaten?'eaten':''}" style="animation-delay:${i*.06}s" onclick='openMealModal(${JSON.stringify(d.day)},${JSON.stringify(k)})'>
-      <div class="mcl-top"><div class="mcl-icon">${mealIcons[k]}</div><span class="mcl-tag ${meal.customized?'custom':''} ${warn?'warn':''}">${tag.replace(/^\S+\s/,'')}</span></div>
+      <div class="mcl-top">
+        <div class="mcl-icon ${k}">${mealIcons[k]}</div>
+        <div class="mcl-chips">
+          <span class="mcl-fod ${fod.cls}"><i></i>${fod.txt}</span>
+          <span class="mcl-tag ${meal.customized?'custom':''} ${warn?'warn':''}">${tag.replace(/^\S+\s/,'')}</span>
+        </div>
+      </div>
       <div class="mcl-name">${meal.name}</div>
       <div class="mcl-stats">
-        <div class="mcl-stat"><span class="mcl-stat-v">${Math.round(mm.k)}</span><span class="mcl-stat-l">kcal</span></div>
+        <div class="mcl-stat lead"><span class="mcl-stat-v">${Math.round(mm.k)}</span><span class="mcl-stat-l">kcal</span></div>
         <div class="mcl-stat"><span class="mcl-stat-v">${Math.round(mm.pr)}<i>g</i></span><span class="mcl-stat-l">protéines</span></div>
         <div class="mcl-stat"><span class="mcl-stat-v">${price.toFixed(2)}<i>€</i></span><span class="mcl-stat-l">coût</span></div>
       </div>
+      <div class="mcl-share" title="Part de l'objectif calorique du jour"><span style="width:${share}%"></span></div>
       <div class="mcl-actions">
         ${future?`<div class="mcl-eat future" aria-disabled="true"><span class="mcl-eat-box"></span>À venir</div>`
           :`<button class="mcl-eat ${eaten?'on':''}" onclick='event.stopPropagation();toggleMealEaten(${JSON.stringify(d.day)},${JSON.stringify(k)})' aria-pressed="${eaten}">
