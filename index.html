@@ -994,16 +994,68 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .symp-insight b{display:block;font-size:12.5px;color:var(--slate-900)}
 .symp-insight span{display:block;font-size:11.5px;color:var(--slate-600);margin-top:3px;line-height:1.55}
 
-/* Validation des repas */
-.mcl-eat{display:flex;align-items:center;gap:8px;width:100%;margin-top:14px;padding:10px 12px;border:1.5px solid var(--hairline);border-radius:12px;background:var(--surface-dim);font-family:inherit;font-size:12px;font-weight:700;color:var(--slate-600);cursor:pointer;transition:all var(--tf)}
-.mcl-eat:hover{border-color:var(--forest);color:var(--forest)}
-.mcl-eat.on{background:var(--green-50);border-color:var(--forest);color:var(--forest)}
-.mcl-eat-box{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--slate-300);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:var(--surface)}
-.mcl-eat.on .mcl-eat-box{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
-.mcl-eat.future{opacity:.5;cursor:default;font-weight:600}
-.mcl-eat.future:hover{border-color:var(--hairline);color:var(--slate-600)}
+/* ============ CARTES REPAS v3 — refonte premium ============
+   Fini les pastilles colorées (illisibles en sombre) : strip de stats
+   éditorial, médaillon sobre, contrôle de validation vectoriel. */
+.meal-grid-lg{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media(max-width:640px){.meal-grid-lg{grid-template-columns:minmax(0,1fr)}}
+.meal-card-lg{padding:22px 24px 20px;display:flex;flex-direction:column;border-radius:24px}
+.mcl-top{align-items:center;margin-bottom:14px}
+.mcl-icon{width:46px;height:46px;border-radius:14px;font-size:23px;background:var(--surface-dim);
+  border:1px solid var(--hairline);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+[data-theme="dark"] .mcl-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.mcl-tag{font-size:9.5px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;
+  padding:5px 11px;border-radius:8px;background:var(--surface-dim);color:var(--slate-500);border:1px solid var(--hairline)}
+.mcl-tag.custom{background:var(--gold-50);color:var(--gold-700);border-color:var(--gold-200)}
+.mcl-tag.warn{background:var(--amber-100);color:var(--amber-700);border-color:transparent}
+.mcl-name{font-size:15.5px;font-weight:700;line-height:1.38;color:var(--slate-900);
+  min-height:2.76em;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Strip de stats : chiffres serif, libellés discrets, filets fins — zéro couleur criarde */
+.mcl-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:auto;
+  padding:14px 0 4px;border-top:1px solid var(--hairline)}
+.mcl-stat{display:flex;flex-direction:column;gap:2px;padding-left:14px;border-left:1px solid var(--hairline)}
+.mcl-stat:first-child{padding-left:0;border-left:none}
+.mcl-stat-v{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;color:var(--slate-900);line-height:1;letter-spacing:-.3px}
+.mcl-stat-v i{font-style:normal;font-size:12px;font-weight:600;color:var(--slate-400);margin-left:1px}
+.mcl-stat-l{font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--slate-500)}
+/* Barre d'actions : validation + remplacement côte à côte (fini le bouton
+   flottant qui chevauchait le tag au toucher) */
+.mcl-actions{display:flex;gap:8px;align-items:stretch;margin-top:16px}
+.mcl-actions .mcl-eat{flex:1;margin-top:0}
+.mcl-swap{position:static;width:44px;height:auto;min-height:44px;border-radius:14px;flex-shrink:0;
+  background:transparent;border:1.5px solid var(--hairline);color:var(--slate-500);opacity:1;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background var(--tf),border-color var(--tf),color var(--tf)}
+.mcl-swap svg{width:16px;height:16px}
+.mcl-swap:hover{border-color:var(--gold);color:var(--gold-700);background:var(--gold-50)}
+.mcl-swap:active{transform:scale(.94)}
+.meal-card-lg:hover .mcl-swap{opacity:1}
+/* Contrôle de validation : 44px de haut, icône vectorielle, états nets */
+.mcl-eat{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:44px;margin-top:16px;
+  padding:11px 14px;border:1.5px solid var(--hairline);border-radius:14px;background:transparent;
+  font-family:inherit;font-size:12.5px;font-weight:700;color:var(--slate-500);cursor:pointer;
+  transition:background var(--tf),border-color var(--tf),color var(--tf)}
+.mcl-eat:hover{border-color:var(--forest);color:var(--forest);background:var(--green-50)}
+.mcl-eat:active{transform:scale(.985)}
+.mcl-eat.on{background:var(--forest);border-color:var(--forest);color:#f5f1e8;box-shadow:0 4px 14px rgba(20,83,45,.22)}
+.mcl-eat.on:hover{background:var(--forest-deep);color:#fff}
+.mcl-eat-box{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--slate-300);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface);transition:all var(--tf)}
+.mcl-eat-box svg{width:12px;height:12px;opacity:0;transform:scale(.6);transition:opacity var(--tf),transform .25s var(--ts);color:#fff}
+.mcl-eat:hover .mcl-eat-box{border-color:var(--forest)}
+.mcl-eat.on .mcl-eat-box{background:#f5f1e8;border-color:#f5f1e8}
+.mcl-eat.on .mcl-eat-box svg{opacity:1;transform:scale(1);color:var(--forest)}
+.mcl-eat.future{opacity:.45;cursor:default;font-weight:600}
+.mcl-eat.future:hover{border-color:var(--hairline);color:var(--slate-500);background:transparent}
+.mcl-eat.future .mcl-eat-box{border-style:dashed;background:transparent}
+/* Repas validé : liseré vert + pastille d'angle, sans bousculer la mise en page */
 .meal-card-lg.eaten{border-color:var(--green-200)}
-.meal-card-lg.eaten .mcl-name{color:var(--forest)}
+.meal-card-lg.eaten::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--green-500),var(--forest));z-index:2}
+/* le liseré et l'état du bouton suffisent à signaler la validation :
+   recolorer le titre nuisait au contraste en mode sombre */
+.meal-card-lg.eaten .mcl-name{color:var(--slate-900)}
+[data-theme="dark"] .dmeal.eaten .dmeal-info span{color:var(--green-700)}
 .ds-eaten{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
 .ds-eaten.ok{border-color:var(--green-400)}
 .ds-eaten.mid{border-color:var(--amber-500)}
@@ -2559,6 +2611,10 @@ function setReintroStatus(i,status){
 
 /* ============ WEEKLY MENU ============ */
 function selectDay(day){selectedDay=day;renderMenuDay()}
+/* Icône vectorielle (jamais d'emoji sur un contrôle : rendu stable et thémable) */
+const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+const SVG_SWAP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6M21 22v-6h-6"/><path d="M21 11.5A9 9 0 0 0 6.2 5.2L3 8M3 12.5a9 9 0 0 0 14.8 6.3L21 16"/></svg>';
+
 /* ============ VALIDATION DES REPAS (« mangé ») ============
    Indexée sur la vraie date (pas le jour de semaine) : l'historique reste
    juste d'une semaine à l'autre. Synchronisée comme le reste. */
@@ -2668,14 +2724,20 @@ function renderMenuDay(){
     const eaten = isMealEaten(d.day,k);
     const future = isFutureDay(d.day);
     return `<div class="meal-card-lg ${eaten?'eaten':''}" style="animation-delay:${i*.06}s" onclick='openMealModal(${JSON.stringify(d.day)},${JSON.stringify(k)})'>
-      <button class="mcl-swap" onclick='event.stopPropagation();swapMeal(${JSON.stringify(d.day)},${JSON.stringify(k)})' title="Remplacer ce repas" aria-label="Remplacer ce repas">🔄</button>
-      <div class="mcl-top"><div class="mcl-icon">${mealIcons[k]}</div><span class="mcl-tag ${meal.customized?'custom':''} ${warn?'warn':''}">${tag}</span></div>
+      <div class="mcl-top"><div class="mcl-icon">${mealIcons[k]}</div><span class="mcl-tag ${meal.customized?'custom':''} ${warn?'warn':''}">${tag.replace(/^\S+\s/,'')}</span></div>
       <div class="mcl-name">${meal.name}</div>
-      <div class="mcl-macros"><span class="mcl-pill k">🔥 ${Math.round(mm.k)} kcal</span><span class="mcl-pill p">💪 ${Math.round(mm.pr)}g</span><span class="mcl-pill k" style="background:var(--green-100);color:var(--green-700)">💶 ${price.toFixed(2)}€</span></div>
-      ${future?`<div class="mcl-eat future" aria-disabled="true"><span class="mcl-eat-box">·</span>À venir</div>`
-        :`<button class="mcl-eat ${eaten?'on':''}" onclick='event.stopPropagation();toggleMealEaten(${JSON.stringify(d.day)},${JSON.stringify(k)})' aria-pressed="${eaten}">
-        <span class="mcl-eat-box">${eaten?'✓':''}</span>${eaten?'Mangé':'Marquer comme mangé'}
-      </button>`}
+      <div class="mcl-stats">
+        <div class="mcl-stat"><span class="mcl-stat-v">${Math.round(mm.k)}</span><span class="mcl-stat-l">kcal</span></div>
+        <div class="mcl-stat"><span class="mcl-stat-v">${Math.round(mm.pr)}<i>g</i></span><span class="mcl-stat-l">protéines</span></div>
+        <div class="mcl-stat"><span class="mcl-stat-v">${price.toFixed(2)}<i>€</i></span><span class="mcl-stat-l">coût</span></div>
+      </div>
+      <div class="mcl-actions">
+        ${future?`<div class="mcl-eat future" aria-disabled="true"><span class="mcl-eat-box"></span>À venir</div>`
+          :`<button class="mcl-eat ${eaten?'on':''}" onclick='event.stopPropagation();toggleMealEaten(${JSON.stringify(d.day)},${JSON.stringify(k)})' aria-pressed="${eaten}">
+          <span class="mcl-eat-box">${SVG_CHECK}</span>${eaten?'Repas validé':'Marquer comme mangé'}
+        </button>`}
+        <button class="mcl-swap" onclick='event.stopPropagation();swapMeal(${JSON.stringify(d.day)},${JSON.stringify(k)})' title="Remplacer ce repas" aria-label="Remplacer ce repas">${SVG_SWAP}</button>
+      </div>
     </div>`;
   }).join('');
 }
