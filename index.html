@@ -484,7 +484,8 @@ button{font-family:inherit}
 
 /* SHOPPING LIST */
 .shop-list{list-style:none;display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto}
-.shop-list li{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--slate-50);border-radius:10px;font-size:13px;font-weight:500;color:var(--slate-700);text-transform:capitalize;cursor:pointer;transition:opacity var(--tf)}
+/* pas de capitalize : il cassait les noms composés (« Huile D'olive », « Banane Verte (Non Mûre) ») */
+.shop-list li{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--slate-50);border-radius:10px;font-size:13px;font-weight:500;color:var(--slate-700);cursor:pointer;transition:opacity var(--tf)}
 .shop-list li .ck{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--green-400);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;transition:all var(--tf)}
 .shop-list li .ck.checked{background:var(--green-500)}
 .shop-list li.owned{opacity:.45;text-decoration:line-through}
@@ -1100,6 +1101,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .ds-eaten-verdict{font-size:11.5px;font-weight:700;color:#fff;margin-top:8px}
 .dmeal.eaten .dmeal-info span{color:var(--forest)}
 .dmeal-eat{font-size:13px;flex-shrink:0;opacity:.85}
+
+/* Actions de la liste de courses */
+.shop-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.shop-actions button{flex:1;min-width:130px;min-height:44px;justify-content:center;padding:12px 16px;font-size:13px}
 
 /* Synchro */
 .sync-status{font-size:12.5px;font-weight:700;color:var(--slate-700);padding:10px 14px;background:var(--surface-dim);border:1px solid var(--hairline);border-radius:12px;margin-bottom:12px}
@@ -3440,7 +3445,8 @@ async function pasteAndImportRecipeFP(){
   importRecipeTextFP();
 }
 
-function openShoppingList(){
+/* Agrégation partagée entre l'affichage et l'export/copie */
+function computeShoppingAgg(){
   const agg={}; const priceAgg={};
   menuData.forEach(d=>{
     Object.keys(d.meals).forEach(key=>{
@@ -3454,6 +3460,64 @@ function openShoppingList(){
       });
     });
   });
+  return {agg,priceAgg};
+}
+function fmtQty(g){ return g>=1000 ? (g/1000).toFixed(2).replace(/\.?0+$/,'')+' kg' : Math.round(g)+' g'; }
+/* Texte de la liste : seuls les articles à acheter (le placard est exclu) */
+function shoppingListText(){
+  const {agg,priceAgg}=computeShoppingAgg();
+  const toBuy=Object.keys(agg).sort().filter(n=>!pantryItems.has(n));
+  const total=toBuy.reduce((s,n)=>s+priceAgg[n],0);
+  const lines=[
+    '🛒 Liste de courses FODMAP+ — semaine '+programWeek,
+    STORES[selectedStore].label+' · dîner pour '+householdDiners+' personne'+(householdDiners>1?'s':''),
+    ''
+  ];
+  toBuy.forEach(n=>lines.push('- '+n+' — '+fmtQty(agg[n])));
+  lines.push('');
+  lines.push('Total estimé : '+total.toFixed(2)+' € (budget '+weeklyBudget+' €)');
+  if(pantryItems.size) lines.push(pantryItems.size+' article'+(pantryItems.size>1?'s':'')+' déjà au placard, non listé'+(pantryItems.size>1?'s':''));
+  lines.push('Prix indicatifs — générée le '+new Date().toLocaleDateString('fr-FR'));
+  return lines.join('\n');
+}
+async function copyShoppingList(){
+  const txt=shoppingListText();
+  try{
+    await navigator.clipboard.writeText(txt);
+    toast('Liste copiée dans le presse-papiers 📋');
+    return;
+  }catch(e){}
+  /* repli : presse-papiers refusé (permission, contexte non sécurisé, vieux navigateur) */
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=txt; ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:50%;left:50%;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0,txt.length);
+    const ok=document.execCommand('copy');
+    ta.remove();
+    if(ok){ toast('Liste copiée 📋'); return; }
+  }catch(e){}
+  showShoppingText(txt); /* dernier recours : on affiche le texte à copier à la main */
+}
+function showShoppingText(txt){
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-hd"><div class="me">📋</div><button class="modal-close" onclick="openShoppingList()" aria-label="Retour">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-title">Copier la liste</div>
+      <p class="modal-badge safe">Sélectionnez le texte puis copiez-le (le presse-papiers automatique a été refusé par le navigateur)</p>
+      <textarea class="pplx-txt" style="min-height:240px;font-size:12.5px" readonly onclick="this.select()">${txt.replace(/</g,'&lt;')}</textarea>
+      <button class="btn-s" style="width:100%;justify-content:center;margin-top:12px" onclick="openShoppingList()">← Retour à la liste</button>
+    </div>`;
+  document.getElementById('modalBg').classList.add('show');
+}
+async function shareShoppingList(){
+  const txt=shoppingListText();
+  try{ await navigator.share({title:'Liste de courses FODMAP+',text:txt}); }
+  catch(e){ if(e&&e.name!=='AbortError') copyShoppingList(); }
+}
+function openShoppingList(){
+  const {agg,priceAgg}=computeShoppingAgg();
   const items=Object.keys(agg).sort();
   const weekK = menuData.reduce((s,d)=>s+dayDisplayTotals(d).k,0);
   const totalAll = Object.values(priceAgg).reduce((a,b)=>a+b,0);
@@ -3477,7 +3541,11 @@ function openShoppingList(){
       <div class="shop-total-row"><span>Total estimé${pantryItems.size?' (hors "déjà en stock")':''}</span><b>${totalRemaining.toFixed(2)} €</b></div>
       <div class="shop-budget-row">${totalRemaining<=weeklyBudget?'✅':'⚠️'} Objectif budget : ${weeklyBudget} €${pantryItems.size?` · Prix plein sans le placard : ${totalAll.toFixed(2)} €`:''}</div>
       <div style="font-size:11.5px;color:var(--slate-400);text-align:center;margin-top:6px">Cliquez un article pour le marquer « déjà en stock » · prix estimés ${STORES[selectedStore].label}, pas de tarif temps réel</div>
-      <button class="btn-p" style="width:100%;justify-content:center;margin-top:16px" onclick="toast('Liste copiée / prête à imprimer 🛒')">Copier la liste</button>
+      <div class="shop-actions">
+        <button class="btn-p" onclick="copyShoppingList()">📋 Copier la liste</button>
+        ${navigator.share?`<button class="btn-s" onclick="shareShoppingList()">📤 Partager</button>`:''}
+        <button class="btn-s" onclick="exportMenuPdf()">🖨️ Imprimer</button>
+      </div>
     </div>`;
   document.getElementById('modalBg').classList.add('show');
 }
