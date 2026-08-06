@@ -1196,6 +1196,71 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .day-col{will-change:transform}
 .dash-card:hover{box-shadow:0 0 0 1px var(--gold-200),var(--s-md)}
 .app-foot-meta a{color:var(--slate-400);text-decoration:none}
+
+/* ============ DICTÉE VOCALE + INSTALLATION PWA ============ */
+.voice-fab{position:fixed;right:20px;bottom:calc(22px + env(safe-area-inset-bottom));z-index:1500;display:flex;align-items:center;gap:9px;padding:14px 20px 14px 17px;border:none;border-radius:32px;cursor:pointer;background:linear-gradient(135deg,var(--green-500),var(--green-700));color:#fff;font-size:13.5px;font-weight:700;box-shadow:0 12px 30px rgba(20,83,45,.34);transition:transform var(--tf),box-shadow var(--tf)}
+.voice-fab svg{width:20px;height:20px;flex:none;stroke:currentColor}
+.voice-fab:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(20,83,45,.42)}
+.voice-fab:active{transform:scale(.95)}
+.voice-fab.listening{animation:pulseRing 1.6s infinite}
+@media(max-width:900px){
+  .voice-fab{right:14px;bottom:calc(74px + env(safe-area-inset-bottom));width:56px;height:56px;padding:0;border-radius:50%;justify-content:center}
+  .voice-fab .voice-fab-lbl{display:none}
+}
+/* sur l'onglet Coach, le bouton flottant masquerait le bouton d'envoi du chat */
+body[data-activetab="coach"] .voice-fab{display:none}
+@media print{.voice-fab,.install-banner{display:none!important}}
+
+.vc-stage{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 2px}
+.vc-mic{width:104px;height:104px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green-500),var(--green-700));color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(20,83,45,.32);transition:transform var(--tf)}
+.vc-mic svg{width:40px;height:40px;stroke:currentColor}
+.vc-mic:hover{transform:scale(1.04)}
+.vc-mic:active{transform:scale(.94)}
+.vc-mic.on{background:linear-gradient(135deg,#ef4444,#b91c1c);animation:pulseRing 1.5s infinite}
+.vc-hint{font-size:13px;color:var(--slate-500);text-align:center;line-height:1.6;max-width:340px}
+.vc-bars{display:flex;gap:4px;align-items:flex-end;height:26px}
+.vc-bars i{width:4px;border-radius:3px;background:var(--green-500);height:6px;animation:vcBar .9s ease-in-out infinite}
+.vc-bars i:nth-child(2){animation-delay:.12s}.vc-bars i:nth-child(3){animation-delay:.24s}
+.vc-bars i:nth-child(4){animation-delay:.36s}.vc-bars i:nth-child(5){animation-delay:.48s}
+@keyframes vcBar{0%,100%{height:6px}50%{height:24px}}
+.vc-transcript{width:100%;min-height:74px;padding:14px 16px;border-radius:16px;background:var(--slate-50);border:1px solid var(--hairline);font-size:14px;line-height:1.65;color:var(--slate-800)}
+.vc-transcript .vc-interim{color:var(--slate-400);font-style:italic}
+.vc-transcript.empty{color:var(--slate-400);font-style:italic}
+.vc-examples{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.vc-ex{background:var(--gold-50);border:1px solid var(--gold-200);color:var(--gold-700);font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:12px;cursor:pointer;transition:all var(--tf)}
+.vc-ex:hover{background:var(--gold-200)}
+.vc-quote{margin:2px 0 14px;padding:12px 15px;border-left:3px solid var(--green-500);background:var(--slate-50);border-radius:0 12px 12px 0;font-size:13px;font-style:italic;color:var(--slate-600);line-height:1.6}
+.vc-ctx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.vc-ctx label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--slate-400)}
+.vc-ctx select{padding:10px 12px;border:1.5px solid var(--hairline);border-radius:12px;font-size:13px;font-family:inherit;background:var(--surface);color:var(--slate-900);outline:none}
+.vc-ctx select:focus{border-color:var(--forest)}
+.vc-est{font-size:9.5px;font-weight:700;color:var(--gold-700);background:var(--gold-50);border:1px solid var(--gold-200);padding:1px 6px;border-radius:7px;margin-left:6px;vertical-align:1px}
+.vc-unknown{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--amber-100);color:var(--amber-700);font-size:12.5px;line-height:1.6}
+.vc-unknown-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.vc-unknown-chip{background:rgba(255,255,255,.6);border-radius:10px;padding:5px 10px;font-weight:600}
+.vc-unknown-add{background:var(--amber-700);color:#fff;border:none;border-radius:10px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.vc-fill{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--green-50);border:1px solid var(--green-200);font-size:12.5px;color:var(--green-800);line-height:1.6}
+.vc-fill button{margin-top:8px}
+.vc-err{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--red-100);color:var(--red-600);font-size:12.5px;line-height:1.6}
+.vc-empty{padding:18px;text-align:center;color:var(--slate-400);font-size:13px}
+
+.install-banner{position:fixed;left:14px;right:14px;bottom:calc(142px + env(safe-area-inset-bottom));z-index:1400;display:none;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--hairline);box-shadow:var(--s-lg)}
+.install-banner.show{display:flex;animation:popIn .4s var(--ts)}
+.install-banner .ib-ic{width:40px;height:40px;flex:none;border-radius:12px;background:linear-gradient(135deg,var(--green-500),var(--green-700));display:flex;align-items:center;justify-content:center;font-size:20px}
+.install-banner .ib-txt{flex:1;font-size:12.5px;line-height:1.5;color:var(--slate-600)}
+.install-banner .ib-txt b{display:block;font-size:13.5px;color:var(--slate-900)}
+.install-banner .ib-go{background:linear-gradient(135deg,var(--green-500),var(--green-700));color:#fff;border:none;border-radius:14px;padding:10px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.install-banner .ib-x{background:none;border:none;color:var(--slate-400);font-size:16px;cursor:pointer;padding:4px}
+@media(min-width:901px){.install-banner{left:auto;right:24px;bottom:100px;max-width:420px}}
+
+.inst-state{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;font-size:13px;font-weight:600;margin-bottom:12px}
+.inst-state.ok{background:var(--green-50);color:var(--green-800);border:1px solid var(--green-200)}
+.inst-state.ko{background:var(--amber-100);color:var(--amber-700)}
+.inst-steps{margin:12px 0 0;padding-left:20px;font-size:13px;line-height:1.8;color:var(--slate-600)}
+.inst-steps li{margin-bottom:4px}
+.inst-steps b{color:var(--slate-900)}
+.inst-diag{margin-top:14px;display:grid;gap:6px;font-size:11.5px;color:var(--slate-500)}
+.inst-diag span b{color:var(--slate-700)}
 </style>
 </head>
 <body>
@@ -1286,6 +1351,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="dash-card dash-quick">
         <div class="dash-card-hd"><h3>Actions rapides</h3></div>
         <div class="dash-actions">
+          <button class="dqa" onclick="openVoiceMeal()"><span>🎙️</span>Dicter mon repas</button>
           <button class="dqa" onclick="switchTab('aliments')"><span>🔍</span>Chercher un aliment</button>
           <button class="dqa" onclick="switchTab('coach')"><span>💬</span>Demander au coach</button>
           <button class="dqa" onclick="openShoppingList()"><span>🛒</span>Liste de courses</button>
@@ -1430,6 +1496,28 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <input type="file" id="importFileInput" accept="application/json,.json" style="display:none" onchange="importBackupFile(this)">
         </div>
         <div class="modal-tip">💡 Le fichier JSON contient tout (menus, poids, symptômes, aliments persos…). Garde-en un de temps en temps : c'est ton filet de sécurité même sans synchro.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="install" data-tab="profil">
+  <div class="inner">
+    <div class="sec-h">
+      <span class="sec-tag">Application</span>
+      <h2 class="sec-title">Installer FODMAP+ sur votre écran d'accueil</h2>
+      <p class="sec-sub">Installée, l'app s'ouvre en plein écran comme une application native — sans barre d'adresse ni onglets — et continue de fonctionner hors ligne. Un simple raccourci web, lui, rouvre toujours le navigateur.</p>
+    </div>
+    <div class="symp-wrap">
+      <div class="symp-card">
+        <h4>📱 État &amp; installation</h4>
+        <div id="installCard"></div>
+      </div>
+      <div class="symp-card">
+        <h4>🎙️ Dicter un repas</h4>
+        <p style="font-size:13px;line-height:1.7;color:var(--slate-600)">Dites ce que vous avez mangé — <i>« ce midi 150 g de poulet, du riz basmati et des courgettes »</i> — et FODMAP+ reconnaît les aliments, estime les grammages, vérifie les seuils Monash, complète le repas si besoin et l'enregistre comme repas du moment.</p>
+        <div class="pplx-row"><button class="btn-p" style="padding:12px 18px;font-size:13px" onclick="openVoiceMeal()">🎙️ Dicter mon repas</button></div>
+        <div class="modal-tip">💡 Une fois l'app installée, un appui long sur l'icône ouvre directement la dictée.</div>
       </div>
     </div>
   </div>
@@ -1590,6 +1678,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 <div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
   <div class="modal" id="modalContent"></div>
+</div>
+
+<button class="voice-fab" id="voiceFab" onclick="openVoiceMeal()" aria-label="Dicter mon repas">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
+  <span class="voice-fab-lbl">Dicter mon repas</span>
+</button>
+
+<div class="install-banner" id="installBanner">
+  <div class="ib-ic">🌿</div>
+  <div class="ib-txt"><b>Installer FODMAP+</b>Pour l'ouvrir en plein ecran, hors navigateur, et hors ligne.</div>
+  <button class="ib-go" onclick="triggerInstall()">Installer</button>
+  <button class="ib-x" onclick="dismissInstallBanner()" aria-label="Masquer">✕</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2257,7 +2357,7 @@ const RING_C = 2*Math.PI*52;
 
 /* ============ TAB NAVIGATION ============ */
 let activeTab='accueil';
-const TAB_ROUTE={phases:'profil',faq:'profil',profil:'profil',poids:'profil',symptomes:'profil',sync:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
+const TAB_ROUTE={phases:'profil',faq:'profil',profil:'profil',poids:'profil',symptomes:'profil',sync:'profil',install:'profil',explorer:'aliments',menu:'menu',coach:'coach'};
 
 const VALID_TABS=['accueil','menu','aliments','profil','coach'];
 const TAB_TITLES={accueil:"FODMAP+ \u2014 Coach Low FODMAP Premium",menu:"Menu \u2014 FODMAP+",aliments:"Aliments \u2014 FODMAP+",profil:"Profil \u2014 FODMAP+",coach:"Coach IA \u2014 FODMAP+"};
@@ -2266,6 +2366,7 @@ function switchTab(tab,updateHistory){
   if(updateHistory===undefined)updateHistory=true;
   if(!VALID_TABS.includes(tab))tab='accueil';
   activeTab=tab;
+  document.body.dataset.activetab=tab; /* pilote l'affichage du bouton de dictée */
   document.querySelectorAll('[data-tab]').forEach(el=>{el.classList.toggle('tab-active',el.dataset.tab===tab)});
   document.querySelectorAll('.tab-link').forEach(el=>{const on=el.dataset.tablink===tab;el.classList.toggle('active',on);el.setAttribute('aria-selected',on?'true':'false')});
   document.querySelectorAll('.tb-btn').forEach(el=>{const on=el.dataset.tablink===tab;el.classList.toggle('active',on);el.setAttribute('aria-selected',on?'true':'false')});
@@ -2501,7 +2602,10 @@ function openFoodModal(name){
     </div>`;
   document.getElementById('modalBg').classList.add('show');
 }
-function closeModal(){document.getElementById('modalBg').classList.remove('show')}
+function closeModal(){
+  document.getElementById('modalBg').classList.remove('show');
+  if(typeof voiceAbort==='function') voiceAbort(); /* coupe le micro si la dictée était ouverte */
+}
 
 /* ============ SEARCH ============ */
 function handleSearch(q){
@@ -3246,6 +3350,7 @@ function openMealBuilderBack(){
   const r=customFoodReturn; customFoodReturn=null;
   if(r&&r.target==='builder') renderMealBuilder();
   else if(r&&r.target==='meal') openMealModal(r.day,r.key);
+  else if(r&&r.target==='voice') renderVoiceReview();
   else closeModal();
 }
 function openPerplexityAlimentFP(){
@@ -3293,6 +3398,10 @@ function saveCustomFoodFromForm(){
   if(customFoodReturn){
     const r=customFoodReturn; customFoodReturn=null;
     if(r.target==='builder'){ builderState.ingr.push({n:f.n,g:f.g}); renderMealBuilder(); }
+    else if(r.target==='voice'){
+      if(voiceDraft){ if(r.idx!=null) voiceDraft.unknown.splice(r.idx,1); voiceDraft.items.push({n:f.n,g:f.g,est:true}); }
+      renderVoiceReview();
+    }
     else if(r.target==='meal'){ addIngredientByName(r.day,r.key,f.n,f.g); }
   } else closeModal();
 }
@@ -3350,6 +3459,8 @@ function pickerAdd(name){
     const ex=builderState.ingr.find(i=>i.n===name);
     if(ex) ex.g+=f.g; else builderState.ingr.push({n:name,g:f.g});
     renderMealBuilder();
+  } else if(pickerCtx.target==='voice'){
+    voiceAddItem(name,f.g);
   } else {
     addIngredientByName(pickerCtx.day,pickerCtx.key,name,f.g);
   }
@@ -4668,6 +4779,717 @@ document.addEventListener('pointerout',(e)=>{
   c.style.setProperty('--rx','0deg'); c.style.setProperty('--ry','0deg');
 },{passive:true});
 
+
+/* ============ DICTÉE VOCALE : « je dicte ce que j'ai mangé, l'app compose le repas » ============
+   Reconnaissance vocale native (Web Speech API, fr-FR) + analyse en langage naturel :
+   quantités (chiffres, nombres écrits, mesures ménagères), aliments de la base (avec
+   synonymes parlés), créneau et jour déduits de la phrase. Repli clavier si le navigateur
+   ne sait pas écouter. Le résultat est relu, complété si besoin, puis appliqué au repas. */
+
+const SVG_MIC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>';
+const SVG_STOP='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>';
+
+/* Nombres écrits en toutes lettres (la dictée rend souvent « deux cents » et non « 200 ») */
+const VOICE_NUM={zero:0,un:1,une:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8,neuf:9,dix:10,
+  onze:11,douze:12,treize:13,quatorze:14,quinze:15,seize:16,vingt:20,vingts:20,trente:30,quarante:40,
+  cinquante:50,soixante:60,cent:100,cents:100,mille:1000,demi:0.5,demie:0.5,quart:0.25};
+
+/* Mesures ménagères → grammes (valeurs usuelles des tables de portions) */
+const VOICE_MEASURES=[
+  {re:/\bcuilleres? a soupe\b|\bc a s\b/,g:15,fat:12},
+  {re:/\bcuilleres? a cafe\b|\bc a c\b/,g:5,fat:5},
+  {re:/\bpoignees?\b/,g:30},
+  {re:/\btranches?\b/,g:30},
+  {re:/\bbols?\b/,g:250},
+  {re:/\bverres?\b/,g:200},
+  {re:/\btasses?\b/,g:240},
+  {re:/\bassiettes?\b/,g:250},
+  {re:/\bbarquettes?\b|\bpots?\b/,g:125},
+  {re:/\bboites?\b|\bconserves?\b/,g:130},
+  {re:/\bfilets?\b/,g:130},
+  {re:/\bsteaks?\b|\bescalopes?\b|\bpaves?\b|\bblancs? de\b/,g:150},
+  {re:/\bmorceaux?\b|\bcarres?\b/,g:25},
+  {re:/\bpincees?\b|\bgouttes?\b/,g:2},
+  {re:/\bgousses?\b/,g:5},
+  {re:/\bportions?\b|\bunites?\b|\bpieces?\b/,g:null} /* null → portion de référence de l'aliment */
+];
+
+/* Poids moyen d'une pièce : « deux œufs », « une banane », « dix amandes » */
+const VOICE_PIECE={'Œufs':60,'Banane verte (non mûre)':110,'Banane mûre':118,'Pomme':180,'Poire':178,
+  'Orange':130,'Mandarine':75,'Kiwi':75,'Citron':60,'Pêche':150,'Prune':60,'Abricot':45,'Fraise':12,
+  'Framboise':4,'Cerise':8,'Litchi':10,'Tomate':110,'Pomme de terre':120,'Patate douce':150,'Carotte':70,
+  'Courgette':200,'Aubergine':250,'Poivron rouge':150,'Concombre':300,'Avocat':140,'Champignon':15,
+  'Oignon':110,'Ail':5,'Olives':4,'Noix':5,'Amandes':1.2,'Noisettes':1.2,'Noix de cajou':1.5,
+  'Noix de pécan':2,'Pistaches':0.8,'Yaourt classique':125,'Yaourt sans lactose':125,'Pain de blé':30,
+  'Pain sans gluten':30,'Tortilla sans gluten':45,'Feta':30,'Brie / Camembert':30,'Chocolat noir':5};
+
+/* Mots parlés → aliment exact de la base (les libellés les plus longs sont testés en premier) */
+const VOICE_SYN=[
+  ['blanc de poulet','Poulet'],['escalope de poulet','Poulet'],['poulet roti','Poulet'],['volaille','Poulet'],['poulet','Poulet'],
+  ['viande hachee','Bœuf'],['steak hache','Bœuf'],['bavette','Bœuf'],['entrecote','Bœuf'],['rumsteck','Bœuf'],['boeuf','Bœuf'],
+  ['jambon blanc','Porc'],['jambon','Porc'],['lardons','Porc'],['bacon','Porc'],['cotes de porc','Porc'],
+  ['blanc de dinde','Dinde'],['dinde','Dinde'],
+  ['saumon fume','Saumon'],['pave de saumon','Saumon'],['saumon','Saumon'],
+  ['colin','Poisson blanc'],['merlu','Poisson blanc'],['lieu noir','Poisson blanc'],['poisson blanc','Poisson blanc'],['poisson','Poisson blanc'],
+  ['gambas','Crevettes'],['crevettes','Crevettes'],
+  ['oeuf au plat','Œufs'],['oeufs brouilles','Œufs'],['omelette','Œufs'],['oeufs','Œufs'],['oeuf','Œufs'],
+  ['tofu soyeux','Tofu soyeux'],['tofu','Tofu ferme'],['thon','Thon (conserve au naturel)'],
+  ['riz basmati','Riz blanc / basmati'],['riz complet','Riz blanc / basmati'],['riz','Riz blanc / basmati'],
+  ['nouilles de riz','Nouilles de riz'],['vermicelles de riz','Nouilles de riz'],
+  ['pates sans gluten','Pâtes sans gluten'],['spaghettis','Pâtes de blé'],['spaghetti','Pâtes de blé'],
+  ['penne','Pâtes de blé'],['macaronis','Pâtes de blé'],['tagliatelles','Pâtes de blé'],['pates','Pâtes de blé'],
+  ['pain sans gluten','Pain sans gluten'],['pain complet','Pain de blé'],['baguette','Pain de blé'],
+  ['tartines','Pain de blé'],['tartine','Pain de blé'],['biscotte','Pain de blé'],['pain','Pain de blé'],
+  ['flocons d avoine','Flocons d\'avoine'],['porridge','Flocons d\'avoine'],['muesli','Flocons d\'avoine'],['avoine','Flocons d\'avoine'],
+  ['semoule','Couscous (blé)'],['boulgour','Couscous (blé)'],['couscous','Couscous (blé)'],
+  ['puree de pommes de terre','Pomme de terre'],['pommes de terre','Pomme de terre'],['pomme de terre','Pomme de terre'],
+  ['patates douces','Patate douce'],['patate douce','Patate douce'],['frites','Pomme de terre'],['patates','Pomme de terre'],
+  ['yaourt sans lactose','Yaourt sans lactose'],['yaourt grec','Yaourt classique'],['yaourt nature','Yaourt classique'],
+  ['yaourt','Yaourt classique'],['fromage blanc','Fromage frais / Ricotta'],['ricotta','Fromage frais / Ricotta'],
+  ['parmesan','Fromage à pâte dure (parmesan, cheddar)'],['cheddar','Fromage à pâte dure (parmesan, cheddar)'],
+  ['comte','Fromage à pâte dure (parmesan, cheddar)'],['emmental','Fromage à pâte dure (parmesan, cheddar)'],
+  ['gruyere','Fromage à pâte dure (parmesan, cheddar)'],['fromage rape','Fromage à pâte dure (parmesan, cheddar)'],
+  ['mozzarella','Fromage frais / Ricotta'],['camembert','Brie / Camembert'],['brie','Brie / Camembert'],['feta','Feta'],
+  ['fromage','Fromage à pâte dure (parmesan, cheddar)'],
+  ['lait sans lactose','Lait sans lactose'],['lait d amande','Lait d\'amande'],['lait de coco','Lait de coco'],
+  ['lait de soja','Lait de soja (fève entière)'],['lait ecreme','Lait de vache'],['lait entier','Lait de vache'],['lait','Lait de vache'],
+  ['creme fraiche','Crème fraîche'],['creme','Crème fraîche'],['beurre','Crème fraîche'],
+  ['salade verte','Laitue'],['salade','Laitue'],['laitue','Laitue'],['roquette','Laitue'],['mache','Laitue'],
+  ['tomates cerises','Tomate'],['tomate cerise','Tomate'],['coulis de tomate','Tomate'],['sauce tomate','Tomate'],['tomates','Tomate'],
+  ['haricots verts','Haricot vert'],['haricot vert','Haricot vert'],['petits pois','Petit pois'],['petit pois','Petit pois'],
+  ['mais','Maïs doux'],['polenta','Polenta / maïs'],['poivrons','Poivron rouge'],['poivron','Poivron rouge'],
+  ['champignons','Champignon'],['champignon','Champignon'],['epinards','Épinard'],['epinard','Épinard'],
+  ['courgettes','Courgette'],['aubergines','Aubergine'],['carottes','Carotte'],['concombre','Concombre'],
+  ['brocolis','Brocoli (tête)'],['brocoli','Brocoli (tête)'],['chou fleur','Chou-fleur'],['choux de bruxelles','Chou de Bruxelles'],
+  ['poireaux','Poireau (partie blanche)'],['poireau','Poireau (partie blanche)'],
+  ['echalotes','Oignon'],['echalote','Oignon'],['oignons','Oignon'],['oignon','Oignon'],['ail','Ail'],
+  ['lentilles corail','Lentilles (en conserve, rincées)'],['lentilles','Lentilles (en conserve, rincées)'],
+  ['pois chiches','Pois chiches (en conserve, rincés)'],['houmous','Pois chiches (en conserve, rincés)'],
+  ['haricots rouges','Haricots rouges'],['haricots blancs','Haricots blancs'],
+  ['huile d olive','Huile d\'olive'],['vinaigrette','Huile d\'olive'],['huile','Huile d\'olive'],
+  ['sirop d erable','Sirop d\'érable'],['miel','Miel'],['confiture','Sucre blanc'],['sucre','Sucre blanc'],
+  ['beurre de cacahuete','Beurre de cacahuète'],['cacahuetes','Beurre de cacahuète'],
+  ['noix de cajou','Noix de cajou'],['noix de pecan','Noix de pécan'],['amandes','Amandes'],['noisettes','Noisettes'],
+  ['chocolat','Chocolat noir'],['glace','Glace (lait entier)'],
+  ['bananes','Banane mûre'],['banane','Banane mûre'],['pommes','Pomme'],['poires','Poire'],['oranges','Orange'],
+  ['fraises','Fraise'],['framboises','Framboise'],['myrtilles','Myrtille'],['raisins','Raisin'],['kiwis','Kiwi'],
+  ['dattes','Fruits secs (dattes, figues)'],['figues','Fruits secs (dattes, figues)'],['abricots secs','Fruits secs (dattes, figues)'],
+  ['jus d orange','Orange'],['jus de pomme','Jus de pomme'],
+  ['cafe au lait','Café noir'],['expresso','Café noir'],['cafe','Café noir'],['the vert','Thé vert'],['the','Thé vert'],
+  ['tisane','Tisane à la menthe'],['infusion','Tisane à la menthe'],['eau','Eau'],['biere','Bière'],['vin','Vin rouge'],
+  ['sauce soja','Sauce soja'],['moutarde','Moutarde'],['vinaigre','Vinaigre balsamique'],['gingembre','Gingembre'],
+  ['quinoa','Quinoa'],['sarrasin','Sarrasin'],['tempeh','Tempeh'],['edamame','Edamame'],['olives','Olives'],
+  ['avocat','Avocat'],['ananas','Ananas'],['melon','Melon cantaloup'],['pasteque','Pastèque'],['mangue','Mangue'],
+  ['peche','Pêche'],['prunes','Prune'],['cerises','Cerise'],['grenade','Grenade'],['papaye','Papaye'],
+  ['tortilla','Tortilla sans gluten'],['wrap','Tortilla sans gluten'],['orge','Orge'],['seigle','Seigle'],
+  ['graines de courge','Graines de courge'],['graines de tournesol','Graines de tournesol'],['sesame','Graines de sésame'],
+  ['betterave','Betterave'],['celeri','Céleri'],['artichaut','Artichaut'],['asperges','Asperge'],
+  ['butternut','Courge butternut'],['courge','Courge butternut'],['bok choy','Bok choy'],['chou','Chou vert']
+].sort((a,b)=>b[0].length-a[0].length);
+
+const VOICE_SEASON=['Citron','Gingembre','Poireau (partie verte)','Moutarde','Vinaigre balsamique','Sauce soja','Eau','Sucre blanc'];
+const VOICE_SEP=/\s*(?:,|;|\+|\bet aussi\b|\bainsi que\b|\bavec\b|\bpuis\b|\bensuite\b|\bplus\b|\bet\b|\baccompagn[ée]{1,2}s? de\b)\s*/gi;
+const VOICE_LEADS=[
+  /^\s*(?:alors|bon|euh|donc|voila)\s+/i,
+  /\b(?:je viens de manger|j'ai mang[ée]|j'ai pris|j'ai bu|je mange|j'ai grignot[ée]|j'ai d[ée]jeun[ée]|j'ai d[îi]n[ée]|on a mang[ée]|je me suis fait|j'ai fait|il y avait|c'[ée]tait|au menu|au d[ée]jeuner|au d[îi]ner|au petit[- ]d[ée]j(?:euner)?|au go[ûu]ter|en collation|en[- ]?cas|pour le d[ée]jeuner|pour le d[îi]ner|pour le petit[- ]d[ée]j(?:euner)?|pour le go[ûu]ter|ce matin|ce midi|ce soir|cet apr[èe]s[- ]midi|[àa] midi|aujourd'hui|hier soir|hier midi|hier matin|avant[- ]hier|hier)(?![a-zA-ZÀ-ÿ])/gi
+];
+const VOICE_NOISE=['un','une','des','du','de','la','le','les','beaucoup','peu','petit','petite','grand','grande',
+  'bien','aussi','tres','assez','environ','quelques','plein','encore','ensuite','apres','repas','plat','truc',
+  'chose','midi','matin','soir','gramme','grammes','kcal','calories','morceau','part','portion'];
+
+function voiceEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function voiceLite(s){ return String(s).toLowerCase().replace(/œ/g,'oe').normalize('NFD').replace(/[̀-ͯ]/g,''); }
+function voiceSingular(w){ return w.length>3 ? w.replace(/s$/,'') : w; }
+
+/* Nombre écrit en lettres : « deux cents », « cent cinquante », « un demi » */
+function voiceNumberFromWords(toks){
+  for(let i=0;i<toks.length;i++){
+    if(VOICE_NUM[toks[i]]===undefined) continue;
+    let total=0,cur=0,j=i;
+    for(;j<toks.length;j++){
+      const v=VOICE_NUM[toks[j]];
+      if(v===undefined) break;
+      if(v>=100){ cur=(cur||1)*v; total+=cur; cur=0; }
+      else if(v<1){ cur=(cur===1?0:cur)+v; }
+      else cur+=v;
+    }
+    return total+cur;
+  }
+  return null;
+}
+
+/* Trouve UN aliment dans un bout de phrase déjà normalisé, et rend les mots consommés */
+function voiceMatchFoodOnce(s){
+  const n=' '+s+' ';
+  /* le premier aliment cité mène le segment (« omelette aux champignons » → l'omelette) ;
+     à position égale, le libellé le plus long gagne (la liste est triée du plus long au plus court) */
+  let synPh=null,synName=null,synIdx=Infinity;
+  for(let i=0;i<VOICE_SYN.length;i++){
+    const ph=VOICE_SYN[i][0];
+    const idx=n.indexOf(' '+ph+' ');
+    if(idx>=0&&idx<synIdx){ synIdx=idx; synPh=ph; synName=VOICE_SYN[i][1]; }
+  }
+  if(synPh){
+    const f=findFood(synName);
+    if(f) return {f,used:synPh.split(' ')};
+  }
+  const segToks=s.split(' ').filter(Boolean).map(voiceSingular);
+  if(!segToks.length) return null;
+  let best=null,bestScore=0,bestUsed=[];
+  foods.forEach(f=>{
+    const ft=normNameFP(f.n).split(' ').filter(w=>w.length>=3&&COACH_STOP.indexOf(w)<0).map(voiceSingular);
+    if(!ft.length) return;
+    const used=ft.filter(w=>segToks.indexOf(w)>=0);
+    if(!used.length) return;
+    const score=used.length/ft.length+used.length*0.01;
+    if(score>bestScore){ best=f; bestScore=score; bestUsed=used; }
+  });
+  return bestScore>=0.5?{f:best,used:bestUsed}:null;
+}
+/* … puis les suivants : « omelette aux champignons », « pâtes à la sauce tomate » */
+function voiceFindFoods(s,max){
+  const out=[];
+  let rest=s;
+  for(let k=0;k<(max||3)&&rest.trim();k++){
+    const m=voiceMatchFoodOnce(rest);
+    if(!m||!m.used.length) break;
+    if(!out.some(f=>f.n===m.f.n)) out.push(m.f);
+    const used=m.used.map(voiceSingular);
+    rest=rest.split(' ').filter(w=>w&&used.indexOf(voiceSingular(w))<0).join(' ');
+  }
+  return out;
+}
+function voiceClampG(g){ return Math.max(1,Math.min(3000,Math.round(g))); }
+function voiceIsNoise(seg){
+  const toks=normNameFP(seg).split(' ').filter(Boolean);
+  return !toks.some(w=>w.length>=3 && VOICE_NOISE.indexOf(w)<0 && !/^\d+$/.test(w));
+}
+
+/* Quantité d'un aliment dans un bout de phrase */
+function voiceQuantify(f,s,lite){
+  /* 1) grammage explicite chiffré : « 200 g », « 1,5 kg », « 25 cl » */
+  const direct=lite.match(/(\d+(?:[.,]\d+)?)\s*(kilogrammes?|kilos?|kg|grammes?|gr|g|millilitres?|ml|centilitres?|cl|litres?|l)\b/);
+  if(direct){
+    const v=parseFloat(direct[1].replace(',','.'));
+    const u=direct[2];
+    const mult=/^k/.test(u)?1000:/^l/.test(u)?1000:/^c/.test(u)?10:1;
+    return {n:f.n,g:voiceClampG(v*mult)};
+  }
+  const dm=lite.match(/(\d+(?:[.,]\d+)?)/);
+  const qty = dm ? parseFloat(dm[1].replace(',','.')) : voiceNumberFromWords(s.split(' '));
+
+  /* 2) unité dictée en toutes lettres : « deux cents grammes », « un kilo » */
+  if(qty){
+    if(/\b(grammes?|gr)\b/.test(s)) return {n:f.n,g:voiceClampG(qty)};
+    if(/\b(kilos?|kilogrammes?)\b/.test(s)) return {n:f.n,g:voiceClampG(qty*1000)};
+    if(/\bcentilitres?\b/.test(s)) return {n:f.n,g:voiceClampG(qty*10)};
+    if(/\bmillilitres?\b/.test(s)) return {n:f.n,g:voiceClampG(qty)};
+    if(/\blitres?\b/.test(s)) return {n:f.n,g:voiceClampG(qty*1000)};
+  }
+
+  /* 3) mesure ménagère (cuillère, tranche, bol…), sinon nombre de pièces */
+  const isFat=/huile|sirop|miel|creme|beurre/.test(normNameFP(f.n));
+  for(let i=0;i<VOICE_MEASURES.length;i++){
+    const m=VOICE_MEASURES[i];
+    if(m.re.test(s)){
+      const unit = m.g===null ? f.g : (isFat&&m.fat?m.fat:m.g);
+      return {n:f.n,g:voiceClampG((qty||1)*unit)};
+    }
+  }
+  if(qty){
+    const piece=VOICE_PIECE[f.n]!==undefined?VOICE_PIECE[f.n]:f.g;
+    return {n:f.n,g:voiceClampG(qty*piece)};
+  }
+
+  /* 4) rien de chiffré : portion de référence de la base, signalée comme estimée */
+  return {n:f.n,g:voiceClampG(f.g),est:true};
+}
+
+/* Un bout de phrase → liste d'ingrédients (ou d'inconnus) */
+function voiceParseSegment(seg){
+  const s=normNameFP(seg);
+  const lite=voiceLite(seg);
+  if(!s || s.length<2) return null;
+  if(/\bpas de\b|\bpas d\b|\baucun\b|\brien\b/.test(s)) return null;
+
+  let list=voiceFindFoods(s,3);
+  if(!list.length && /\bsans\b/.test(s)) list=voiceFindFoods(normNameFP(s.replace(/\bsans\b.*$/,'')),2);
+  if(!list.length) return voiceIsNoise(seg)?null:[{unknown:seg.trim().slice(0,42)}];
+
+  /* la quantité dictée porte sur l'aliment principal ; les autres prennent leur portion de référence */
+  const out=[voiceQuantify(list[0],s,lite)];
+  list.slice(1).forEach(f=>out.push({n:f.n,g:voiceClampG(f.g),est:true}));
+  return out;
+}
+
+/* Jour visé : « hier » recule d'un jour dans la semaine affichée */
+function voiceDayFromText(t){
+  const n=normNameFP(t);
+  const target=new Date();
+  if(/\bavant hier\b/.test(n)) target.setDate(target.getDate()-2);
+  else if(/\bhier\b/.test(n)) target.setDate(target.getDate()-1);
+  const iso=isoDate(target);
+  const wd=(weekDates&&weekDates.length)?weekDates:getWeekDates();
+  const i=wd.findIndex(d=>isoDate(d)===iso);
+  return i>=0 && menuData[i] ? menuData[i].day : todayDayCode();
+}
+
+function voiceParse(text){
+  let body=String(text||'').replace(/[’‘`]/g,"'");
+  VOICE_LEADS.forEach(re=>{ body=body.replace(re,' '); });
+  body=body.replace(/\s+/g,' ').trim();
+  const segs=body.split(VOICE_SEP).map(s=>s.trim()).filter(s=>s.length>1);
+  const items=[],unknown=[];
+  segs.forEach(seg=>{
+    const res=voiceParseSegment(seg);
+    if(!res) return;
+    res.forEach(r=>{
+      if(r.unknown){ if(unknown.length<6) unknown.push(r.unknown); return; }
+      const ex=items.find(i=>i.n===r.n);
+      if(ex){ ex.g+=r.g; if(!r.est) ex.est=false; }
+      else if(items.length<14) items.push(r);
+    });
+  });
+  return {items,unknown,slot:slotFromText(text)||slotByHour(),day:voiceDayFromText(text)};
+}
+
+/* ---------- Reconnaissance vocale ---------- */
+const VoiceSR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+let voiceRec=null, voiceListening=false, voiceFinal='', voiceInterim='', voiceSilence=null,
+    voiceStartedAt=0, voiceError='', voiceStageOpen=false;
+
+function voiceSupported(){ return !!VoiceSR && window.isSecureContext!==false; }
+function voiceToggle(){ if(voiceListening) voiceStop(true); else voiceStart(); }
+function voiceStart(){
+  if(voiceListening) return;
+  if(!voiceSupported()){ voiceError='unsupported'; renderVoiceStage(); return; }
+  try{ voiceRec=new VoiceSR(); }
+  catch(e){ voiceError='unsupported'; renderVoiceStage(); return; }
+  voiceRec.lang='fr-FR';
+  voiceRec.continuous=true;
+  voiceRec.interimResults=true;
+  voiceRec.maxAlternatives=1;
+  voiceError=''; voiceInterim=''; voiceStartedAt=Date.now();
+  voiceRec.onresult=(e)=>{
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const r=e.results[i];
+      if(r.isFinal) voiceFinal+=(voiceFinal?' ':'')+String(r[0].transcript).trim();
+      else interim+=r[0].transcript;
+    }
+    voiceInterim=interim;
+    if(!voicePaintTranscript()) renderVoiceStage();
+    voiceArmSilence();
+  };
+  voiceRec.onerror=(e)=>{
+    const err=e.error||'unknown';
+    if(err==='no-speech'||err==='aborted') return; /* Chrome relance tout seul */
+    voiceError=err; voiceListening=false; renderVoiceStage();
+  };
+  voiceRec.onend=()=>{
+    /* Chrome coupe l'écoute après un silence : on relance tant que l'utilisateur dicte */
+    if(voiceListening && voiceStageOpen && Date.now()-voiceStartedAt<90000){
+      try{ voiceRec.start(); return; }catch(e){}
+    }
+    voiceListening=false; renderVoiceStage();
+  };
+  try{ voiceRec.start(); }
+  catch(e){ voiceError='start'; renderVoiceStage(); return; }
+  voiceListening=true;
+  renderVoiceStage();
+  voiceArmSilence();
+}
+function voiceArmSilence(){
+  clearTimeout(voiceSilence);
+  voiceSilence=setTimeout(()=>{ if(voiceListening&&voiceStageOpen&&voiceFinal.trim()) voiceStop(true); },3200);
+}
+function voiceStop(autoAnalyze){
+  clearTimeout(voiceSilence);
+  voiceListening=false;
+  voiceInterim='';
+  if(voiceRec){ try{ voiceRec.stop(); }catch(e){} }
+  if(autoAnalyze===true && voiceFinal.trim()) voiceAnalyze(voiceFinal);
+  else renderVoiceStage();
+}
+function voiceAbort(){
+  clearTimeout(voiceSilence);
+  voiceListening=false; voiceStageOpen=false;
+  if(voiceRec){ try{ voiceRec.abort(); }catch(e){} }
+}
+
+/* ---------- Étape 1 : l'écoute ---------- */
+const VOICE_EXAMPLES=[
+  "Ce midi j'ai mangé 150 g de poulet, du riz basmati et des courgettes",
+  "Ce matin deux œufs, une tranche de pain sans gluten et un café",
+  "Ce soir du saumon avec des haricots verts et une cuillère à soupe d'huile d'olive"
+];
+function openVoiceMeal(){
+  voiceFinal=''; voiceInterim=''; voiceError=''; voiceDraft=null; voiceStageOpen=true;
+  renderVoiceStage();
+  document.getElementById('modalBg').classList.add('show');
+  if(voiceSupported()) setTimeout(()=>{ if(voiceStageOpen) voiceStart(); },250);
+}
+function voiceErrorMsg(){
+  const m={
+    'not-allowed':"🎙️ Le micro est bloqué pour ce site. Autorise-le (icône 🔒 dans la barre d'adresse, ou Réglages → Site → Micro), puis relance l'écoute.",
+    'service-not-allowed':"🎙️ La reconnaissance vocale est désactivée par le navigateur ou le système. Écris ton repas ci-dessous, l'analyse est identique.",
+    'audio-capture':"🎙️ Aucun micro détecté sur cet appareil. Écris ton repas ci-dessous, l'analyse est identique.",
+    'network':"📡 La transcription est faite en ligne par le navigateur : réessaie connecté, ou écris ton repas ci-dessous.",
+    'unsupported':"🎙️ Ce navigateur ne sait pas transcrire la voix (Firefox notamment, et Chrome exige HTTPS). Sur iPhone utilise Safari, sur Android Chrome — ou écris ton repas ci-dessous.",
+    'start':"🎙️ Impossible de démarrer l'écoute. Vérifie qu'aucune autre application n'utilise le micro."
+  };
+  return m[voiceError]||("🎙️ Écoute interrompue ("+voiceError+"). Réessaie, ou écris ton repas ci-dessous.");
+}
+function voicePaintTranscript(){
+  const el=document.getElementById('vcTranscript');
+  if(!el) return false;
+  const txt=(voiceEsc(voiceFinal)+(voiceInterim?' <span class="vc-interim">'+voiceEsc(voiceInterim)+'</span>':'')).trim();
+  el.classList.toggle('empty',!txt);
+  el.innerHTML=txt||"Ta dictée s'affichera ici…";
+  return true;
+}
+function renderVoiceStage(){
+  if(!voiceStageOpen) return;
+  const el=document.getElementById('modalContent');
+  if(!el) return;
+  const txt=(voiceEsc(voiceFinal)+(voiceInterim?' <span class="vc-interim">'+voiceEsc(voiceInterim)+'</span>':'')).trim();
+  const err=voiceError?voiceErrorMsg():'';
+  el.innerHTML=`
+    <div class="modal-hd"><div class="me">🎙️</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-title">Dicte ton repas</div>
+      <div class="modal-badge safe">Repas du moment · ${SLOT_FR[slotByHour()]}</div>
+      <div class="vc-stage">
+        <button class="vc-mic ${voiceListening?'on':''}" onclick="voiceToggle()" aria-label="${voiceListening?"Arrêter l'écoute":"Démarrer l'écoute"}">${voiceListening?SVG_STOP:SVG_MIC}</button>
+        ${voiceListening?'<div class="vc-bars"><i></i><i></i><i></i><i></i><i></i></div>':''}
+        <div class="vc-hint">${voiceListening
+          ? "J'écoute… dis ce que tu as mangé, puis marque une pause : je m'arrête et j'analyse tout seul."
+          : "Appuie sur le micro et parle normalement — le moment, les aliments, les quantités."}</div>
+      </div>
+      <div class="vc-transcript ${txt?'':'empty'}" id="vcTranscript">${txt||"Ta dictée s'affichera ici…"}</div>
+      ${err?`<div class="vc-err">${err}</div>`:''}
+      <div class="vc-examples">${VOICE_EXAMPLES.map((e,i)=>`<button class="vc-ex" onclick="voiceUseExample(${i})">💬 ${voiceEsc(e.slice(0,40))}…</button>`).join('')}</div>
+      <textarea id="vcManual" class="pplx-txt" style="margin-top:12px" placeholder="…ou écris ici : « 150 g de poulet, du riz et des courgettes »">${voiceListening?'':voiceEsc(voiceFinal)}</textarea>
+      <div class="modal-actions-row">
+        <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="voiceAnalyzeFromUi()">✓ Analyser ma dictée</button>
+        <button class="reset-btn" onclick="voiceReset()">↺ Effacer</button>
+      </div>
+      <div class="modal-tip">💡 Précise le moment (« ce midi », « hier soir ») et les quantités (« 150 g », « deux œufs », « une cuillère à soupe »). Sans quantité, j'applique la portion de référence de la base et je la marque « estimé ».</div>
+    </div>`;
+}
+function voiceUseExample(i){ voiceAbort(); voiceStageOpen=false; voiceFinal=VOICE_EXAMPLES[i]; voiceInterim=''; voiceAnalyze(voiceFinal); }
+function voiceReset(){ const was=voiceListening; voiceAbort(); voiceStageOpen=true; voiceFinal=''; voiceInterim=''; voiceError=''; renderVoiceStage(); if(was) voiceStart(); }
+function voiceAnalyzeFromUi(){
+  const manual=(document.getElementById('vcManual')||{}).value||'';
+  const txt=(voiceListening?voiceFinal:(manual.trim()||voiceFinal)).trim();
+  voiceAbort();
+  if(!txt){ voiceStageOpen=true; toast("Dis ou écris d'abord ce que tu as mangé 🎙️"); return; }
+  voiceAnalyze(txt);
+}
+
+/* ---------- Étape 2 : relecture, complétion, enregistrement ---------- */
+let voiceDraft=null;
+function voiceAnalyze(text){
+  voiceStageOpen=false;
+  const p=voiceParse(text);
+  voiceDraft={text:String(text).trim(),items:p.items,unknown:p.unknown,slot:p.slot,day:p.day};
+  renderVoiceReview();
+}
+function voiceTotals(){ return mealTotalsOf(voiceDraft.items.map(i=>({n:i.n,g:i.g}))); }
+function voiceVerdict(){
+  const rows=voiceDraft.items.map(i=>({f:findFood(i.n),g:i.g})).filter(r=>r.f);
+  const avoid=rows.filter(r=>r.f.s==='avoid');
+  const over=rows.filter(r=>r.f.s==='moderate'&&r.g>r.f.g);
+  const modOk=rows.filter(r=>r.f.s==='moderate'&&r.g<=r.f.g);
+  const famCount={};
+  rows.forEach(r=>{ if(r.f.s!=='safe') familiesOf(r.f).forEach(fam=>{ (famCount[fam]=famCount[fam]||[]).push(r.f.n); }); });
+  const stacked=Object.keys(famCount).filter(f=>famCount[f].length>=2);
+  let v;
+  if(avoid.length) v={cls:'avoid',txt:'🚫 À éviter en élimination : '+avoid.map(r=>r.f.n).join(', ')};
+  else if(over.length) v={cls:'avoid',txt:'🔴 Seuil Monash dépassé : '+over.map(r=>r.f.n).join(', ')};
+  else if(stacked.length) v={cls:'moderate',txt:'🟠 Stacking '+stacked.map(f=>FAMILY_LABELS[f]||f).join(' + ')+" — les doses d'une même famille s'additionnent"};
+  else if(modOk.length) v={cls:'moderate',txt:'🟡 Compatible, seuils respectés'};
+  else if(!rows.length) v={cls:'moderate',txt:'🎙️ Aucun aliment reconnu pour l\'instant'};
+  else v={cls:'safe',txt:"✅ 100% compatible phase d'élimination"};
+  return {v,avoid,over,rows};
+}
+function renderVoiceReview(){
+  if(!voiceDraft) return;
+  const t=voiceTotals();
+  const st=voiceVerdict();
+  const target=slotKcalTarget(voiceDraft.slot);
+  const gap=target-Math.round(t.k);
+  const rows=voiceDraft.items.map((i,idx)=>{
+    const f=findFood(i.n);
+    const over=f&&f.s==='moderate'&&i.g>f.g;
+    const chip=!f?'':f.s==='safe'?'<span class="bld-chip safe">safe</span>'
+      :f.s==='avoid'?'<span class="bld-chip avoid">à éviter</span>'
+      :`<span class="bld-chip ${over?'avoid':'moderate'}">modéré · ≤${f.g}g</span>`;
+    const ik=f?Math.round(f.k/f.g*i.g):0;
+    return `<li class="ing-row">
+      <span class="ing-name">${f?f.e+' ':''}${voiceEsc(i.n)} ${chip}${i.est?'<span class="vc-est">estimé</span>':''}</span>
+      <input type="number" class="ing-g-input" value="${i.g}" min="1" step="5" onchange="voiceSetG(${idx},this.value)">
+      <span class="ing-unit">g</span>
+      <span class="ing-kcal">${ik} kcal</span>
+      <button class="ing-del" onclick="voiceDelItem(${idx})" title="Retirer">✕</button>
+    </li>`;
+  }).join('');
+  const dayOpts=menuData.map(d=>`<option value="${d.day}" ${d.day===voiceDraft.day?'selected':''}>${fullDayNames[d.day]}</option>`).join('');
+  const slotOpts=Object.keys(mealLabels).map(k=>`<option value="${k}" ${k===voiceDraft.slot?'selected':''}>${mealLabels[k]}</option>`).join('');
+  const weekNote = programWeek!==1
+    ? `<div class="modal-tip warn">📅 Tu consultes la semaine ${programWeek} du programme : le repas dicté sera enregistré sur la semaine en cours, celle qui correspond aux vraies dates.</div>` : '';
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-hd"><div class="me">🎙️</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-title">Ce que j'ai compris</div>
+      <span class="modal-badge ${st.v.cls}">${st.v.txt}</span>
+      <div class="vc-quote">« ${voiceEsc(voiceDraft.text)} »</div>
+      <div class="vc-ctx">
+        <label>Créneau<select onchange="voiceSetSlot(this.value)">${slotOpts}</select></label>
+        <label>Jour<select onchange="voiceSetDay(this.value)">${dayOpts}</select></label>
+      </div>
+      <div class="modal-row"><span>Calories</span><span>${Math.round(t.k)} kcal <i style="color:var(--slate-400);font-style:normal">/ ${target} visés</i></span></div>
+      <div class="modal-row"><span>Protéines</span><span>${Math.round(t.pr)} g</span></div>
+      <div class="modal-row"><span>Coût estimé</span><span>${t.price.toFixed(2)} €</span></div>
+      <div class="ing-editor-title">Ingrédients détectés <span class="ing-scale-note">· corrige un grammage si je me suis trompé</span></div>
+      <ul class="ing-list-edit">${rows||'<li class="vc-empty">Aucun aliment reconnu — ajoute-les à la main juste en dessous.</li>'}</ul>
+      ${voiceDraft.unknown.length?`<div class="vc-unknown">❔ Absents de la base : ${voiceDraft.unknown.map(u=>`<span class="vc-unknown-chip">${voiceEsc(u)}</span>`).join(' ')}
+        <div class="vc-unknown-row">${voiceDraft.unknown.map((u,i)=>`<button class="vc-unknown-add" onclick="voiceAddUnknown(${i})">➕ Créer « ${voiceEsc(u.slice(0,20))} »</button>`).join('')}</div></div>`:''}
+      ${(st.avoid.length||st.over.length)?`<div class="vc-fill">🌿 Je peux basculer ce repas en version 100% compatible élimination${st.avoid.length?' en remplaçant '+st.avoid.map(r=>r.f.n.toLowerCase()).join(', '):' en ramenant les portions sous le seuil Monash'}.
+        <div><button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="voiceMakeSafe()">🌿 Rendre 100% safe</button></div></div>`:''}
+      ${(voiceDraft.items.length&&gap>target*0.12)?`<div class="vc-fill">🍽️ Il manque environ <b>${gap} kcal</b> pour couvrir ton ${SLOT_FR[voiceDraft.slot]} (${target} kcal visés selon ton objectif).
+        <div><button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="voiceComplete()">✨ Compléter le repas</button></div></div>`:''}
+      ${pickerHtml({slot:voiceDraft.slot,target:'voice'})}
+      ${weekNote}
+      <div class="modal-actions-row">
+        <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="voiceSave('replace')">✓ En faire le repas du moment</button>
+        <button class="reset-btn" onclick="voiceSave('add')">➕ Ajouter au repas existant</button>
+        <button class="reset-btn" onclick="openVoiceMeal()">🎙️ Redicter</button>
+      </div>
+      <div class="modal-tip">💡 « En faire le repas du moment » remplace le repas prévu du créneau, l'enregistre comme recette personnalisée et le marque comme mangé : ton bilan de la journée est à jour immédiatement.</div>
+    </div>`;
+  document.getElementById('modalBg').classList.add('show');
+  renderPickerResults();
+}
+function voiceSetG(idx,val){ voiceDraft.items[idx].g=Math.max(1,+val||1); voiceDraft.items[idx].est=false; renderVoiceReview(); }
+function voiceDelItem(idx){ voiceDraft.items.splice(idx,1); renderVoiceReview(); }
+function voiceSetSlot(v){ voiceDraft.slot=v; renderVoiceReview(); }
+function voiceSetDay(v){ voiceDraft.day=v; renderVoiceReview(); }
+function voiceAddItem(name,g){
+  if(!voiceDraft) return;
+  const f=findFood(name); if(!f) return;
+  const ex=voiceDraft.items.find(i=>i.n===name);
+  if(ex) ex.g+=(g||f.g); else voiceDraft.items.push({n:name,g:g||f.g,est:true});
+  renderVoiceReview();
+}
+function voiceAddUnknown(i){ openCustomFoodModal({target:'voice',idx:i},voiceDraft.unknown[i]||''); }
+function voiceMakeSafe(){
+  let changed=0;
+  voiceDraft.items=voiceDraft.items.map(i=>{
+    const f=findFood(i.n); if(!f) return i;
+    if(f.s==='avoid'){
+      const alt=eligibleCoachFoods().filter(x=>x.c===f.c&&x.s==='safe'&&!voiceDraft.items.some(y=>y.n===x.n))
+        .sort((a,b)=>Math.abs(a.k/a.g-f.k/f.g)-Math.abs(b.k/b.g-f.k/f.g))[0];
+      if(alt){ changed++; return {n:alt.n,g:voiceClampG(i.g),est:true}; }
+      return i;
+    }
+    if(f.s==='moderate'&&i.g>f.g){ changed++; return {n:i.n,g:f.g,est:false}; }
+    return i;
+  });
+  renderVoiceReview();
+  toast(changed?'Repas basculé en version low-FODMAP 🌿':'Rien à remplacer — ce repas est déjà compatible ✅');
+}
+/* Pour compléter, on pioche d'abord dans les aliments déjà utilisés par les recettes
+   du créneau (et vos repas persos) : un petit-déj ne se complète pas avec des pâtes. */
+function voiceSlotPool(cat,have){
+  const slotNames={};
+  (altRecipes[voiceDraft.slot]||[]).forEach(r=>r.ingr.forEach(i=>{slotNames[i.n]=1}));
+  myMeals.filter(m=>m.slot===voiceDraft.slot).forEach(m=>m.ingr.forEach(i=>{slotNames[i.n]=1}));
+  menuDataOriginal.forEach(d=>{ const m=d.meals[voiceDraft.slot]; if(m) m.ingr.forEach(i=>{slotNames[i.n]=1}); });
+  const base=eligibleCoachFoods().filter(f=>f.c===cat&&f.s==='safe'&&have.indexOf(f.n)<0&&VOICE_SEASON.indexOf(f.n)<0);
+  const pref=base.filter(f=>slotNames[f.n]);
+  return pref.length?pref:base;
+}
+function voiceComplete(){
+  const target=slotKcalTarget(voiceDraft.slot);
+  const cur=voiceTotals().k;
+  const gap=target-cur;
+  if(gap<=target*0.08){ toast("Ce repas couvre déjà l'objectif du créneau ✅"); return; }
+  const have=voiceDraft.items.map(i=>i.n);
+  const cats=voiceDraft.items.map(i=>{const f=findFood(i.n);return f?f.c:null}).filter(Boolean);
+  const roles = voiceDraft.slot==='breakfast'?['cereale','fruit','laitier']
+    : voiceDraft.slot==='snack'?['fruit','noix']
+    : ['proteine','cereale','legume'];
+  const missing=roles.filter(r=>cats.indexOf(r)<0);
+  const added=[];
+  missing.forEach(cat=>{
+    const c=voiceSlotPool(cat,have.concat(added.map(a=>a.n)));
+    if(c.length) added.push(c[Math.floor(Math.random()*c.length)]);
+  });
+  if(added.length){
+    const share=gap/added.length;
+    added.forEach(f=>{
+      const perG=f.k/f.g;
+      let g=perG>0?Math.round(share/perG/5)*5:f.g;
+      voiceDraft.items.push({n:f.n,g:Math.max(20,Math.min(Math.round(f.g*2.2),g)),est:true});
+    });
+    renderVoiceReview();
+    toast('Complété avec '+added.map(f=>f.n.split(' (')[0].split(' /')[0].toLowerCase()).join(', ')+' 🌿');
+    return;
+  }
+  /* Tous les rôles sont déjà là : on remonte les portions (hors modérés et matières grasses) */
+  const factor=Math.min(1.8,target/Math.max(1,cur));
+  let bumped=false;
+  voiceDraft.items=voiceDraft.items.map(i=>{
+    const f=findFood(i.n); if(!f) return i;
+    if(f.s!=='safe'||/huile|sirop|miel|sucre/i.test(f.n)) return i;
+    bumped=true;
+    return {n:i.n,g:voiceClampG(Math.round(i.g*factor/5)*5),est:true};
+  });
+  renderVoiceReview();
+  toast(bumped?"Portions ajustées à ton objectif du créneau 🎯":"Impossible de compléter sans dépasser les seuils Monash");
+}
+function voiceMealName(ingr){
+  const named=ingr.map(i=>({i,f:findFood(i.n)})).filter(x=>x.f)
+    .sort((a,b)=>(b.f.k/b.f.g*b.i.g)-(a.f.k/a.f.g*a.i.g));
+  if(!named.length) return 'Repas dicté';
+  const short=f=>f.n.split(' /')[0].split(' (')[0];
+  const parts=named.slice(0,3).map((x,i)=>i?short(x.f).toLowerCase():short(x.f));
+  return parts.join(', ').replace(/, ([^,]*)$/,' & $1');
+}
+function voiceSave(mode){
+  if(!voiceDraft||!voiceDraft.items.length){ toast('Aucun aliment à enregistrer 🎙️'); return; }
+  /* Le « repas du moment » vit dans la semaine réelle en cours (semaine 1 du programme) */
+  if(programWeek!==1){ programWeek=1; renderProgram(); }
+  const day=voiceDraft.day, key=voiceDraft.slot;
+  const d=menuData.find(x=>x.day===day);
+  if(!d){ toast('Jour introuvable 🤔'); return; }
+  const ingr=voiceDraft.items.map(i=>({n:i.n,g:Math.max(1,Math.round(i.g))}));
+  const stamp=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+  if(mode==='add'){
+    const meal=d.meals[key];
+    bakeIfNeeded(d,meal);
+    ingr.forEach(i=>{ const ex=meal.ingr.find(x=>x.n===i.n); if(ex) ex.g+=i.g; else meal.ingr.push(i); });
+    meal.name=voiceMealName(meal.ingr);
+    meal.customized=true;
+    meal.prep=(meal.prep?meal.prep+' ':'')+'Complété à la voix le '+stamp+'.';
+  } else {
+    d.meals[key]={name:voiceMealName(ingr),ingr,customized:true,
+      prep:'Repas dicté à la voix le '+stamp+' — « '+voiceDraft.text.slice(0,120)+' ».'};
+  }
+  saveWeekOverride(day,key);
+  if(!isFutureDay(day)){
+    const dk=dateKeyForDay(day);
+    mealsEaten[dk]=mealsEaten[dk]||{};
+    mealsEaten[dk][key]=true;
+    persistMealsEaten();
+  }
+  voiceAbort();
+  closeModal();
+  switchTab('menu');
+  selectedDay=day;
+  refreshActiveMenuView();
+  renderHome();
+  toast(mode==='add'?'Ajouté au '+SLOT_FR[key]+' 🎙️':'Repas du moment enregistré et validé 🎙️✅');
+}
+
+/* ============ PWA : INSTALLATION EN VRAIE APPLICATION ============
+   « L'app s'ouvre dans un navigateur » = un raccourci web a été créé au lieu d'une app
+   installée. On capte l'invite d'installation du navigateur, on la propose, et on donne
+   la manipulation exacte plateforme par plateforme quand elle n'est pas disponible. */
+let deferredInstall=null;
+function isStandalone(){
+  try{
+    return window.matchMedia('(display-mode: standalone)').matches
+      || window.matchMedia('(display-mode: fullscreen)').matches
+      || window.matchMedia('(display-mode: minimal-ui)').matches
+      || window.navigator.standalone===true
+      || document.referrer.indexOf('android-app://')===0;
+  }catch(e){ return false; }
+}
+function devicePlatform(){
+  const ua=navigator.userAgent||'';
+  if(/iPad|iPhone|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)) return 'ios';
+  if(/Android/.test(ua)) return 'android';
+  return 'desktop';
+}
+window.addEventListener('beforeinstallprompt',(e)=>{
+  e.preventDefault();
+  deferredInstall=e;
+  renderInstallCard();
+  showInstallBanner();
+});
+window.addEventListener('appinstalled',()=>{
+  deferredInstall=null;
+  hideInstallBanner();
+  renderInstallCard();
+  toast("FODMAP+ installé 🎉 Ouvre-le maintenant depuis l'icône de ton écran d'accueil");
+});
+async function triggerInstall(){
+  if(!deferredInstall){ ss('install'); toast("Suis les étapes ci-dessous pour installer l'app 📱"); return; }
+  hideInstallBanner();
+  const p=deferredInstall; deferredInstall=null;
+  p.prompt();
+  let outcome='dismissed';
+  try{ outcome=(await p.userChoice).outcome; }catch(e){}
+  renderInstallCard();
+  if(outcome!=='accepted') toast("Installation annulée — relançable depuis Profil → Installer l'app");
+}
+function showInstallBanner(){
+  if(isStandalone()||lsGet('fodmapInstallBanner')==='off') return;
+  const el=document.getElementById('installBanner');
+  if(el) el.classList.add('show');
+}
+function hideInstallBanner(){
+  const el=document.getElementById('installBanner');
+  if(el) el.classList.remove('show');
+}
+function dismissInstallBanner(){ lsSet('fodmapInstallBanner','off'); hideInstallBanner(); }
+function renderInstallCard(){
+  const el=document.getElementById('installCard');
+  if(!el) return;
+  const standalone=isStandalone();
+  const secure=window.isSecureContext!==false && location.protocol!=='file:';
+  const steps={
+    android:["Ouvre le site dans <b>Chrome</b> — pas dans le navigateur intégré à Facebook, Instagram ou Gmail, qui ne sait pas installer d'app.",
+      "Menu <b>⋮</b> en haut à droite → <b>Ajouter à l'écran d'accueil</b> → <b>Installer</b>.",
+      "Si Chrome propose « Créer un raccourci », choisis plutôt <b>Installer l'application</b> : un simple raccourci, lui, rouvre le navigateur.",
+      "Lance ensuite FODMAP+ depuis la nouvelle icône : plein écran, sans barre d'adresse."],
+    ios:["Ouvre le site dans <b>Safari</b> (sur iPhone, Chrome ne sait pas installer les apps web).",
+      "Bouton <b>Partager</b> ⬆️ en bas de l'écran → <b>Sur l'écran d'accueil</b>.",
+      "Valide avec <b>Ajouter</b>, puis ouvre FODMAP+ depuis l'icône ajoutée.",
+      "Lancé depuis l'icône, il n'y a ni barre d'adresse ni onglets — c'est une vraie app."],
+    desktop:["Dans <b>Chrome</b> ou <b>Edge</b>, clique sur l'icône d'installation (⊕ ou écran) à droite de la barre d'adresse.",
+      "Ou menu <b>⋮</b> → <b>Installer FODMAP+…</b>",
+      "L'app s'ouvre alors dans sa propre fenêtre, sans onglets ni barre d'adresse."]
+  }[devicePlatform()];
+  el.innerHTML=`
+    <div class="inst-state ${standalone?'ok':'ko'}">${standalone
+      ? "✅ Parfait : FODMAP+ tourne en mode application, hors navigateur."
+      : "🌐 FODMAP+ tourne actuellement dans un onglet de navigateur."}</div>
+    ${standalone?'':`
+      ${deferredInstall?'<button class="btn-p" style="width:100%;justify-content:center" onclick="triggerInstall()">📱 Installer l\'application</button>':''}
+      <ol class="inst-steps">${steps.map(s=>'<li>'+s+'</li>').join('')}</ol>
+      ${secure?'':'<div class="vc-err" style="margin-top:12px">⚠️ Cette page n\'est pas servie en HTTPS : le navigateur bloque l\'installation et la dictée vocale. Ouvre l\'app via son adresse https:// (GitHub Pages) plutôt qu\'en fichier local.</div>'}
+    `}
+    <div class="inst-diag">
+      <span>Mode d'affichage : <b>${standalone?'application (standalone)':'navigateur'}</b></span>
+      <span>Connexion sécurisée (HTTPS) : <b>${secure?'oui':'non'}</b></span>
+      <span>Hors-ligne (service worker) : <b>${('serviceWorker' in navigator)?(navigator.serviceWorker.controller?'actif':"en cours d'activation"):'non supporté'}</b></span>
+      <span>Dictée vocale : <b>${voiceSupported()?'disponible':'indisponible sur ce navigateur'}</b></span>
+    </div>`;
+}
+/* Raccourci du manifeste (appui long sur l'icône) : ?action=voice ouvre directement la dictée */
+function voiceBootFromUrl(){
+  try{
+    const p=new URLSearchParams(location.search);
+    if(p.get('action')==='voice'){
+      history.replaceState({},'',location.pathname+location.hash);
+      setTimeout(openVoiceMeal,400);
+    }
+  }catch(e){}
+}
+
 /* ============ INIT ============ */
 document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){closeModal();closeQuiz();}});
 restoreAppState(); /* AVANT tout rendu : poids, profil, préférences, réglages */
@@ -4692,8 +5514,12 @@ renderSyncCard();
 window.__appReady=true;
 if(syncCfg.token) setTimeout(()=>syncNow('full'),1200); /* récupère les données des autres appareils à l'ouverture */
 initQuiz();
+renderInstallCard();
+voiceBootFromUrl();
+/* iOS n'émet jamais beforeinstallprompt : on propose quand même la marche à suivre */
+if(!isStandalone()) setTimeout(showInstallBanner,4500);
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').then(()=>setTimeout(renderInstallCard,800)).catch(()=>{})});
 }
 </script>
 </body>
