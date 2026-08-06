@@ -1271,6 +1271,34 @@ body[data-activetab="coach"] .voice-fab{display:none}
 .inst-steps b{color:var(--slate-900)}
 .inst-diag{margin-top:14px;display:grid;gap:6px;font-size:11.5px;color:var(--slate-500)}
 .inst-diag span b{color:var(--slate-700)}
+
+/* ============ SCANNER DE PRODUITS ============ */
+.scan-cam{position:relative;width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#000;margin:6px 0 10px}
+.scan-cam video{width:100%;height:100%;object-fit:cover;display:block}
+.scan-frame{position:absolute;inset:16% 10%;border:2px solid rgba(255,255,255,.9);border-radius:14px;box-shadow:0 0 0 9999px rgba(0,0,0,.35)}
+.scan-frame::after{content:'';position:absolute;left:6%;right:6%;top:50%;height:2px;background:var(--green-500);box-shadow:0 0 12px var(--green-500);animation:scanSweep 2.1s ease-in-out infinite}
+@keyframes scanSweep{0%,100%{transform:translateY(-46px)}50%{transform:translateY(46px)}}
+.scan-loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:38px 0;color:var(--slate-500);font-size:13.5px}
+.scan-spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--slate-200);border-top-color:var(--green-600);animation:scanSpin .9s linear infinite}
+@keyframes scanSpin{to{transform:rotate(360deg)}}
+.scan-prod{display:flex;gap:14px;align-items:flex-start;padding:12px 0 4px}
+.scan-img{width:72px;height:72px;object-fit:contain;border-radius:12px;background:var(--slate-50);border:1px solid var(--hairline);flex:none}
+.scan-prod-meta{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--slate-500);min-width:0}
+.scan-prod-meta b{font-size:13.5px;color:var(--slate-800)}
+.scan-cache{font-size:10.5px;font-weight:700;color:var(--gold-700)}
+.scan-flags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.scan-flag{font-size:11.5px;font-weight:700;padding:6px 11px;border-radius:12px}
+.scan-flag.avoid{background:var(--red-100);color:var(--red-600)}
+.scan-flag.caution{background:var(--amber-100);color:var(--amber-700)}
+.scan-ing{padding:13px 15px;border-radius:14px;background:var(--slate-50);border:1px solid var(--hairline);font-size:12.5px;line-height:1.7;color:var(--slate-600);max-height:190px;overflow-y:auto}
+.scan-mark{background:var(--amber-100);color:var(--amber-700);font-weight:700;border-radius:4px;padding:0 2px}
+.scan-hits{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.scan-hit{display:flex;flex-direction:column;gap:3px;text-align:left;padding:11px 14px;border-radius:14px;background:var(--slate-50);border:1px solid var(--hairline);cursor:pointer;transition:all var(--tf)}
+.scan-hit:hover{border-color:var(--green-600);background:var(--green-50)}
+.scan-hit-name{font-size:13.5px;font-weight:600;color:var(--slate-800)}
+.scan-hit-meta{font-size:11.5px;color:var(--slate-400)}
+[data-theme="dark"] .scan-ing,[data-theme="dark"] .scan-hit,[data-theme="dark"] .scan-img{background:var(--ivory-2)}
+[data-theme="dark"] .scan-mark{background:rgba(245,158,11,.22)}
 </style>
 </head>
 <body>
@@ -1362,6 +1390,7 @@ body[data-activetab="coach"] .voice-fab{display:none}
         <div class="dash-card-hd"><h3>Actions rapides</h3></div>
         <div class="dash-actions">
           <button class="dqa" onclick="openVoiceMeal()"><span>🎙️</span>Dicter mon repas</button>
+          <button class="dqa" onclick="openScanner()"><span>📷</span>Scanner un produit</button>
           <button class="dqa" onclick="switchTab('aliments')"><span>🔍</span>Chercher un aliment</button>
           <button class="dqa" onclick="switchTab('coach')"><span>💬</span>Demander au coach</button>
           <button class="dqa" onclick="openShoppingList()"><span>🛒</span>Liste de courses</button>
@@ -1583,6 +1612,7 @@ body[data-activetab="coach"] .voice-fab{display:none}
     <div class="cat-select" id="catSelect"></div>
     <div class="food-count-row">
       <div class="food-count" id="foodCount"></div>
+      <button class="btn-s add-food-btn" onclick="openScanner()">📷 Scanner un produit</button>
       <button class="btn-s add-food-btn" onclick="openCustomFoodModal()">➕ Ajouter un aliment</button>
     </div>
     <div class="food-grid" id="fg"></div>
@@ -2615,6 +2645,7 @@ function openFoodModal(name){
 function closeModal(){
   document.getElementById('modalBg').classList.remove('show');
   if(typeof voiceAbort==='function') voiceAbort(); /* coupe le micro si la dictée était ouverte */
+  if(typeof scanStop==='function') scanStop();       /* et la caméra si le scanner était ouvert */
 }
 
 /* ============ SEARCH ============ */
@@ -3434,6 +3465,7 @@ function pickerHtml(ctx){
     <div class="picker-cats" id="pickerCats"></div>
     <div class="picker-results" id="pickerResults"></div>
     <button class="picker-newfood" onclick="openCustomFoodModal({target:'${ctx.target}',day:'${ctx.day||''}',key:'${ctx.key||''}'},pickerQuery)">➕ Aliment hors liste (assistant Perplexity)</button>
+    <button class="picker-newfood" onclick="openScanner('${ctx.slot}','${ctx.day||''}')">📷 Scanner un produit emballé</button>
   </div>`;
 }
 function renderPickerCats(){
@@ -5436,6 +5468,446 @@ function voiceSave(mode){
   refreshActiveMenuView();
   renderHome();
   toast(mode==='add'?'Ajouté au '+SLOT_FR[key]+' 🎙️':'Repas du moment enregistré et validé 🎙️✅');
+}
+
+
+/* ============ SCANNER DE PRODUITS : code-barres → verdict FODMAP → repas ============
+   Le point aveugle du low-FODMAP, c'est le produit emballé : oignon et ail en poudre,
+   inuline et FOS dans les barres « riches en fibres », polyols dans le sans-sucre, blé
+   comme épaississant. On lit le code-barres, on récupère la liste d'ingrédients sur
+   Open Food Facts (base ouverte, seul le code-barres quitte l'appareil) et on la croise
+   avec la base FODMAP de l'app + une table d'ingrédients et additifs à risque.
+   Le verdict porte sur la LISTE D'INGRÉDIENTS, pas sur les quantités : il oriente, il
+   ne tranche pas — la liste complète est toujours affichée, termes signalés surlignés. */
+
+const SVG_SCAN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8M10.5 8v8M14 8v8M17 8v8"/></svg>';
+
+/* Ingrédients et additifs à risque qui n'existent pas comme « aliment » dans la base.
+   fam = famille FODMAP affichée, why = ce qu'on explique à l'utilisateur. */
+const SCAN_RISK=[
+  /* --- fructanes : oignon et ail sous toutes leurs formes --- */
+  {re:/\boignons?\b|\bechalotes?\b|\bciboules?\b/,lvl:'avoid',fam:'fructanes',why:'oignon'},
+  {re:/\bails?\b|\bail en poudre\b/,lvl:'avoid',fam:'fructanes',why:'ail'},
+  {re:/\bpoireaux?\b/,lvl:'avoid',fam:'fructanes',why:'poireau (partie blanche)'},
+  {re:/\bble\b|\bfroment\b|\bepeautre\b|\bsemoule de ble\b|\bgluten de ble\b|\bfarine de ble\b/,lvl:'avoid',fam:'fructanes',why:'blé'},
+  {re:/\bseigle\b|\borge\b|\bmalt d orge\b/,lvl:'avoid',fam:'fructanes',why:'seigle / orge'},
+  {re:/\binuline\b|\boligofructose\b|\bfructo oligosaccharides?\b|\bfos\b|\bracine de chicoree\b|\bchicoree\b/,lvl:'avoid',fam:'fructanes',why:'inuline / FOS'},
+  /* --- fructose en excès --- */
+  {re:/\bsirop de glucose fructose\b|\bsirop de fructose\b|\bisoglucose\b|\bsirop de mais a haute teneur\b/,lvl:'avoid',fam:'fructose',why:'sirop de glucose-fructose'},
+  {re:/\bmiel\b|\bsirop d agave\b|\bagave\b/,lvl:'avoid',fam:'fructose',why:'miel / agave'},
+  {re:/\bjus concentre de pomme\b|\bpuree de pomme\b|\bjus de poire\b|\bpuree de poire\b/,lvl:'avoid',fam:'fructose',why:'pomme / poire concentrée'},
+  /* --- lactose --- */
+  {re:/\blactose\b|\blait en poudre\b|\bpoudre de lait\b|\blactoserum\b|\bpetit lait\b|\bserum de lait\b/,lvl:'avoid',fam:'lactose',why:'lactose'},
+  {re:/\blaits?\b(?! (?:d amande|de coco|de soja|de riz|d avoine|delactose))/,lvl:'avoid',fam:'lactose',why:'lait'},
+  /* --- polyols --- */
+  {re:/\bsorbitol\b|\be420\b/,lvl:'avoid',fam:'sorbitol',why:'sorbitol (E420)'},
+  {re:/\bmannitol\b|\be421\b/,lvl:'avoid',fam:'mannitol',why:'mannitol (E421)'},
+  {re:/\bisomalt\b|\be953\b/,lvl:'avoid',fam:'sorbitol',why:'isomalt (E953)'},
+  {re:/\bmaltitol\b|\be965\b/,lvl:'avoid',fam:'sorbitol',why:'maltitol (E965)'},
+  {re:/\blactitol\b|\be966\b/,lvl:'avoid',fam:'sorbitol',why:'lactitol (E966)'},
+  {re:/\bxylitol\b|\be967\b/,lvl:'avoid',fam:'sorbitol',why:'xylitol (E967)'},
+  /* --- GOS --- */
+  {re:/\bpois chiches?\b|\blentilles?\b|\bharicots rouges\b|\bharicots blancs\b|\bfeves?\b/,lvl:'avoid',fam:'GOS',why:'légumineuse'},
+  {re:/\bfarine de soja\b|\bfeve de soja\b|\bproteines? de soja\b/,lvl:'avoid',fam:'GOS',why:'soja (fève entière)'},
+  /* --- prudence : véhicules classiques d'ail et d'oignon, ou ingrédients non précisés --- */
+  {re:/\baromes? naturels?\b|\baromes?\b/,lvl:'caution',fam:null,why:'arômes (peuvent contenir ail ou oignon)'},
+  {re:/\bepices\b|\bmelange d epices\b|\bcondiments\b/,lvl:'caution',fam:null,why:'épices non détaillées'},
+  {re:/\bbouillon\b|\bfond de veau\b|\bfond de volaille\b/,lvl:'caution',fam:null,why:'bouillon (souvent oignon/ail)'},
+  {re:/\bextrait de levure\b|\blevure maltee\b/,lvl:'caution',fam:null,why:'extrait de levure'},
+  {re:/\bfibres?\b(?! d avoine)/,lvl:'caution',fam:null,why:'fibres non précisées (inuline possible)'},
+  {re:/\bsirop de glucose\b/,lvl:'caution',fam:null,why:'sirop de glucose'},
+  {re:/\bamidon modifie\b/,lvl:'caution',fam:null,why:'amidon modifié (origine non précisée)'},
+  {re:/\berythritol\b|\be968\b/,lvl:'caution',fam:null,why:'érythritol (polyol, souvent toléré)'}
+];
+
+/* Aliments de la base à ignorer dans une liste d'ingrédients : trop courts ou trop
+   génériques, ils déclencheraient des correspondances au hasard. */
+const SCAN_SKIP_FOODS=['Eau','Sucre blanc','Sel','Citron','Café noir','Thé vert'];
+
+function scanNorm(s){
+  return ' '+normNameFP(s)
+    .replace(/pommes? de terre/g,'patate')   /* ne doit pas déclencher la pomme (fructose) */
+    .replace(/sans lactose|delactose/g,'delactose') /* une mention « sans lactose » rassure, elle n'alerte pas */
+    +' ';
+}
+/* mot entier, pluriel toléré : « poire » ne matche pas « poireau » */
+function scanHasWord(n,w){
+  return new RegExp('(^|[^a-z0-9])'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'s?([^a-z0-9]|$)').test(n);
+}
+
+/* Analyse d'une liste d'ingrédients → {lvl, hits:[{txt,lvl,fam}], verdict} */
+function scanAnalyzeIngredients(text){
+  let hits=[];
+  if(!text || !String(text).trim()) return {lvl:'unknown',hits:[],verdict:"Liste d'ingrédients absente d'Open Food Facts — impossible de se prononcer."};
+  const n=scanNorm(text);
+
+  SCAN_RISK.forEach(r=>{
+    if(r.re.test(n) && !hits.some(h=>h.txt===r.why)) hits.push({txt:r.why,lvl:r.lvl,fam:r.fam});
+  });
+
+  /* Aliments réels de la base présents dans la liste (tomate, riz, champignon…) */
+  foods.forEach(f=>{
+    if(SCAN_SKIP_FOODS.indexOf(f.n)>=0) return;
+    if(f.s==='safe') return;
+    const toks=normNameFP(f.n).split(' ').filter(w=>w.length>=4&&COACH_STOP.indexOf(w)<0);
+    if(!toks.length) return;
+    if(!toks.every(w=>scanHasWord(n,w))) return;
+    const fam=(familiesOf(f)||[])[0]||null;
+    const lvl=f.s==='avoid'?'avoid':'caution';
+    const label=f.n.split(' (')[0].split(' /')[0].toLowerCase();
+    const ln=normNameFP(label);
+    const lw=ln.split(' ').filter(w=>w.length>=4);
+    /* déjà signalé par la table d'ingrédients ? on ne le redit pas — mais seulement
+       si c'est bien la même famille FODMAP, sinon on perdrait une vraie alerte. */
+    if(hits.some(h=>{
+      const hn=normNameFP(h.txt);
+      if(hn.indexOf(ln)>=0||ln.indexOf(hn)>=0) return true;
+      return (h.fam===fam||!fam||!h.fam) && lw.some(w=>hn.split(' ').indexOf(w)>=0);
+    })) return;
+    hits.push({txt:label,lvl,fam});
+  });
+
+  /* un « à vérifier » contenu dans un « à éviter » est du bruit :
+     « sirop de glucose » n'a rien à faire à côté de « sirop de glucose-fructose » */
+  const strong=hits.filter(h=>h.lvl==='avoid').map(h=>normNameFP(h.txt));
+  hits=hits.filter(h=>h.lvl==='avoid'||!strong.some(t=>t.indexOf(normNameFP(h.txt))>=0));
+
+  const avoid=hits.filter(h=>h.lvl==='avoid');
+  if(avoid.length) return {lvl:'avoid',hits,
+    verdict:'À éviter en élimination : '+avoid.map(h=>h.txt).join(', ')+'.'};
+  if(hits.length) return {lvl:'caution',hits,
+    verdict:'Rien de rédhibitoire, mais à vérifier : '+hits.map(h=>h.txt).join(', ')+'.'};
+  return {lvl:'safe',hits,verdict:'Aucun ingrédient à risque repéré dans la liste.'};
+}
+
+/* Surligne dans la liste d'ingrédients les termes qui ont déclenché le verdict */
+function scanHighlight(text,hits){
+  let html=voiceEsc(String(text||''));
+  const words=[];
+  /* on ne garde que le terme, pas son explication entre parenthèses */
+  hits.forEach(h=>String(h.txt).replace(/\(.*$/,'').split(/[ ,\/]+/).forEach(w=>{ if(w.length>=3) words.push(w); }));
+  [...new Set(words)].forEach(w=>{
+    const esc=w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    /* frontière de mot faite à la main : \b ne marche pas devant « épices » ni « blé » */
+    const re=new RegExp('(^|[^a-zA-ZÀ-ÿ])('+esc+'[a-zA-ZÀ-ÿ]*)','gi');
+    html=html.replace(re,'$1<mark class="scan-mark">$2</mark>');
+  });
+  return html;
+}
+
+/* ---------- Cache local des produits déjà scannés (relecture hors ligne) ---------- */
+let scanCache={};
+try{ scanCache=JSON.parse(lsGet('fodmapScanCache')||'{}')||{}; }catch(e){ scanCache={}; }
+function scanCachePut(code,p){
+  scanCache[code]={p,ts:Date.now()};
+  const keys=Object.keys(scanCache);
+  if(keys.length>60){
+    keys.sort((a,b)=>scanCache[a].ts-scanCache[b].ts).slice(0,keys.length-60).forEach(k=>{ delete scanCache[k]; });
+  }
+  lsSet('fodmapScanCache', JSON.stringify(scanCache));
+}
+
+/* ---------- Open Food Facts ---------- */
+const OFF_FIELDS='code,product_name,product_name_fr,brands,quantity,serving_size,serving_quantity,ingredients_text,ingredients_text_fr,nutriments,categories_tags,image_front_small_url';
+async function scanFetchProduct(code){
+  if(scanCache[code]) return {p:scanCache[code].p,cached:true};
+  if(navigator.onLine===false) throw new Error('offline');
+  const ctrl=new AbortController();
+  const t=setTimeout(()=>ctrl.abort(),12000);
+  let r;
+  try{
+    r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields='+OFF_FIELDS,
+      {signal:ctrl.signal,headers:{'Accept':'application/json'}});
+  }catch(e){ clearTimeout(t); throw new Error(e.name==='AbortError'?'timeout':'offline'); }
+  clearTimeout(t);
+  if(!r.ok) throw new Error('http');
+  let j;
+  try{ j=await r.json(); }catch(e){ throw new Error('parse'); }
+  if(!j || j.status!==1 || !j.product) throw new Error('notfound');
+  const p=scanProductFrom(j.product,code);
+  scanCachePut(code,p);
+  return {p,cached:false};
+}
+function scanProductFrom(o,code){
+  const nut=o.nutriments||{};
+  const kcal=nut['energy-kcal_100g']!=null?+nut['energy-kcal_100g']
+    :(nut['energy_100g']!=null?Math.round(+nut['energy_100g']/4.184):null);
+  return {
+    code:o.code||code,
+    name:(o.product_name_fr||o.product_name||'').trim(),
+    brand:(o.brands||'').split(',')[0].trim(),
+    quantity:(o.quantity||'').trim(),
+    serving:+o.serving_quantity||null,
+    ingredients:(o.ingredients_text_fr||o.ingredients_text||'').trim(),
+    kcal100:kcal!=null&&isFinite(kcal)?Math.round(kcal):null,
+    prot100:nut.proteins_100g!=null?Math.round(+nut.proteins_100g*10)/10:null,
+    cats:o.categories_tags||[],
+    img:o.image_front_small_url||''
+  };
+}
+/* Recherche par nom : repli quand on n'a pas le code sous la main */
+async function scanSearchByName(q){
+  if(navigator.onLine===false) throw new Error('offline');
+  const ctrl=new AbortController();
+  const t=setTimeout(()=>ctrl.abort(),12000);
+  let r;
+  try{
+    r=await fetch('https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=8&fields='+OFF_FIELDS+'&search_terms='+encodeURIComponent(q),
+      {signal:ctrl.signal,headers:{'Accept':'application/json'}});
+  }catch(e){ clearTimeout(t); throw new Error(e.name==='AbortError'?'timeout':'offline'); }
+  clearTimeout(t);
+  if(!r.ok) throw new Error('http');
+  const j=await r.json().catch(()=>null);
+  if(!j||!j.products||!j.products.length) throw new Error('notfound');
+  return j.products.map(o=>scanProductFrom(o,o.code)).filter(p=>p.name);
+}
+
+/* Catégorie de l'app devinée depuis les catégories Open Food Facts */
+const SCAN_CAT_HINTS=[
+  [/boisson|beverage|drink|jus|eau|soda|the|cafe/,'boisson'],
+  [/dairy|laitier|yaourt|yogurt|fromage|cheese|lait|milk|creme/,'laitier'],
+  [/meat|viande|poisson|fish|volaille|charcuterie|oeuf|egg|tofu/,'proteine'],
+  [/legumineuse|legume-sec|lentil|pois-chiche|haricot|bean/,'legumineuse'],
+  [/fruit/,'fruit'],
+  [/vegetable|legume/,'legume'],
+  [/soupe|soup|potage|plat|meal|pizza|sandwich/,'legume'],
+  [/dessert|confiserie|chocolat|biscuit|gateau|glace/,'noix'],
+  [/cereal|pate|pasta|riz|rice|pain|bread|farine|flour|snack/,'cereale'],
+  [/noix|nut|graine|seed|amande|oleagineux/,'noix']
+];
+function scanGuessCat(p){
+  const s=normNameFP((p.cats||[]).join(' ')+' '+p.name);
+  for(let i=0;i<SCAN_CAT_HINTS.length;i++){ if(SCAN_CAT_HINTS[i][0].test(s)) return SCAN_CAT_HINTS[i][1]; }
+  return 'condiment';
+}
+function scanFoodName(p){
+  const n=p.name||'Produit scanné';
+  return (p.brand && normNameFP(n).indexOf(normNameFP(p.brand))<0) ? n+' — '+p.brand : n;
+}
+
+/* ---------- Lecture du code-barres ---------- */
+let scanStream=null, scanDetector=null, scanRAF=null, scanState='idle', scanProduct=null,
+    scanReport=null, scanError='', scanResults=null, scanBusy=false, scanSlot=null, scanDay=null;
+
+function scanCameraSupported(){
+  return typeof window.BarcodeDetector!=='undefined'
+    && !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+    && window.isSecureContext!==false;
+}
+function openScanner(slot,day){
+  scanSlot = slot || slotByHour();
+  scanDay = day || todayDayCode();
+  scanState='idle'; scanProduct=null; scanReport=null; scanError=''; scanResults=null; scanBusy=false;
+  renderScanner();
+  document.getElementById('modalBg').classList.add('show');
+  if(scanCameraSupported()) setTimeout(scanStartCamera,250);
+}
+function scanStop(){
+  if(scanRAF){ cancelAnimationFrame(scanRAF); scanRAF=null; }
+  if(scanStream){ try{ scanStream.getTracks().forEach(t=>t.stop()); }catch(e){} scanStream=null; }
+}
+async function scanStartCamera(){
+  if(!scanCameraSupported()){ scanError='unsupported'; renderScanner(); return; }
+  try{
+    scanDetector=scanDetector||new window.BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128']});
+  }catch(e){ scanError='unsupported'; renderScanner(); return; }
+  try{
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});
+  }catch(e){
+    scanError=(e && (e.name==='NotAllowedError'||e.name==='SecurityError'))?'denied':'camera';
+    renderScanner(); return;
+  }
+  scanState='camera'; scanError='';
+  renderScanner();
+  const v=document.getElementById('scanVideo');
+  if(!v){ scanStop(); return; }
+  v.srcObject=scanStream;
+  v.setAttribute('playsinline','');
+  try{ await v.play(); }catch(e){}
+  const tick=async()=>{
+    if(scanState!=='camera'||!scanStream){ return; }
+    try{
+      const codes=await scanDetector.detect(v);
+      if(codes && codes.length && codes[0].rawValue){
+        scanStop();
+        scanLookup(String(codes[0].rawValue).trim());
+        return;
+      }
+    }catch(e){}
+    scanRAF=requestAnimationFrame(tick);
+  };
+  scanRAF=requestAnimationFrame(tick);
+}
+async function scanLookup(code){
+  scanStop();
+  scanState='loading'; scanBusy=true; scanError=''; renderScanner();
+  try{
+    const {p,cached}=await scanFetchProduct(code);
+    scanProduct=p; scanProduct.fromCache=cached;
+    scanReport=scanAnalyzeIngredients(p.ingredients);
+    scanState='result'; scanBusy=false;
+    renderScanner();
+  }catch(e){
+    scanBusy=false; scanState='idle'; scanError=e.message||'http';
+    renderScanner();
+  }
+}
+function scanLookupManual(){
+  const el=document.getElementById('scanCode');
+  const code=(el?el.value:'').replace(/\D/g,'');
+  if(code.length<8){ toast('Un code-barres fait au moins 8 chiffres 🔢'); return; }
+  scanLookup(code);
+}
+async function scanSearchManual(){
+  const el=document.getElementById('scanName');
+  const q=(el?el.value:'').trim();
+  if(q.length<3){ toast('Tape au moins 3 lettres 🔍'); return; }
+  scanStop(); scanState='loading'; scanBusy=true; scanError=''; renderScanner();
+  try{
+    scanResults=await scanSearchByName(q);
+    scanState='search'; scanBusy=false; renderScanner();
+  }catch(e){
+    scanBusy=false; scanState='idle'; scanError=e.message||'http'; renderScanner();
+  }
+}
+function scanPick(i){
+  const p=(scanResults||[])[i]; if(!p) return;
+  scanProduct=p; if(p.code) scanCachePut(p.code,p);
+  scanReport=scanAnalyzeIngredients(p.ingredients);
+  scanState='result'; renderScanner();
+}
+function scanBack(){
+  scanState='idle'; scanProduct=null; scanReport=null; scanResults=null; scanError='';
+  renderScanner();
+  if(scanCameraSupported()) setTimeout(scanStartCamera,150);
+}
+
+/* ---------- Rendu ---------- */
+function scanErrorMsg(){
+  const m={
+    offline:"📡 Pas de connexion : la fiche produit vient d'Open Food Facts, en ligne. Les produits déjà scannés restent consultables hors ligne.",
+    timeout:"📡 Open Food Facts ne répond pas. Réessaie dans un instant.",
+    notfound:"🔍 Produit inconnu d'Open Food Facts. Tu peux le créer à la main — ou l'ajouter à la base ouverte depuis l'appli Open Food Facts, ça profitera à tout le monde.",
+    http:"⚠️ Open Food Facts a renvoyé une erreur. Réessaie dans un instant.",
+    parse:"⚠️ Réponse illisible d'Open Food Facts. Réessaie dans un instant.",
+    denied:"📷 Accès à la caméra refusé. Autorise-la pour ce site, ou saisis le code-barres à la main ci-dessous.",
+    camera:"📷 Caméra indisponible sur cet appareil. Saisis le code-barres à la main ci-dessous.",
+    unsupported:"📷 Ce navigateur ne sait pas lire un code-barres (c'est le cas sur iPhone et Firefox). Saisis les chiffres sous le code, ou cherche le produit par son nom — le résultat est identique."
+  };
+  return m[scanError]||"⚠️ Impossible d'interroger Open Food Facts pour l'instant.";
+}
+function renderScanner(){
+  const el=document.getElementById('modalContent');
+  if(!el) return;
+  let body='';
+
+  if(scanState==='loading'){
+    body=`<div class="scan-loading"><div class="scan-spin"></div><div>Lecture de la fiche produit…</div></div>`;
+  } else if(scanState==='search'){
+    body=`<div class="ing-editor-title">Produits trouvés</div>
+      <div class="scan-hits">${(scanResults||[]).map((p,i)=>`
+        <button class="scan-hit" onclick="scanPick(${i})">
+          <span class="scan-hit-name">${voiceEsc(p.name)}</span>
+          <span class="scan-hit-meta">${voiceEsc(p.brand||'—')}${p.quantity?' · '+voiceEsc(p.quantity):''}</span>
+        </button>`).join('')}</div>
+      <div class="modal-actions-row"><button class="reset-btn" onclick="scanBack()">← Nouvelle recherche</button></div>`;
+  } else if(scanState==='result'&&scanProduct){
+    const p=scanProduct, rep=scanReport||{lvl:'unknown',hits:[]};
+    const cls=rep.lvl==='avoid'?'avoid':rep.lvl==='safe'?'safe':'moderate';
+    const head=rep.lvl==='avoid'?'🚫 À éviter en élimination'
+      :rep.lvl==='safe'?'✅ Aucun ingrédient à risque repéré'
+      :rep.lvl==='caution'?'🟠 À vérifier'
+      :'❔ Liste d\'ingrédients indisponible';
+    const dayOpts=menuData.map(d=>`<option value="${d.day}" ${d.day===scanDay?'selected':''}>${fullDayNames[d.day]}</option>`).join('');
+    const slotOpts=Object.keys(mealLabels).map(k=>`<option value="${k}" ${k===scanSlot?'selected':''}>${mealLabels[k]}</option>`).join('');
+    body=`
+      <div class="modal-title">${voiceEsc(p.name||'Produit')}</div>
+      <span class="modal-badge ${cls}">${head}</span>
+      <div class="scan-prod">
+        ${p.img?`<img class="scan-img" src="${voiceEsc(p.img)}" alt="" loading="lazy">`:''}
+        <div class="scan-prod-meta">
+          <b>${voiceEsc(p.brand||'Marque inconnue')}</b>
+          <span>${voiceEsc(p.quantity||'')}</span>
+          <span>${p.kcal100!=null?p.kcal100+' kcal / 100 g':'kcal inconnues'}${p.prot100!=null?' · '+p.prot100+' g de protéines':''}</span>
+          ${p.fromCache?'<span class="scan-cache">↺ fiche en cache</span>':''}
+        </div>
+      </div>
+      ${rep.hits.length?`<div class="scan-flags">${rep.hits.map(h=>`<span class="scan-flag ${h.lvl}">${h.lvl==='avoid'?'🚫':'🟠'} ${voiceEsc(h.txt)}${h.fam?' · '+voiceEsc((FAMILY_LABELS[h.fam]||h.fam).split(' (')[0]):''}</span>`).join('')}</div>`:''}
+      <div class="ing-editor-title">Liste d'ingrédients <span class="ing-scale-note">· telle que publiée par Open Food Facts</span></div>
+      <div class="scan-ing">${p.ingredients?scanHighlight(p.ingredients,rep.hits):'<i>Non renseignée pour ce produit.</i>'}</div>
+      ${p.kcal100==null?`<div class="vc-err" style="margin-top:12px">⚠️ Valeurs nutritionnelles absentes de la fiche : tu devras saisir les kcal à la main après l'ajout.</div>`:''}
+      <div class="vc-ctx" style="margin-top:16px">
+        <label>Créneau<select onchange="scanSlot=this.value">${slotOpts}</select></label>
+        <label>Jour<select onchange="scanDay=this.value">${dayOpts}</select></label>
+      </div>
+      <div class="pf-row" style="margin-bottom:12px"><label>Quantité (g)</label><input type="number" id="scanGrams" min="1" step="5" value="${p.serving||100}"></div>
+      <div class="modal-actions-row">
+        <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="scanSave(true)">✓ Ajouter au repas</button>
+        <button class="reset-btn" onclick="scanSave(false)">💾 Ajouter à ma base seulement</button>
+        <button class="reset-btn" onclick="scanBack()">📷 Scanner un autre</button>
+      </div>
+      <div class="modal-tip">⚕️ Le verdict porte sur la <b>liste d'ingrédients</b>, pas sur les quantités : les seuils Monash dépendent de la dose, et un produit contenant 0,1 % d'oignon peut très bien passer. Lis la liste, c'est toi qui juges.</div>`;
+  } else {
+    /* état d'accueil : caméra si possible, saisie manuelle toujours visible */
+    const cam=scanCameraSupported();
+    body=`
+      <div class="modal-title">Scanner un produit</div>
+      <div class="modal-badge safe">Conformité FODMAP en un coup d'œil</div>
+      ${cam?`<div class="scan-cam"><video id="scanVideo" playsinline muted></video><div class="scan-frame"></div></div>
+        <div class="vc-hint">${scanState==='camera'?'Vise le code-barres, je lis tout seul.':'Démarrage de la caméra…'}</div>`
+      :''}
+      ${scanError?`<div class="vc-err">${scanErrorMsg()}</div>`:''}
+      <div class="ing-editor-title">${cam?'Ou saisis le code à la main':'Saisis le code-barres'}</div>
+      <div class="pplx-row">
+        <input type="tel" id="scanCode" class="bld-name" style="margin:0;flex:1;min-width:150px" placeholder="Les chiffres sous le code-barres">
+        <button class="btn-p" style="padding:10px 16px;font-size:12px" onclick="scanLookupManual()">Chercher</button>
+      </div>
+      <div class="ing-editor-title">Ou par nom de produit</div>
+      <div class="pplx-row">
+        <input type="text" id="scanName" class="bld-name" style="margin:0;flex:1;min-width:150px" placeholder="ex : soupe de tomate Liebig">
+        <button class="btn-s" style="padding:10px 16px;font-size:12px" onclick="scanSearchManual()">Chercher</button>
+      </div>
+      <div class="modal-tip">💡 Les fiches viennent d'<b>Open Food Facts</b>, la base ouverte et collaborative. Seul le code-barres quitte ton téléphone, aucune donnée personnelle. Les produits déjà scannés restent lisibles hors ligne.</div>`;
+  }
+
+  el.innerHTML=`
+    <div class="modal-hd"><div class="me">📷</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-body">${body}</div>`;
+  document.getElementById('modalBg').classList.add('show');
+}
+
+function scanSave(addToMeal){
+  const p=scanProduct, rep=scanReport;
+  if(!p){ return; }
+  const gEl=document.getElementById('scanGrams');
+  const g=Math.max(1,Math.round(+(gEl?gEl.value:0)||100));
+  const lvl=rep?rep.lvl:'unknown';
+  const status = lvl==='avoid'?'avoid' : lvl==='safe'?'safe' : 'moderate';
+  const f=createCustomFood({
+    n:scanFoodName(p),
+    c:scanGuessCat(p),
+    s:status,
+    g:status==='moderate'?(p.serving||100):100,
+    kcal100:p.kcal100!=null?p.kcal100:0,
+    prot100:p.prot100!=null?p.prot100:0,
+    e:status==='avoid'?'🚫':'🛒'
+  });
+  if(f && f.custom){ f.code=p.code; persistCustomFoods(); }
+  renderFoods();
+  if(addToMeal){
+    if(programWeek!==1){ programWeek=1; renderProgram(); }
+    scanStop();
+    switchTab('menu');
+    selectedDay=scanDay;
+    refreshActiveMenuView();
+    /* ouvre la fiche du repas avec le produit dedans : on voit ce qu'on vient d'ajouter */
+    addIngredientByName(scanDay,scanSlot,f.n,g);
+    renderHome();
+    toast('« '+f.n+' » ajouté au '+SLOT_FR[scanSlot]+' 🛒');
+  } else {
+    toast('« '+f.n+' » ajouté à ta base d\'aliments 🌿');
+    renderScanner();
+  }
 }
 
 /* ============ PWA : INSTALLATION EN VRAIE APPLICATION ============

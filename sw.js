@@ -1,5 +1,5 @@
 /* FODMAP+ — service worker : cache l'app shell pour un fonctionnement hors-ligne (Android + web). */
-const CACHE_NAME = 'fodmap-plus-v24';
+const CACHE_NAME = 'fodmap-plus-v25';
 const APP_SHELL = [
   './',
   './index.html',
@@ -30,6 +30,11 @@ self.addEventListener('activate', (event) => {
 // autres assets (icônes, manifest) qui changent rarement.
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  // Requêtes vers une autre origine (Open Food Facts) : on laisse passer sans y toucher.
+  // Sans ça, le repli hors-ligne renverrait la page HTML à un appel d'API, qui échouerait
+  // sur un parse JSON incompréhensible au lieu d'afficher « pas de connexion ».
+  if (new URL(event.request.url).origin !== self.location.origin) return;
 
   const isHTML = event.request.mode === 'navigate' ||
     (event.request.headers.get('accept') || '').includes('text/html');
