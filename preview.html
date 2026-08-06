@@ -1724,6 +1724,226 @@ button,.chip,.fbtn,.cbtn,.side-link,.tb-btn,.dqa,.day-tab,.phase-btn{cursor:poin
   .budget-row{justify-content:center}
   .budget-total{margin-left:0}
 }
+
+/* =====================================================================
+   FODMAP+ — DIRECTION ÉDITORIALE v5
+   Cible : display serif crème sur vert-noir, or en accent, médaillons
+   FODMAP pleins, cartes qui respirent. Dernier bloc de la cascade.
+   ===================================================================== */
+
+/* ---------- 1. Le noir devient un vert très sombre, l'encre du crème --- */
+:root[data-theme="dark"]{
+  --ivory:#0A0F0D;        /* vert-noir : le #0B0B0F du brief, réchauffé de vert */
+  --ivory-2:#111814;
+  --surface:#111814;
+  --surface-dim:#0D1310;
+  --surface-raised:#16201A;
+  --hairline:rgba(240,232,213,.10);
+  --border-subtle:rgba(240,232,213,.08);
+
+  --slate-900:#F2E8D5;    /* crème : l'encre du display */
+  --slate-800:#E6DBC5;
+  --slate-700:#D2C7B2;
+  --slate-600:#B8AE9B;
+  --slate-500:#9A9384;    /* secondaire, chaud */
+  --slate-400:#9A9384;
+  --slate-300:#6B665C;
+  --slate-200:#26302A;
+  --slate-100:#1B241F;
+  --slate-50:#161E1A;
+
+  --gold:#D6B87C;
+  --gold-ink:#E2C793;
+  --gold-50:#1C1810;
+  --gold-200:#3E3524;
+  --forest:#1F7A45;
+  --forest-ink:#5FCB8C;
+}
+:root{
+  --surface-raised:#FFFFFF;
+  --slate-900:#14181A;    /* encre légèrement plus chaude que le noir pur */
+}
+[data-theme="dark"] body{background:var(--ivory)}
+
+/* Halo ambiant : la profondeur des maquettes sans une seule image. */
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(900px 520px at 78% -8%, rgba(31,122,69,.16), transparent 62%),
+    radial-gradient(700px 460px at 4% 4%, rgba(214,184,124,.09), transparent 60%)}
+:root:not([data-theme="dark"]) body::before{
+  background:
+    radial-gradient(900px 520px at 78% -8%, rgba(20,83,45,.07), transparent 62%),
+    radial-gradient(700px 460px at 4% 4%, rgba(193,154,85,.08), transparent 60%)}
+
+/* ---------- 2. Typographie display ------------------------------------ */
+/* C'est le levier principal : les titres passaient à 26px, ils montent à ~52. */
+.sec-title,.dash-greet{font-family:'Playfair Display',serif;font-weight:600;
+  line-height:1.04;letter-spacing:-.022em;color:var(--slate-900)}
+.sec-title{font-size:clamp(30px,4.6vw,52px);margin-bottom:14px;max-width:16ch}
+.dash-greet{font-size:clamp(30px,4.6vw,48px);letter-spacing:-.025em}
+.dash-date{font-size:14px;color:var(--slate-500);margin-top:8px}
+.sec-h{margin-bottom:40px}
+.sec-tag{display:inline-block;font-size:12.5px;font-weight:500;color:var(--gold-ink);
+  margin-bottom:16px;letter-spacing:.04em}
+.sec-sub{font-size:15.5px;line-height:1.75;color:var(--slate-500);max-width:58ch}
+.quiz-title{font-size:clamp(28px,4vw,44px);line-height:1.06;letter-spacing:-.02em}
+.modal-title{font-size:clamp(22px,3vw,30px);line-height:1.15;letter-spacing:-.015em}
+
+/* Les grands chiffres tiennent le même rôle que les titres */
+.ring-center b{font-size:34px;letter-spacing:-.02em}
+.wc-value,.dash-weight-val{font-size:clamp(30px,4vw,42px);letter-spacing:-.02em}
+.day-head .n,.day-tab .dtn{letter-spacing:-.02em}
+
+/* ---------- 3. Médaillons FODMAP pleins (cf. maquettes) ---------------- */
+/* Remplace la pastille de 6px : le statut est la promesse de l'app, il
+   redevient un aplat coloré lisible d'un coup d'œil. */
+.fc-badge,.pib,.modal-badge,.mcl-fod,.fod-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 12px!important;
+  border-radius:999px;font-size:11.5px;font-weight:600;letter-spacing:.01em;
+  border:1px solid transparent!important;white-space:nowrap}
+.fc-badge::before,.pib::before,.modal-badge::before,.ds-badge::before{display:none}
+.mcl-fod i{display:none}
+
+.fc-badge.safe,.pib.safe,.pi.safe .pib,.modal-badge.safe,.mcl-fod.safe,.fod-badge.low{
+  background:#D6F0E3!important;color:#05603D!important}
+.fc-badge.moderate,.pib.moderate,.pi.moderate .pib,.modal-badge.moderate,.mcl-fod.mod,.fod-badge.medium{
+  background:#FBEACB!important;color:#7A4D05!important}
+.fc-badge.avoid,.pib.avoid,.pi.avoid .pib,.modal-badge.avoid,.mcl-fod.avoid,.fod-badge.high{
+  background:#FADDDB!important;color:#951E18!important}
+
+[data-theme="dark"] .fc-badge.safe,[data-theme="dark"] .pib.safe,[data-theme="dark"] .pi.safe .pib,
+[data-theme="dark"] .modal-badge.safe,[data-theme="dark"] .mcl-fod.safe,[data-theme="dark"] .fod-badge.low{
+  background:rgba(16,185,129,.16)!important;color:#57D6A0!important;border-color:rgba(16,185,129,.28)!important}
+[data-theme="dark"] .fc-badge.moderate,[data-theme="dark"] .pib.moderate,[data-theme="dark"] .pi.moderate .pib,
+[data-theme="dark"] .modal-badge.moderate,[data-theme="dark"] .mcl-fod.mod,[data-theme="dark"] .fod-badge.medium{
+  background:rgba(245,158,11,.16)!important;color:#F7C563!important;border-color:rgba(245,158,11,.28)!important}
+[data-theme="dark"] .fc-badge.avoid,[data-theme="dark"] .pib.avoid,[data-theme="dark"] .pi.avoid .pib,
+[data-theme="dark"] .modal-badge.avoid,[data-theme="dark"] .mcl-fod.avoid,[data-theme="dark"] .fod-badge.high{
+  background:rgba(239,68,68,.16)!important;color:#F79A97!important;border-color:rgba(239,68,68,.30)!important}
+
+/* Le médaillon rond des maquettes, porté par la vignette de la carte aliment */
+.fc-emoji{width:52px;height:52px;border-radius:50%;font-size:25px;
+  border:1px solid var(--border-subtle);background:var(--surface-dim)}
+.food-card.safe .fc-emoji{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.30)}
+.food-card.moderate .fc-emoji{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.30)}
+.food-card.avoid .fc-emoji{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.30)}
+.food-card::before{width:0}
+.food-card:hover::before{width:0}
+
+/* Filtres de l'explorateur : la pastille reprend sa couleur pleine */
+.fbtn .dot{width:9px;height:9px}
+.fbtn.on.safe{background:#05603D;border-color:#05603D}
+.fbtn.on.moderate{background:#7A4D05;border-color:#7A4D05}
+.fbtn.on.avoid{background:#951E18;border-color:#951E18}
+[data-theme="dark"] .fbtn.on.safe{background:rgba(16,185,129,.22);border-color:rgba(16,185,129,.5);color:#7FE3B6}
+[data-theme="dark"] .fbtn.on.moderate{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.5);color:#F9D08A}
+[data-theme="dark"] .fbtn.on.avoid{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.5);color:#F9B3B0}
+
+/* Badges du résumé du jour : mêmes aplats */
+.ds-badge{padding:5px 12px;border-radius:999px;font-size:11.5px;font-weight:600;
+  background:rgba(16,185,129,.14);color:#05603D}
+[data-theme="dark"] .ds-badge{background:rgba(16,185,129,.16);color:#57D6A0}
+.ds-badge.alt{background:var(--surface-dim);color:var(--slate-600)}
+.ds-badge.warn{background:rgba(245,158,11,.16);color:#7A4D05}
+[data-theme="dark"] .ds-badge.warn{color:#F7C563}
+
+/* ---------- 4. Cartes : plus de souffle, plus de relief ---------------- */
+.dash-card,.symp-card,.weight-chart-card,.weight-form-card,.phase-card,.day-summary,.budget-card{
+  border-radius:var(--r-xl);padding:28px 30px;background:var(--surface-raised);
+  border:1px solid var(--border-subtle)}
+[data-theme="dark"] .dash-card,[data-theme="dark"] .symp-card,[data-theme="dark"] .weight-chart-card,
+[data-theme="dark"] .weight-form-card,[data-theme="dark"] .phase-card,[data-theme="dark"] .day-summary,
+[data-theme="dark"] .budget-card{background:var(--surface-raised)}
+.dash-card{box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px -18px rgba(0,0,0,.22)}
+[data-theme="dark"] .dash-card{box-shadow:0 1px 2px rgba(0,0,0,.5),0 18px 44px -22px rgba(0,0,0,.8)}
+.dash-grid{gap:20px}
+.dash-card-hd{margin-bottom:20px}
+.dash-card-hd h3{font-size:17px;font-weight:600}
+.meal-card-lg,.food-card{border-radius:var(--r-lg);padding:22px}
+.meal-card-lg{padding:24px}
+.phase-card{padding:32px 30px}
+.phase-card h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;letter-spacing:-.015em}
+.phase-num{font-size:60px;color:var(--surface-dim)}
+[data-theme="dark"] .phase-num{color:rgba(240,232,213,.05)}
+.phase-icon{width:52px;height:52px;border-radius:50%;background:var(--gold-50);
+  border:1px solid var(--gold-200);color:var(--gold)}
+.phase-icon .ic{width:24px;height:24px}
+.mcl-icon{width:48px;height:48px;border-radius:50%}
+.coach-avatar{border-radius:50%}
+.dqa{min-height:84px;padding:16px;border-radius:14px}
+.dqa .ic{width:22px;height:22px}
+.dmeal{padding:13px 15px;border-radius:14px}
+.dmeal-ic .ic{width:22px;height:22px;color:var(--gold)}
+
+/* ---------- 5. Boutons : le CTA de la maquette 3 ----------------------- */
+/* Le radius 12 du brief est conservé ; seul le CTA principal des blocs
+   d'accueil prend la forme pilule pleine largeur des maquettes. */
+.btn-p{padding:14px 28px;font-size:14.5px;font-weight:600;min-height:48px}
+.voice-fab{border-radius:999px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45)}
+.coach-send{border-radius:50%}
+.btn-s{font-weight:500}
+.dash-link,.phase-link{color:var(--gold-ink);font-weight:600}
+
+/* ---------- 6. Châssis ------------------------------------------------- */
+.nb-text{font-size:21px;letter-spacing:-.02em}
+.nb-icon{border-radius:50%;background:var(--forest)}
+.topbar{background:color-mix(in srgb,var(--ivory) 90%,transparent)}
+.tb{background:color-mix(in srgb,var(--ivory) 92%,transparent)}
+[data-theme="dark"] .sidebar{background:var(--surface-dim)}
+.side-link{font-size:14.5px}
+@media(min-width:901px){
+  .side-link.active,.side-link.tab-link.active{background:var(--gold-50)!important}
+  [data-theme="dark"] .side-link.active,[data-theme="dark"] .side-link.tab-link.active{
+    background:rgba(214,184,124,.10)!important}
+}
+.tb-btn .tb-lbl{font-size:11px}
+
+/* ---------- 7. Respiration générale ------------------------------------ */
+@media(min-width:768px){
+  .sec{padding:64px 40px}
+  .dash{padding:48px 40px 64px}
+}
+@media(max-width:767px){
+  .sec{padding:84px 20px 44px}
+  .dash{padding:80px 20px 44px}
+  .sec-h{margin-bottom:28px}
+  .dash-card,.symp-card,.weight-chart-card,.weight-form-card,.phase-card,
+  .day-summary,.budget-card{padding:22px 20px;border-radius:var(--r-lg)}
+}
+
+/* ---------- 8. Correctifs de la passe éditoriale ---------------------- */
+/* 16ch cassait les titres longs en trois lignes : deux suffisent. */
+.sec-title{max-width:22ch}
+@media(max-width:767px){.sec-title{max-width:none}}
+
+/* La carte « Aujourd'hui » s'étirait sur deux rangées et laissait un grand
+   vide sous la barre de budget : les cartes se dimensionnent au contenu. */
+.dash-grid{align-items:start}
+.dash-today{grid-row:auto}
+
+/* Explorateur : les contrôles s'alignent sur le titre plutôt que de rester
+   centrés sous un hero aligné à gauche. */
+#explorer .search-wrap{margin-left:0;margin-right:auto}
+#explorer .chips,#explorer .explorer-bar,#explorer .cat-select{justify-content:flex-start}
+#explorer .food-count{text-align:left}
+@media(max-width:767px){
+  #explorer .chips,#explorer .explorer-bar,#explorer .cat-select{justify-content:center}
+  #explorer .food-count{text-align:center}
+}
+.fc-pill .ic{width:14px;height:14px}
+
+/* L'onglet actif était repris en vert par la règle sombre d'origine, alors que
+   l'icône passait en or : libellé et icône s'alignent sur l'or. */
+.tb-btn.active,[data-theme="dark"] .tb-btn.active{color:var(--gold-ink)}
+.tb-btn.active .ic,[data-theme="dark"] .tb-btn.active .ic{color:var(--gold)}
+.ring-fg,.ds-ring .ring-fg{stroke-width:9}
+
+/* Sur desktop le libellé ne doit pas s'étirer : les flèches se retrouvaient
+   plaquées aux deux extrémités de la page. */
+@media(min-width:768px){
+  .prog-nav{gap:18px}
+  .prog-label{flex:0 1 auto;min-width:220px}
+}
 </style>
 </head>
 <body>
@@ -2511,7 +2731,7 @@ function clearWeekOverride(day,key){
 }
 let menuData = JSON.parse(JSON.stringify(menuTemplateA));
 let menuDataOriginal = JSON.parse(JSON.stringify(menuTemplateA));
-const mealLabels = {breakfast:'🌅 Petit-déj',lunch:'☀️ Déjeuner',snack:'🍏 Collation',dinner:'🌙 Dîner'};
+const mealLabels = {breakfast:'Petit-déj',lunch:'Déjeuner',snack:'Collation',dinner:'Dîner'};
 const mealIcons = {
   breakfast:'<svg class="ic ic-meal" aria-hidden="true"><use href="#i-sunrise"/></svg>',
   lunch:'<svg class="ic ic-meal" aria-hidden="true"><use href="#i-sun-high"/></svg>',
@@ -3104,7 +3324,7 @@ function renderFoods(){
     return `<div class="food-card ${f.s}" style="animation:fadeUp .5s var(--tb) backwards;animation-delay:${(i%12)*.04}s" onclick='openFoodModal(${JSON.stringify(f.n)})'>
       <div class="fc-top"><div class="fc-emoji">${f.e}</div><div class="fc-badge ${f.s}">${badge}</div></div>
       <div class="fc-name">${f.n}${f.custom?' <span class="fc-custom" title="Aliment personnalisé">✏️</span>':''}</div><div class="fc-portion">${f.p}</div>
-      <div class="fc-macros"><span class="fc-pill g"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>${f.g}g</span><span class="fc-pill k"><svg class="ic" aria-hidden="true"><use href="#i-flame"/></svg>${f.k} kcal</span><span class="fc-pill p"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>${f.pr}g</span><span class="fc-pill price">${f.price.toFixed(2)}€</span></div>
+      <div class="fc-macros"><span class="fc-pill g">${f.g} g</span><span class="fc-pill k"><svg class="ic" aria-hidden="true"><use href="#i-flame"/></svg>${f.k} kcal</span><span class="fc-pill p">${f.pr} g prot.</span><span class="fc-pill price">${f.price.toFixed(2)}€</span></div>
     </div>`;
   }).join('');
 }
@@ -4901,7 +5121,7 @@ function exportMenuPdf(){
   cont.innerHTML=`
     <h1>FODMAP+ — Menu de la semaine ${programWeek}</h1>
     <p class="pr-meta">Objectif ${profile.calTarget} kcal · ${profile.protTarget} g protéines / jour · budget ${weeklyBudget} € · ${STORES[selectedStore].label} · généré le ${new Date().toLocaleDateString('fr-FR')}</p>
-    <table class="pr-table"><tr><th>Jour</th><th>🌅 Petit-déj</th><th>☀️ Déjeuner</th><th>🍏 Collation</th><th>🌙 Dîner</th><th>Total</th></tr>
+    <table class="pr-table"><tr><th>Jour</th><th>Petit-déj</th><th>Déjeuner</th><th>Collation</th><th>Dîner</th><th>Total</th></tr>
     ${menuData.map(d=>{const t=dayDisplayTotals(d);return `<tr><td><b>${fullDayNames[d.day]}</b></td>${Object.keys(d.meals).map(k=>{const mm=mealDisplayMacros(d,k);return `<td>${d.meals[k].name}<br><small>${Math.round(mm.k)} kcal · ${Math.round(mm.pr)}g</small></td>`}).join('')}<td><b>${Math.round(t.k)} kcal</b><br><small>${Math.round(t.pr)}g prot · ${dayPrice(d).toFixed(2)}€</small></td></tr>`}).join('')}
     </table>
     <h2>🛒 Liste de courses (${Object.keys(agg).length} articles · ~${weekPrice().toFixed(2)} €)</h2>

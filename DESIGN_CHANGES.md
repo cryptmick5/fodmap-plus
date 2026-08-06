@@ -30,13 +30,16 @@ ouvrant une modale de repas.
 Le mode nuit existait déjà (`[data-theme="dark"]` + `applyTheme`) : la mécanique
 est conservée, seules les **valeurs des jetons** changent.
 
+Valeurs finales, après la passe éditoriale décrite au §10 :
+
 | | Nuit | Jour |
 |---|---|---|
-| Fond principal (`--ivory`) | `#0B0B0F` | `#F8F6F2` |
-| Cartes (`--surface`) | `#15151E` | `#FFFFFF` |
-| Texte principal (`--slate-900`) | `#E6E6E6` | `#1A1A1A` |
-| Texte secondaire (`--slate-500`) | `#9AA0A6` | `#6B7280` |
-| Bordures (`--border-subtle`) | `rgba(255,255,255,.06)` | `rgba(0,0,0,.06)` |
+| Fond principal (`--ivory`) | `#0A0F0D` | `#F8F6F2` |
+| Cartes (`--surface`) | `#111814` | `#FFFFFF` |
+| Texte principal (`--slate-900`) | `#F2E8D5` (crème) | `#14181A` |
+| Texte secondaire (`--slate-500`) | `#9A9384` | `#6B7280` |
+| Or (`--gold`) | `#D6B87C` | `#c19a55` |
+| Bordures (`--border-subtle`) | `rgba(240,232,213,.08)` | `rgba(0,0,0,.06)` |
 | Ombre moyenne (`--s-md`) | `0 8px 32px rgba(0,0,0,.4)` | `0 4px 16px rgba(0,0,0,.08)` |
 
 Ajouts sur le toggle :
@@ -44,7 +47,7 @@ Ajouts sur le toggle :
 - icône SVG soleil / lune (plus d'emoji), échangée via `setAttribute('href', …)` ;
 - `aria-label` mis à jour dynamiquement (« Passer en mode jour / nuit ») ;
 - transition `background-color .3s ease, color .3s ease` sur les surfaces ;
-- `<meta name="theme-color">` passe à `#0B0B0F` en nuit ;
+- `<meta name="theme-color">` passe au fond sombre en nuit ;
 - la persistance `localStorage` et le respect de `prefers-color-scheme` étaient
   déjà en place, inchangés.
 
@@ -52,9 +55,9 @@ Ajouts sur le toggle :
 
 | Jeton | Rôle |
 |---|---|
-| `--forest` | aplat primaire — `#14532d` en jour, `#1B6B3C` en nuit |
-| `--forest-ink` | le même vert **quand il sert d'encre ou de bordure** — `#14532d` / `#57C286` |
-| `--gold-ink` | or lisible en texte — `#8A6A2E` / `#DCC08A` |
+| `--forest` | aplat primaire — `#14532d` en jour, `#1F7A45` en nuit |
+| `--forest-ink` | le même vert **quand il sert d'encre ou de bordure** — `#14532d` / `#5FCB8C` |
+| `--gold-ink` | or lisible en texte — `#8A6A2E` / `#E2C793` |
 | `--border-subtle` | la bordure 1px de la spec |
 | `--fod-low` / `--fod-medium` / `--fod-high` | `#10B981` / `#F59E0B` / `#EF4444` |
 
@@ -111,23 +114,26 @@ seraient moins lisibles que les emoji. Dites-moi si vous préférez les converti
 
 ---
 
-## 3. Badges FODMAP
+## 3. Badges FODMAP — **révisé après vos maquettes**
 
-Les pilules pastel pleines disparaissent partout au profit de **pastille + libellé** :
+La spec §4 demandait de supprimer les pilules pastel au profit d'un point de 6px.
+Vos trois références font l'inverse, et vous avez tranché pour les maquettes : le
+statut redevient un **aplat coloré** — c'est la promesse de l'app, elle doit se
+lire d'un coup d'œil.
 
-```html
-<span class="fod-badge"><span class="dot dot-high"></span>Riche en FODMAP</span>
-```
+- Pilules pleines arrondies sur `.fc-badge`, `.pib`, `.modal-badge`, `.mcl-fod`,
+  `.ds-badge` — couleurs distinctes en jour et en nuit, toutes ≥ 4.5:1.
+- Médaillon rond coloré sur la vignette des cartes aliment
+  (`.food-card.safe .fc-emoji` etc.), comme les cercles vert/orange/rouge de vos
+  maquettes 1 et 2.
+- Le liseré latéral (`.food-card::before`) devient redondant et disparaît.
+- `.fod-badge` / `.dot` restent disponibles pour un usage en ligne dans du texte.
 
-Le pattern est appliqué à `.mcl-fod` (qui avait déjà son `<i>`, donc **zéro
-changement de markup**), et par `::before` à `.fc-badge`, `.pib`, `.modal-badge`,
-`.ds-badge` — là aussi sans toucher au HTML généré par le JS.
+Tout passe par le CSS : **aucun HTML généré par le JS n'a été touché** (le `<i>`
+de `.mcl-fod` est masqué, les `::before` de pastille désactivés).
 
 Les emoji `🌿` / `✅` / `🔵` / `🟠` en tête des badges de statut du résumé du jour
-ont été retirés : la pastille faisait doublon.
-
-Le liseré latéral coloré des cartes aliment (`.food-card::before`) est conservé —
-c'est le repère de statut fort, et il ne dépend pas de la lecture d'un texte.
+ont été retirés : l'aplat coloré porte déjà le sens.
 
 ---
 
@@ -205,6 +211,40 @@ dans le SVG) est maintenant piloté par les jetons via deux classes sur les
 
 ---
 
+## 10. Direction éditoriale (passe 2)
+
+Après vos maquettes, la palette et la structure restent, mais l'ambition visuelle
+monte d'un cran vers la référence 3 :
+
+- **Fond nuit** : `#0B0B0F` devient `#0A0F0D` — le même niveau de noir, réchauffé
+  d'une pointe de vert.
+- **Encre nuit** : le gris neutre `#E6E6E6` devient un **crème `#F2E8D5`**. C'est
+  ce qui donne le cachet éditorial de la maquette 3.
+- **Typographie display** : `.sec-title` passe de 26px à `clamp(30px, 4.6vw, 52px)`
+  en Playfair 600, interlignage 1.04, `letter-spacing -.022em`. Idem pour
+  `.dash-greet`, `.quiz-title`, `.modal-title` et les grands chiffres. C'est le
+  levier principal — mes titres étaient deux fois trop petits.
+- **Halo ambiant** : deux `radial-gradient` fixes en `body::before` (vert en haut
+  à droite, or en haut à gauche) donnent la profondeur des maquettes sans une
+  seule image.
+- **Cartes** : padding 28/30, rayon `--r-xl`, ombres plus profondes en nuit,
+  médaillons ronds pour les créneaux et les phases.
+- **Or plus présent** : liens, icônes de créneau, onglet actif, `.sec-tag`.
+
+### Corrections trouvées pendant cette passe
+
+- La carte « Aujourd'hui » s'étirait sur deux rangées de grille et laissait un
+  grand vide sous la barre de budget. `.dash-grid{align-items:start}` +
+  `.dash-today{grid-row:auto}` : les cartes se dimensionnent à leur contenu.
+- Les icônes de 13px des jetons macro (balance, bouclier) devenaient des pâtés
+  illisibles. Seule la flamme survit à cette taille ; les deux autres passent en
+  libellé texte (`150 g`, `1 g prot.`).
+- `mealLabels` gardait un emoji de créneau (`🌅 Petit-déj`) qui faisait doublon
+  avec le médaillon SVG désormais à côté. Retiré, y compris dans l'export PDF.
+- Le libellé de l'onglet actif restait vert alors que son icône passait en or.
+
+---
+
 ## Sur le design system généré
 
 `search.py --design-system` proposait *Vibrant & Block-based* avec une palette
@@ -217,11 +257,20 @@ intégralement ci-dessus.
 
 ---
 
-## Points à trancher
+## Arbitrages retenus
+
+- **Palette** : vert forêt + or + crème (maquette 3). L'indigo `#4F46E5` des
+  maquettes 1 et 2 est écarté — il contredisait `--forest` et `--gold`.
+- **Badges FODMAP** : médaillons pleins des maquettes, contre la spec §4 écrite.
+- **Photographies** : aucune. Le mono-fichier et le hors-ligne sont préservés ;
+  `sw.js` ne met en cache que le même domaine, des visuels CDN casseraient le mode
+  hors ligne, et le base64 ferait passer le fichier de 446 Ko à plusieurs Mo.
+
+### Reste ouvert
 
 1. **Chips de catégorie** (`🍓 Fruits`…) : emoji conservés, cf. §2. À convertir ?
-2. **Carte « Aujourd'hui »** du tableau de bord : elle occupe deux rangées de
-   grille et laisse un grand vide sous la barre de budget. C'est antérieur à cette
-   refonte et je n'y ai pas touché — dites-moi si vous voulez que je rééquilibre.
-3. **Bordure dorée animée** du panneau coach (`conic-gradient`) : conservée, c'est
-   le seul effet « premium » un peu appuyé qui reste.
+2. **Bordure dorée animée** du panneau coach (`conic-gradient`) : conservée, c'est
+   le seul effet appuyé qui reste.
+3. **Google Fonts** n'est pas dans `APP_SHELL` : Playfair et Inter ne se chargent
+   pas hors ligne aujourd'hui. Corrigeable en ajoutant les `.woff2` au cache, mais
+   ça touche `sw.js`, que vous m'avez demandé de ne pas modifier.
