@@ -5080,8 +5080,11 @@ function voiceJoin(a,b){
   a=(a||'').trim(); b=(b||'').trim();
   if(!a) return b;
   if(!b) return a;
+  const la=a.toLowerCase(), lb=b.toLowerCase();
+  if(lb.indexOf(la)===0) return b;                    /* b est la version cumulée de a */
+  if(la.lastIndexOf(lb)===la.length-lb.length) return a; /* b redit la fin de a */
   const aw=a.split(/\s+/), bw=b.split(/\s+/);
-  for(let n=Math.min(aw.length,bw.length,14);n>0;n--){
+  for(let n=Math.min(aw.length,bw.length);n>0;n--){    /* chevauchement partiel */
     if(aw.slice(-n).join(' ').toLowerCase()===bw.slice(0,n).join(' ').toLowerCase())
       return aw.concat(bw.slice(n)).join(' ');
   }
@@ -5105,8 +5108,10 @@ function voiceStart(){
       const r=e.results[i];
       const t=String(r[0].transcript).trim();
       if(!t) continue;
-      if(r.isFinal) fin+=(fin?' ':'')+t;
-      else interim+=(interim?' ':'')+t;
+      /* Android empile des segments CUMULATIFS dans e.results (« de », « de ce »,
+         « de ce matin »…) : on recolle en supprimant le chevauchement, jamais bout à bout. */
+      if(r.isFinal) fin=voiceJoin(fin,t);
+      else interim=voiceJoin(interim,t);
     }
     voiceSession=fin;
     voiceInterim=interim;
