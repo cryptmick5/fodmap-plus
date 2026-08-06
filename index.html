@@ -91,7 +91,8 @@ button{font-family:inherit}
 .tb-btn:active .tb-ic{transform:scale(.9)}
 @media(max-width:900px){
   .tb{display:flex}
-  body{padding-bottom:64px}
+  /* barre d'onglets (64) + bouton de dictée (68) : la dernière carte passe toujours au-dessus */
+  body{padding-bottom:132px}
 }
 
 /* HERO */
@@ -1061,6 +1062,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   transition:background var(--tf),border-color var(--tf),color var(--tf)}
 .mcl-swap svg{width:16px;height:16px}
+.mcl-mic{position:static;width:44px;min-height:44px;border-radius:14px;flex-shrink:0;
+  background:transparent;border:1.5px solid var(--hairline);color:var(--slate-500);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background var(--tf),border-color var(--tf),color var(--tf)}
+.mcl-mic svg{width:16px;height:16px;stroke:currentColor}
+.mcl-mic:hover{border-color:var(--green-600);color:var(--green-700);background:var(--green-50)}
+.mcl-mic:active{transform:scale(.94)}
 .mcl-swap:hover{border-color:var(--gold);color:var(--gold-700);background:var(--gold-50)}
 .mcl-swap:active{transform:scale(.94)}
 .meal-card-lg:hover .mcl-swap{opacity:1}
@@ -1203,6 +1211,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .voice-fab:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(20,83,45,.42)}
 .voice-fab:active{transform:scale(.95)}
 .voice-fab.listening{animation:pulseRing 1.6s infinite}
+/* escamoté pendant qu'on descend la page : rien à cacher, tout à portée de pouce */
+.voice-fab.tucked{transform:translateY(130%) scale(.85);opacity:0;pointer-events:none}
 @media(max-width:900px){
   .voice-fab{right:14px;bottom:calc(74px + env(safe-area-inset-bottom));width:56px;height:56px;padding:0;border-radius:50%;justify-content:center}
   .voice-fab .voice-fab-lbl{display:none}
@@ -2902,6 +2912,7 @@ function renderMenuDay(){
           :`<button class="mcl-eat ${eaten?'on':''}" onclick='event.stopPropagation();toggleMealEaten(${JSON.stringify(d.day)},${JSON.stringify(k)})' aria-pressed="${eaten}">
           <span class="mcl-eat-box">${SVG_CHECK}</span>${eaten?'Repas validé':'Marquer comme mangé'}
         </button>`}
+        <button class="mcl-mic" onclick='event.stopPropagation();openVoiceMeal(${JSON.stringify(k)},${JSON.stringify(d.day)})' title="Dicter ce repas" aria-label="Dicter ce repas">${SVG_MIC}</button>
         <button class="mcl-swap" onclick='event.stopPropagation();swapMeal(${JSON.stringify(d.day)},${JSON.stringify(k)})' title="Remplacer ce repas" aria-label="Remplacer ce repas">${SVG_SWAP}</button>
       </div>
     </div>`;
@@ -5055,10 +5066,28 @@ function voiceParse(text){
 
 /* ---------- Reconnaissance vocale ---------- */
 const VoiceSR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
-let voiceRec=null, voiceListening=false, voiceFinal='', voiceInterim='', voiceSilence=null,
+/* voiceCommitted = ce qui a été dicté lors des écoutes précédentes (le navigateur
+   coupe et on relance) ; voiceSession = la phrase de l'écoute en cours, RECONSTRUITE
+   à chaque événement. Android Chrome renvoie un résultat cumulatif (resultIndex reste
+   à 0 et le segment grossit en restant « final ») : concaténer le répéterait en boucle. */
+let voiceRec=null, voiceListening=false, voiceCommitted='', voiceSession='', voiceInterim='', voiceSilence=null,
     voiceStartedAt=0, voiceError='', voiceStageOpen=false;
 
 function voiceSupported(){ return !!VoiceSR && window.isSecureContext!==false; }
+/* Recolle deux morceaux de dictée en supprimant le chevauchement : au redémarrage,
+   le navigateur peut renvoyer la fin de ce qu'il avait déjà transcrit. */
+function voiceJoin(a,b){
+  a=(a||'').trim(); b=(b||'').trim();
+  if(!a) return b;
+  if(!b) return a;
+  const aw=a.split(/\s+/), bw=b.split(/\s+/);
+  for(let n=Math.min(aw.length,bw.length,14);n>0;n--){
+    if(aw.slice(-n).join(' ').toLowerCase()===bw.slice(0,n).join(' ').toLowerCase())
+      return aw.concat(bw.slice(n)).join(' ');
+  }
+  return a+' '+b;
+}
+function voiceText(){ return voiceJoin(voiceCommitted,voiceSession); }
 function voiceToggle(){ if(voiceListening) voiceStop(true); else voiceStart(); }
 function voiceStart(){
   if(voiceListening) return;
@@ -5071,12 +5100,15 @@ function voiceStart(){
   voiceRec.maxAlternatives=1;
   voiceError=''; voiceInterim=''; voiceStartedAt=Date.now();
   voiceRec.onresult=(e)=>{
-    let interim='';
-    for(let i=e.resultIndex;i<e.results.length;i++){
+    let fin='',interim='';
+    for(let i=0;i<e.results.length;i++){
       const r=e.results[i];
-      if(r.isFinal) voiceFinal+=(voiceFinal?' ':'')+String(r[0].transcript).trim();
-      else interim+=r[0].transcript;
+      const t=String(r[0].transcript).trim();
+      if(!t) continue;
+      if(r.isFinal) fin+=(fin?' ':'')+t;
+      else interim+=(interim?' ':'')+t;
     }
+    voiceSession=fin;
     voiceInterim=interim;
     if(!voicePaintTranscript()) renderVoiceStage();
     voiceArmSilence();
@@ -5089,6 +5121,7 @@ function voiceStart(){
   voiceRec.onend=()=>{
     /* Chrome coupe l'écoute après un silence : on relance tant que l'utilisateur dicte */
     if(voiceListening && voiceStageOpen && Date.now()-voiceStartedAt<90000){
+      voiceCommitted=voiceJoin(voiceCommitted,voiceSession); voiceSession='';
       try{ voiceRec.start(); return; }catch(e){}
     }
     voiceListening=false; renderVoiceStage();
@@ -5101,14 +5134,14 @@ function voiceStart(){
 }
 function voiceArmSilence(){
   clearTimeout(voiceSilence);
-  voiceSilence=setTimeout(()=>{ if(voiceListening&&voiceStageOpen&&voiceFinal.trim()) voiceStop(true); },3200);
+  voiceSilence=setTimeout(()=>{ if(voiceListening&&voiceStageOpen&&voiceText()) voiceStop(true); },3200);
 }
 function voiceStop(autoAnalyze){
   clearTimeout(voiceSilence);
   voiceListening=false;
   voiceInterim='';
   if(voiceRec){ try{ voiceRec.stop(); }catch(e){} }
-  if(autoAnalyze===true && voiceFinal.trim()) voiceAnalyze(voiceFinal);
+  if(autoAnalyze===true && voiceText()) voiceAnalyze(voiceText());
   else renderVoiceStage();
 }
 function voiceAbort(){
@@ -5123,8 +5156,10 @@ const VOICE_EXAMPLES=[
   "Ce matin deux œufs, une tranche de pain sans gluten et un café",
   "Ce soir du saumon avec des haricots verts et une cuillère à soupe d'huile d'olive"
 ];
-function openVoiceMeal(){
-  voiceFinal=''; voiceInterim=''; voiceError=''; voiceDraft=null; voiceStageOpen=true;
+let voicePreset=null; /* {slot,day} quand la dictée part d'une carte repas précise */
+function openVoiceMeal(slot,day){
+  voicePreset = slot ? {slot:slot,day:day||todayDayCode()} : null;
+  voiceCommitted=''; voiceSession=''; voiceInterim=''; voiceError=''; voiceDraft=null; voiceStageOpen=true;
   renderVoiceStage();
   document.getElementById('modalBg').classList.add('show');
   if(voiceSupported()) setTimeout(()=>{ if(voiceStageOpen) voiceStart(); },250);
@@ -5143,7 +5178,7 @@ function voiceErrorMsg(){
 function voicePaintTranscript(){
   const el=document.getElementById('vcTranscript');
   if(!el) return false;
-  const txt=(voiceEsc(voiceFinal)+(voiceInterim?' <span class="vc-interim">'+voiceEsc(voiceInterim)+'</span>':'')).trim();
+  const txt=(voiceEsc(voiceText())+(voiceInterim?' <span class="vc-interim">'+voiceEsc(voiceInterim)+'</span>':'')).trim();
   el.classList.toggle('empty',!txt);
   el.innerHTML=txt||"Ta dictée s'affichera ici…";
   return true;
@@ -5152,7 +5187,7 @@ function renderVoiceStage(){
   if(!voiceStageOpen) return;
   const el=document.getElementById('modalContent');
   if(!el) return;
-  const txt=(voiceEsc(voiceFinal)+(voiceInterim?' <span class="vc-interim">'+voiceEsc(voiceInterim)+'</span>':'')).trim();
+  const txt=(voiceEsc(voiceText())+(voiceInterim?' <span class="vc-interim">'+voiceEsc(voiceInterim)+'</span>':'')).trim();
   const err=voiceError?voiceErrorMsg():'';
   el.innerHTML=`
     <div class="modal-hd"><div class="me">🎙️</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
@@ -5169,7 +5204,7 @@ function renderVoiceStage(){
       <div class="vc-transcript ${txt?'':'empty'}" id="vcTranscript">${txt||"Ta dictée s'affichera ici…"}</div>
       ${err?`<div class="vc-err">${err}</div>`:''}
       <div class="vc-examples">${VOICE_EXAMPLES.map((e,i)=>`<button class="vc-ex" onclick="voiceUseExample(${i})">💬 ${voiceEsc(e.slice(0,40))}…</button>`).join('')}</div>
-      <textarea id="vcManual" class="pplx-txt" style="margin-top:12px" placeholder="…ou écris ici : « 150 g de poulet, du riz et des courgettes »">${voiceListening?'':voiceEsc(voiceFinal)}</textarea>
+      <textarea id="vcManual" class="pplx-txt" style="margin-top:12px" placeholder="…ou écris ici : « 150 g de poulet, du riz et des courgettes »">${voiceListening?'':voiceEsc(voiceText())}</textarea>
       <div class="modal-actions-row">
         <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="voiceAnalyzeFromUi()">✓ Analyser ma dictée</button>
         <button class="reset-btn" onclick="voiceReset()">↺ Effacer</button>
@@ -5177,11 +5212,11 @@ function renderVoiceStage(){
       <div class="modal-tip">💡 Précise le moment (« ce midi », « hier soir ») et les quantités (« 150 g », « deux œufs », « une cuillère à soupe »). Sans quantité, j'applique la portion de référence de la base et je la marque « estimé ».</div>
     </div>`;
 }
-function voiceUseExample(i){ voiceAbort(); voiceStageOpen=false; voiceFinal=VOICE_EXAMPLES[i]; voiceInterim=''; voiceAnalyze(voiceFinal); }
-function voiceReset(){ const was=voiceListening; voiceAbort(); voiceStageOpen=true; voiceFinal=''; voiceInterim=''; voiceError=''; renderVoiceStage(); if(was) voiceStart(); }
+function voiceUseExample(i){ voiceAbort(); voiceStageOpen=false; voiceCommitted=VOICE_EXAMPLES[i]; voiceSession=''; voiceInterim=''; voiceAnalyze(voiceText()); }
+function voiceReset(){ const was=voiceListening; voiceAbort(); voiceStageOpen=true; voiceCommitted=''; voiceSession=''; voiceInterim=''; voiceError=''; renderVoiceStage(); if(was) voiceStart(); }
 function voiceAnalyzeFromUi(){
   const manual=(document.getElementById('vcManual')||{}).value||'';
-  const txt=(voiceListening?voiceFinal:(manual.trim()||voiceFinal)).trim();
+  const txt=(voiceListening?voiceText():(manual.trim()||voiceText())).trim();
   voiceAbort();
   if(!txt){ voiceStageOpen=true; toast("Dis ou écris d'abord ce que tu as mangé 🎙️"); return; }
   voiceAnalyze(txt);
@@ -5192,6 +5227,11 @@ let voiceDraft=null;
 function voiceAnalyze(text){
   voiceStageOpen=false;
   const p=voiceParse(text);
+  /* la carte d'où l'on vient impose le créneau et le jour — sauf si la phrase dit le contraire */
+  if(voicePreset){
+    if(!slotFromText(text)) p.slot=voicePreset.slot;
+    if(!/\b(hier|avant[- ]?hier|aujourd)/i.test(text)) p.day=voicePreset.day;
+  }
   voiceDraft={text:String(text).trim(),items:p.items,unknown:p.unknown,slot:p.slot,day:p.day};
   renderVoiceReview();
 }
@@ -5264,7 +5304,7 @@ function renderVoiceReview(){
       <div class="modal-actions-row">
         <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="voiceSave('replace')">✓ En faire le repas du moment</button>
         <button class="reset-btn" onclick="voiceSave('add')">➕ Ajouter au repas existant</button>
-        <button class="reset-btn" onclick="openVoiceMeal()">🎙️ Redicter</button>
+        <button class="reset-btn" onclick='openVoiceMeal(${JSON.stringify(voiceDraft.slot)},${JSON.stringify(voiceDraft.day)})'>🎙️ Redicter</button>
       </div>
       <div class="modal-tip">💡 « En faire le repas du moment » remplace le repas prévu du créneau, l'enregistre comme recette personnalisée et le marque comme mangé : ton bilan de la journée est à jour immédiatement.</div>
     </div>`;
@@ -5489,6 +5529,20 @@ function voiceBootFromUrl(){
     }
   }catch(e){}
 }
+
+/* Le bouton flottant s'escamote quand on descend la page (il ne masque plus les cartes)
+   et réapparaît au moindre retour vers le haut, en haut de page et en bas de page. */
+let voiceFabLastY=0;
+window.addEventListener('scroll',()=>{
+  const fab=document.getElementById('voiceFab');
+  if(!fab) return;
+  const y=window.scrollY||window.pageYOffset||0;
+  const doc=document.documentElement;
+  const atBottom=y+window.innerHeight>=doc.scrollHeight-60;
+  if(y>voiceFabLastY+10 && y>160 && !atBottom) fab.classList.add('tucked');
+  else if(y<voiceFabLastY-10 || y<=160 || atBottom) fab.classList.remove('tucked');
+  voiceFabLastY=y;
+},{passive:true});
 
 /* ============ INIT ============ */
 document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){closeModal();closeQuiz();}});
