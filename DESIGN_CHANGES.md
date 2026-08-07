@@ -1,11 +1,12 @@
 # FODMAP+ — refonte design
 
-**Le design est appliqué à `index.html`.** `manifest.json`, `sw.js` et les données
-n'ont pas été touchés.
+**Le design est appliqué à `index.html`.** `manifest.json` et les données n'ont pas
+été touchés ; `sw.js` l'a été, mais uniquement pour les polices hors ligne (voir
+plus bas), à votre demande explicite.
 
-`preview.html` était la copie de test du cycle de validation ; il est aujourd'hui
-**identique octet pour octet à `index.html`**. Il peut être supprimé — il ne sert
-plus à rien et dérivera au prochain changement.
+`preview.html` a été supprimé : il avait servi au cycle de validation et était
+devenu un doublon octet pour octet d'`index.html`. Son contenu reste dans
+l'historique git (commits `4bb7b9e` à `e951aa1`).
 
 Pour tester : ouvrez `index.html` dans le navigateur, ou servez le dossier
 (`npx http-server -p 8080`) et allez sur `http://localhost:8080/`.
@@ -35,6 +36,40 @@ ouvrant une modale de repas.
 `sw.js` sert le HTML en **réseau d'abord** (`fetch(request, {cache:'no-store'})`,
 repli sur le cache hors ligne). Le nouvel `index.html` arrive donc dès la
 prochaine visite en ligne, sans toucher à `CACHE_NAME` — qui reste à `v25`.
+
+---
+
+## Polices hors ligne (`sw.js`)
+
+Playfair Display et Inter viennent de Google Fonts, une origine externe que le
+service worker laissait passer sans y toucher : hors ligne, l'app retombait sur
+les polices système. Ça pesait peu tant que la typo était discrète ; depuis que
+le serif display porte l'identité, ça se voit.
+
+Ajouté — 32 lignes, aucune autre stratégie modifiée :
+
+- `FONT_CACHE = 'fodmap-plus-fonts-v1'`, **cache séparé** de l'app shell : les
+  polices ne changent jamais, autant qu'elles survivent aux montées de version.
+  L'`activate` l'épargne explicitement (`k !== CACHE_NAME && k !== FONT_CACHE`).
+- Branche **cache d'abord** dans le `fetch`, limitée à `fonts.googleapis.com` et
+  `fonts.gstatic.com`, placée **avant** le retour anticipé sur les origines
+  externes — Open Food Facts continue de passer sans interception.
+- La feuille CSS est demandée en `no-cors` par le `<link>`, donc sa réponse est
+  **opaque** (`status 0`, `ok === false`). Un simple test `response.ok` n'aurait
+  rien mis en cache : la condition accepte explicitement `response.type === 'opaque'`.
+  Les `.woff2`, eux, passent en CORS et ont un vrai status.
+
+**Limite à connaître** : les polices sont mises en cache **à la première visite
+en ligne**, pas à l'installation. Une toute première ouverture hors ligne tombera
+encore sur les polices système. Précacher n'est pas possible : les URL `.woff2`
+de Google varient selon le navigateur et tournent dans le temps. Pour une
+garantie complète, il faudrait héberger les `.woff2` dans le dépôt et pointer le
+`@font-face` dessus — plus robuste, mais ce n'est plus une modification de `sw.js`.
+
+Vérifié en conditions réelles : SW installé, requêtes de police passées à travers
+lui, puis **origine des polices éteinte** — la CSS opaque et le `.woff2` sont
+resservis depuis le cache, l'app shell reste à 6 entrées et le cache polices
+survit à l'`activate`.
 
 ---
 
