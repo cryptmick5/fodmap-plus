@@ -115,7 +115,9 @@ valeur dans les deux thèmes.
 
 ### Palette : ce qui disparaît
 
-- `#22c55e` et toutes les `rgba(34,197,94,…)` — remplacés par `--forest`.
+- `#22c55e` et toutes les `rgba(34,197,94,…)` — remplacés par `--forest`. La
+  première passe ne couvrait que le bloc `<style>` ; quatre occurrences
+  subsistaient dans le JS du graphique de poids, corrigées depuis (voir §11).
 - Les 13 dégradés `linear-gradient(135deg, var(--green-500), …)` — remplacés par
   des aplats.
 - Les halos verts (`box-shadow: 0 8px 24px rgba(34,197,94,.3)`) et `--s-glow`
@@ -322,3 +324,29 @@ intégralement ci-dessus.
 3. **Google Fonts** n'est pas dans `APP_SHELL` : Playfair et Inter ne se chargent
    pas hors ligne aujourd'hui. Corrigeable en ajoutant les `.woff2` au cache, mais
    ça touche `sw.js`, que vous m'avez demandé de ne pas modifier.
+
+---
+
+## 11. Graphique de poids : couleurs pilotées par les jetons
+
+Le graphique et son sparkline construisaient leur SVG en JS avec des couleurs
+écrites en dur — vert Tailwind `#22c55e` pour la courbe et le dégradé, `#15803d`
+pour le dernier point, `#cbd5e1` pour la ligne de référence, `#c9a96e` pour le
+point du sparkline. Ces valeurs échappaient donc à la palette : la courbe
+restait au vert d'origine, et la ligne de référence — un gris clair — devenait
+quasi invisible sur fond sombre.
+
+Les attributs de présentation SVG n'acceptent pas `var()`. Comme pour `#ringGrad`,
+la couleur passe par des **classes CSS** posées sur les éléments générés :
+
+| Classe | Rôle | Jeton |
+|---|---|---|
+| `.wg-stop-a` / `.wg-stop-b` | dégradé de l'aire | `--forest-ink`, puis transparent |
+| `.w-line`, `.spark-path` | courbe | `--forest-ink` |
+| `.w-dot` / `.w-dot.last` | points / dernier point | `--surface` + contour, puis plein |
+| `.w-baseline` | ligne de référence | `--slate-200` |
+| `.spark-dot` | point du sparkline | `--gold` |
+
+Vérifié en rendu : la courbe résout `#5FCB8C` en nuit et `#14532d` en jour, la
+ligne de référence suit (`#26302A` / `#E3DFD7`). Plus aucune couleur codée en
+dur dans le JS.

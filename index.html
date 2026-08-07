@@ -1944,6 +1944,18 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
   .prog-nav{gap:18px}
   .prog-label{flex:0 1 auto;min-width:220px}
 }
+
+/* ---------- 13. Graphique de poids : couleurs pilotées par les jetons ---
+   La courbe et la ligne de référence étaient codées en dur dans le JS (vert
+   Tailwind, gris clair) : hors de portée de la palette, et la référence
+   disparaissait sur fond sombre. */
+.wg-stop-a{stop-color:var(--forest-ink)}
+.wg-stop-b{stop-color:var(--forest-ink);stop-opacity:0}
+.w-baseline{stroke:var(--slate-200)}
+.w-line,.spark-path{stroke:var(--forest-ink)}
+.w-dot{fill:var(--surface);stroke:var(--forest-ink)}
+.w-dot.last{fill:var(--forest-ink);stroke:var(--forest-ink)}
+.spark-dot{fill:var(--gold)}
 </style>
 </head>
 <body>
@@ -4467,11 +4479,11 @@ function renderWeightChart(){
   const areaPath = pts.length>1 ? path+` L${pts[pts.length-1].x.toFixed(1)},${H-pad} L${pts[0].x.toFixed(1)},${H-pad} Z` : '';
   const baseline = yFor(sorted[0].w);
   svgEl.innerHTML = `
-    <defs><linearGradient id="weightGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c55e"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></linearGradient></defs>
-    <line x1="${pad}" y1="${baseline.toFixed(1)}" x2="${W-pad}" y2="${baseline.toFixed(1)}" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4"/>
+    <defs><linearGradient id="weightGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" class="wg-stop-a"/><stop offset="100%" class="wg-stop-b"/></linearGradient></defs>
+    <line class="w-baseline" x1="${pad}" y1="${baseline.toFixed(1)}" x2="${W-pad}" y2="${baseline.toFixed(1)}" stroke-width="1" stroke-dasharray="4,4"/>
     ${areaPath?`<path d="${areaPath}" fill="url(#weightGrad)" opacity="0.15"/>`:''}
-    ${pts.length>1?`<path d="${path}" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:''}
-    ${pts.map((p,i)=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${i===pts.length-1?6:4}" fill="${i===pts.length-1?'#15803d':'#fff'}" stroke="#22c55e" stroke-width="2"/>`).join('')}
+    ${pts.length>1?`<path class="w-line" d="${path}" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:''}
+    ${pts.map((p,i)=>`<circle class="w-dot${i===pts.length-1?' last':''}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${i===pts.length-1?6:4}" stroke-width="2"/>`).join('')}
   `;
   document.getElementById('wLegend').innerHTML = `<span>${fmtDateShort(sorted[0].date)}</span><span>${fmtDateShort(sorted[sorted.length-1].date)}</span>`;
 }
@@ -4557,8 +4569,8 @@ function renderDashSpark(){
   const yFor = w => H-pad - ((w-minW)/((maxW-minW)||1))*(H-2*pad);
   const pts = sorted.map((e,i)=>({x:pad+i*stepX,y:yFor(e.w)}));
   const path = pts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
-  svgEl.innerHTML = (pts.length>1?`<path class="spark-path" pathLength="1" d="${path}" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:'')+
-    `<circle class="spark-dot" cx="${pts[pts.length-1].x.toFixed(1)}" cy="${pts[pts.length-1].y.toFixed(1)}" r="4" fill="#c9a96e"/>`;
+  svgEl.innerHTML = (pts.length>1?`<path class="spark-path" pathLength="1" d="${path}" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:'')+
+    `<circle class="spark-dot" cx="${pts[pts.length-1].x.toFixed(1)}" cy="${pts[pts.length-1].y.toFixed(1)}" r="4"/>`;
 }
 function renderHome(){
   const greetEl=document.getElementById('dashGreet');
