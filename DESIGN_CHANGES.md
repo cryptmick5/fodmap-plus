@@ -1,10 +1,14 @@
-# FODMAP+ — refonte design (`preview.html`)
+# FODMAP+ — refonte design
 
-`preview.html` est une **copie complète de `index.html`** avec le nouveau design.
-`index.html`, `manifest.json`, `sw.js` et les données n'ont **pas** été touchés.
+**Le design est appliqué à `index.html`.** `manifest.json`, `sw.js` et les données
+n'ont pas été touchés.
 
-Pour tester : ouvrez `preview.html` dans le navigateur, ou servez le dossier
-(`npx http-server -p 8080`) et allez sur `http://localhost:8080/preview.html`.
+`preview.html` était la copie de test du cycle de validation ; il est aujourd'hui
+**identique octet pour octet à `index.html`**. Il peut être supprimé — il ne sert
+plus à rien et dérivera au prochain changement.
+
+Pour tester : ouvrez `index.html` dans le navigateur, ou servez le dossier
+(`npx http-server -p 8080`) et allez sur `http://localhost:8080/`.
 
 ---
 
@@ -16,12 +20,21 @@ ouvrant une modale de repas.
 
 - **Aucune erreur JS** (`pageerror`) sur aucun écran.
 - Les 310 fonctions, 89 handlers `onclick`, 9 sélecteurs `querySelector` et
-  16 clés `localStorage` sont **identiques** entre `index.html` et `preview.html`.
+  16 clés `localStorage` sont **identiques** à l'`index.html` d'avant la refonte
+  (comparaison contre le commit `4bb7b9e~1`).
 - Deux IDs seulement ont changé — `themeIcSide` et `animIcSide` deviennent
   `themeUseSide` / `animUseSide` — parce qu'ils désignaient un `<span>` dont le JS
   écrivait le `textContent` (un emoji) et qu'ils pointent maintenant sur le `<use>`
   d'un SVG. Les deux fonctions concernées (`applyTheme`, `applyAnims`) ont été
   mises à jour en conséquence.
+
+---
+
+## Mise en ligne : pas de bump du cache nécessaire
+
+`sw.js` sert le HTML en **réseau d'abord** (`fetch(request, {cache:'no-store'})`,
+repli sur le cache hors ligne). Le nouvel `index.html` arrive donc dès la
+prochaine visite en ligne, sans toucher à `CACHE_NAME` — qui reste à `v25`.
 
 ---
 

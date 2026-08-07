@@ -16,27 +16,63 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --green-50:#f0fdf4;--green-100:#dcfce7;--green-200:#bbf7d0;--green-400:#4ade80;
-  --green-500:#22c55e;--green-600:#16a34a;--green-700:#15803d;--green-800:#166534;
-  --red-500:#ef4444;--red-100:#fee2e2;--red-600:#dc2626;--amber-500:#f59e0b;--amber-100:#fef3c7;--amber-700:#b45309;
-  /* Neutres greige chauds (remplacent l'ancien slate bleuté, incohérent avec l'ivoire et l'or) */
-  --slate-50:#f7f5ee;--slate-100:#efece1;--slate-200:#e0dbca;--slate-300:#c6c0ab;
-  --slate-400:#8f8a75;--slate-500:#6e6954;--slate-600:#565140;--slate-700:#413d2f;
-  --slate-800:#2b2820;--slate-900:#1d1b12;--gold:#c19a55;--gold-dark:#9a7940;
-  --ivory:#faf7f0;--ivory-2:#fffdf8;--hairline:#e7e0d0;
-  --forest:#14532d;--forest-deep:#0e3b20;
-  --gold-50:#f8f1dd;--gold-200:#e7d6ab;--gold-700:#7d6234;
-  /* Surfaces sémantiques : toutes les cartes/panneaux passent par elles (thémables) */
-  --surface:#fffdf8;--surface-dim:#f4f0e4;
-  --r-sm:14px;--r-md:20px;--r-lg:28px;--r-xl:36px;
-  --s-xs:0 1px 2px rgba(31,41,26,.05);--s-sm:0 2px 10px rgba(31,41,26,.06);
-  --s-md:0 6px 20px rgba(31,41,26,.08);--s-lg:0 12px 36px rgba(31,41,26,.10);
-  --s-xl:0 20px 56px rgba(31,41,26,.12);--s-glow:0 0 40px rgba(22,101,52,.12);
+  /* ---------- FODMAP+ Design System — palette JOUR ----------
+     Fond chaud #F8F6F2, cartes blanches, encre #1A1A1A, secondaire #6B7280.
+     Les noms historiques (--slate-*, --green-*) sont conservés : tout le CSS
+     et le JS existants passent par eux, seule leur valeur change. */
+
+  /* Encre */
+  --slate-900:#1A1A1A;   /* texte principal */
+  --slate-800:#26262A;
+  --slate-700:#3A3A40;
+  --slate-600:#52525B;
+  --slate-500:#6B7280;   /* texte secondaire */
+  --slate-400:#6B7280;   /* idem : plus de gris trop clair sous 4.5:1 */
+  --slate-300:#A8A29A;
+  --slate-200:#E3DFD7;   /* bordures */
+  --slate-100:#EBE7E0;
+  --slate-50:#F2EFE9;
+
+  /* Surfaces */
+  --ivory:#F8F6F2;       /* fond principal */
+  --ivory-2:#FFFFFF;     /* cartes */
+  --surface:#FFFFFF;
+  --surface-dim:#F2EFE9;
+  --hairline:rgba(0,0,0,.08);
+  --border-subtle:rgba(0,0,0,.06);
+
+  /* Marque */
+  --forest:#14532d;      /* aplat primaire */
+  --forest-ink:#14532d;  /* le même vert quand il sert d'encre ou de bordure */
+  --forest-deep:#0E3B20;
+  --gold:#c19a55;        /* accent rare : icône active, détail premium */
+  --gold-dark:#9A7940;
+  --gold-ink:#8A6A2E;    /* or lisible en texte sur fond clair */
+  --gold-50:#F7F1E4;--gold-200:#E6D6B4;--gold-700:#8A6A2E;
+
+  /* Sémantique FODMAP */
+  --fod-low:#10B981;--fod-medium:#F59E0B;--fod-high:#EF4444;
+  --green-400:#10B981;--green-500:#10B981;--green-600:#15653A;--green-700:#14532d;--green-800:#0E3B20;
+  --green-50:#EEF3EF;--green-100:#DFE9E2;--green-200:#C6D8CC;
+  --red-500:#EF4444;--red-600:#B42318;--red-100:#FBEBEA;
+  --amber-500:#F59E0B;--amber-700:#8A5A06;--amber-100:#FAF0DD;
+
+  /* Rayons — resserrés : moins bulleux, plus premium */
+  --r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;
+
+  /* Ombres — diffuses et neutres, jamais colorées */
+  --s-xs:0 1px 2px rgba(0,0,0,.04);
+  --s-sm:0 2px 8px rgba(0,0,0,.05);
+  --s-md:0 4px 16px rgba(0,0,0,.08);
+  --s-lg:0 8px 24px rgba(0,0,0,.10);
+  --s-xl:0 16px 40px rgba(0,0,0,.12);
+  --s-glow:none;
+
   --tf:.15s cubic-bezier(.4,0,.2,1);--tb:.3s cubic-bezier(.4,0,.2,1);--ts:.5s cubic-bezier(.34,1.56,.64,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,sans-serif;background:linear-gradient(180deg,#f5f1e8 0%,var(--ivory) 340px);color:var(--slate-900);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--ivory);color:var(--slate-900);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 img,svg{display:block;max-width:100%}
 button{font-family:inherit}
 
@@ -44,7 +80,7 @@ button{font-family:inherit}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes float{0%,100%{transform:translateY(0)rotate(0deg)}50%{transform:translateY(-12px)rotate(2deg)}}
 @keyframes floatSlow{0%,100%{transform:translateY(0)rotate(-1deg)}50%{transform:translateY(-8px)rotate(1deg)}}
-@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}70%{box-shadow:0 0 0 16px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+@keyframes pulseRing{0%{box-shadow:var(--s-sm)}70%{box-shadow:var(--s-sm)}100%{box-shadow:var(--s-sm)}}
 @keyframes blob{0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%}25%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%}50%{border-radius:50% 60% 30% 60%/30% 60% 70% 40%}75%{border-radius:60% 40% 60% 30%/70% 30% 50% 60%}}
 @keyframes popIn{from{opacity:0;transform:scale(.9)translateY(10px)}to{opacity:1;transform:scale(1)translateY(0)}}
 
@@ -56,15 +92,15 @@ button{font-family:inherit}
 .nb{position:fixed;top:0;left:0;right:0;z-index:1000;padding:14px 32px;display:flex;justify-content:space-between;align-items:center;background:rgba(250,250,250,.82);backdrop-filter:blur(24px)saturate(1.6);-webkit-backdrop-filter:blur(24px)saturate(1.6);border-bottom:1px solid rgba(226,232,240,.5);transition:all var(--tb)}
 .nb.s{padding:10px 32px;background:rgba(250,250,250,.95);box-shadow:var(--s-sm)}
 .nb-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
-.nb-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--green-500),var(--green-700));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(34,197,94,.25);transition:transform var(--tf)}
+.nb-icon{width:38px;height:38px;background:var(--forest);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--s-sm);transition:transform var(--tf)}
 .nb-logo:hover .nb-icon{transform:rotate(-6deg)scale(1.08)}
 .nb-text{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--slate-900);letter-spacing:-.5px}
 .nb-text span{color:var(--green-500)}
 .nb-links{display:flex;gap:4px;list-style:none;align-items:center}
 .nb-links a{text-decoration:none;color:var(--slate-500);font-size:13.5px;font-weight:500;padding:8px 13px;border-radius:20px;transition:all var(--tf);cursor:pointer;white-space:nowrap}
 .nb-links a:hover{color:var(--slate-800);background:var(--slate-100)}
-.nb-cta{background:linear-gradient(135deg,var(--green-500),var(--green-600))!important;color:#fff!important;padding:10px 20px!important;border-radius:24px!important;font-weight:600!important;box-shadow:0 4px 14px rgba(34,197,94,.3);transition:all var(--tf)!important;font-size:13.5px!important}
-.nb-cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(34,197,94,.4)}
+.nb-cta{background:var(--forest)!important;color:#fff!important;padding:10px 20px!important;border-radius:24px!important;font-weight:600!important;box-shadow:var(--s-sm);transition:all var(--tf)!important;font-size:13.5px!important}
+.nb-cta:hover{transform:translateY(-2px);box-shadow:var(--s-sm)}
 
 @media(max-width:900px){
   .nb-links{display:none}
@@ -97,23 +133,28 @@ button{font-family:inherit}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 32px 80px;position:relative;overflow:hidden}
-.hb1{position:absolute;width:700px;height:700px;background:linear-gradient(135deg,rgba(34,197,94,.06),rgba(201,169,110,.04));top:-200px;right:-200px;animation:blob 18s ease-in-out infinite;z-index:0}
-.hb2{position:absolute;width:500px;height:500px;background:linear-gradient(135deg,rgba(34,197,94,.04),rgba(148,163,184,.06));bottom:-150px;left:-150px;animation:blob 14s ease-in-out infinite reverse;z-index:0}
+.hb1{position:absolute;width:700px;height:700px;background:linear-gradient(135deg,rgba(20,83,45,.06),rgba(201,169,110,.04));top:-200px;right:-200px;animation:blob 18s ease-in-out infinite;z-index:0}
+.hb2{position:absolute;width:500px;height:500px;background:linear-gradient(135deg,rgba(20,83,45,.04),rgba(148,163,184,.06));bottom:-150px;left:-150px;animation:blob 14s ease-in-out infinite reverse;z-index:0}
 .hc{max-width:1280px;width:100%;display:grid;grid-template-columns:1fr 1.05fr;gap:70px;align-items:center;position:relative;z-index:1}
 .hbadge{display:inline-flex;align-items:center;gap:8px;background:var(--green-50);color:var(--green-700);padding:8px 18px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:26px;border:1px solid var(--green-200)}
 .pdot{width:6px;height:6px;background:var(--green-500);border-radius:50%;animation:pulseRing 2s infinite}
 .htitle{font-family:'Playfair Display',serif;font-size:60px;font-weight:700;line-height:1.06;color:var(--slate-900);margin-bottom:22px;letter-spacing:-2px}
-.htitle .hl{background:linear-gradient(135deg,var(--green-500),var(--green-700));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.htitle .hl{background:var(--forest);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hsub{font-size:18px;line-height:1.7;color:var(--slate-500);margin-bottom:34px;max-width:460px;font-weight:400}
 .hstats{display:flex;gap:32px;margin-bottom:38px}
 .hstat .n{font-size:26px;font-weight:800;color:var(--slate-900);line-height:1}
 .hstat .l{font-size:12px;color:var(--slate-400);font-weight:500;margin-top:4px}
 .hcta{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.btn-p{background:linear-gradient(135deg,var(--green-500),var(--green-600));color:#fff;padding:16px 30px;border-radius:30px;font-size:15px;font-weight:600;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(34,197,94,.3),var(--s-glow);transition:all var(--tf);display:inline-flex;align-items:center;gap:8px;position:relative;overflow:hidden}
-.btn-p::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .7s}
-.btn-p:hover::after{left:100%}.btn-p:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(34,197,94,.4),var(--s-glow)}
-.btn-s{background:var(--surface);color:var(--slate-700);padding:16px 30px;border-radius:30px;font-size:15px;font-weight:600;border:1.5px solid var(--slate-200);cursor:pointer;transition:all var(--tf);box-shadow:var(--s-xs)}
-.btn-s:hover{border-color:var(--slate-300);box-shadow:var(--s-md);transform:translateY(-2px)}
+.btn-p{background:var(--forest);color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;
+  letter-spacing:.01em;border:none;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,.1);
+  transition:transform var(--tf),box-shadow var(--tf),background-color var(--tf);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;position:relative;min-height:44px}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15);background:var(--forest-deep)}
+.btn-p:active{transform:translateY(0);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.btn-s{background:transparent;color:var(--forest-ink);padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;
+  border:1px solid var(--forest-ink);cursor:pointer;transition:all var(--tf);box-shadow:none;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px}
+.btn-s:hover{background:var(--forest);border-color:var(--forest);color:#fff}
 
 .hv{position:relative;display:flex;justify-content:center;align-items:center;min-height:600px}
 .ffl{position:absolute;font-size:44px;animation:float 5s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,.08));transition:transform var(--tf);cursor:default}
@@ -129,7 +170,7 @@ button{font-family:inherit}
 .hpm{width:290px;height:590px;background:linear-gradient(180deg,#1a1a2e,#16213e);border-radius:44px;padding:14px;box-shadow:0 32px 64px rgba(0,0,0,.2),0 0 0 1px rgba(255,255,255,.08) inset;position:relative;z-index:10;animation:floatSlow 6s ease-in-out infinite;margin:0 auto}
 .pn{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:100px;height:24px;background:#1a1a2e;border-radius:0 0 16px 16px;z-index:20}
 .ps{width:100%;height:100%;background:var(--surface-dim);border-radius:32px;overflow:hidden;position:relative}
-.ph{padding:46px 20px 18px;background:linear-gradient(135deg,var(--green-500),var(--green-600));color:#fff;position:relative}
+.ph{padding:46px 20px 18px;background:var(--forest);color:#fff;position:relative}
 .ph h4{font-size:19px;font-weight:700}.ph p{font-size:12px;opacity:.85;margin-top:4px}
 .psch{margin:14px 18px 0;padding:11px 15px;background:rgba(255,255,255,.2);border-radius:14px;display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.85);backdrop-filter:blur(10px)}
 .pl{padding:15px;display:flex;flex-direction:column;gap:9px}
@@ -156,7 +197,7 @@ button{font-family:inherit}
 /* SEARCH */
 .search-wrap{max-width:640px;margin:0 auto 20px;position:relative}
 .search-box{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--slate-200);border-radius:30px;padding:16px 22px;box-shadow:var(--s-md);transition:all var(--tf)}
-.search-box:focus-within{border-color:var(--green-400);box-shadow:0 0 0 4px rgba(34,197,94,.1),var(--s-md)}
+.search-box:focus-within{border-color:var(--green-400);box-shadow:var(--s-sm)}
 .search-box input{border:none;outline:none;flex:1;font-size:15px;font-family:inherit;background:transparent}
 .search-box svg{flex-shrink:0}
 .search-results{position:absolute;top:calc(100% + 10px);left:0;right:0;background:var(--surface);border-radius:var(--r-md);box-shadow:var(--s-xl);overflow:hidden;z-index:50;display:none;max-height:340px;overflow-y:auto}
@@ -264,7 +305,7 @@ button{font-family:inherit}
 .phase-selector{display:flex;gap:10px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
 .phase-btn{padding:12px 22px;border-radius:20px;border:1.5px solid var(--slate-200);background:var(--surface);font-size:13.5px;font-weight:700;color:var(--slate-600);cursor:pointer;transition:all var(--tf)}
 .phase-btn:hover{border-color:var(--green-300)}
-.phase-btn.on{background:linear-gradient(135deg,var(--green-500),var(--green-700));border-color:transparent;color:#fff;box-shadow:0 8px 20px rgba(34,197,94,.28)}
+.phase-btn.on{background:var(--forest);border-color:transparent;color:#fff;box-shadow:var(--s-sm)}
 .phase-note{text-align:center;font-size:13px;color:var(--slate-600);max-width:680px;margin:0 auto 34px;line-height:1.6;background:var(--green-50);padding:14px 22px;border-radius:14px;border:1px solid var(--green-100)}
 
 /* PROGRAM NAVIGATOR */
@@ -321,12 +362,12 @@ button{font-family:inherit}
 .day-tab .dtd{font-size:10.5px;font-weight:700;color:var(--slate-400);text-transform:uppercase;letter-spacing:.4px}
 .day-tab .dtn{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--slate-900);margin:2px 0}
 .day-tab .dtc{font-size:10px;color:var(--slate-400);font-weight:600}
-.day-tab.on{background:linear-gradient(135deg,var(--green-500),var(--green-700));border-color:transparent;box-shadow:0 8px 20px rgba(34,197,94,.28)}
+.day-tab.on{background:var(--forest);border-color:transparent;box-shadow:var(--s-sm)}
 .day-tab.on .dtd,.day-tab.on .dtn,.day-tab.on .dtc{color:#fff}
 
 /* MENU — DAY SUMMARY */
 .day-summary{background:linear-gradient(135deg,var(--slate-900),#1a2332);border-radius:var(--r-xl);padding:38px 42px;display:grid;grid-template-columns:auto 1fr 1.1fr;gap:44px;align-items:center;margin-bottom:36px;position:relative;overflow:hidden}
-.day-summary::before{content:'';position:absolute;width:380px;height:380px;background:radial-gradient(circle,rgba(34,197,94,.16),transparent 70%);top:-150px;right:-90px;animation:blob 16s ease-in-out infinite}
+.day-summary::before{content:'';position:absolute;width:380px;height:380px;background:radial-gradient(circle,rgba(20,83,45,.16),transparent 70%);top:-150px;right:-90px;animation:blob 16s ease-in-out infinite}
 .ds-ring{width:128px;height:128px;position:relative;z-index:1;flex-shrink:0}
 .ds-ring .ring-svg{transform:rotate(-90deg)}
 .ds-ring .ring-bg{stroke:rgba(255,255,255,.08)}
@@ -340,7 +381,7 @@ button{font-family:inherit}
 .ds-value{color:#fff;font-weight:700;font-size:13.5px;margin-top:10px}
 .ds-info{position:relative;z-index:1}
 .ds-day-name{color:#fff;font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:12px}
-.ds-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.15);color:var(--green-400);font-size:11.5px;font-weight:700;padding:7px 14px;border-radius:12px;margin-right:8px;margin-bottom:8px}
+.ds-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(20,83,45,.15);color:var(--green-400);font-size:11.5px;font-weight:700;padding:7px 14px;border-radius:12px;margin-right:8px;margin-bottom:8px}
 .ds-badge.alt{background:rgba(255,255,255,.08);color:#fff}
 .ds-badge.warn{background:rgba(245,158,11,.18);color:#fbbf24}
 
@@ -403,7 +444,7 @@ button{font-family:inherit}
 .quiz-close{background:var(--slate-100);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;color:var(--slate-500);transition:all var(--tf)}
 .quiz-close:hover{background:var(--slate-200);transform:rotate(90deg)}
 .quiz-progress{height:5px;background:var(--slate-100);border-radius:4px;margin:14px 24px 0;overflow:hidden}
-.quiz-progress-fg{height:100%;background:linear-gradient(90deg,var(--green-400),var(--green-600));border-radius:4px;transition:width .4s var(--tb)}
+.quiz-progress-fg{height:100%;background:var(--forest);border-radius:4px;transition:width .4s var(--tb)}
 .quiz-main{flex:1;overflow-y:auto;display:grid;grid-template-columns:1.3fr 1fr;gap:32px;max-width:1100px;margin:0 auto;padding:36px 24px 100px;width:100%}
 .quiz-panel{animation:fadeUp .4s var(--tb)}
 .quiz-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
@@ -411,7 +452,7 @@ button{font-family:inherit}
 .quiz-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .quiz-opt{background:var(--surface);border:1.5px solid var(--slate-200);border-radius:16px;padding:18px 14px;text-align:center;cursor:pointer;transition:all var(--tf);display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
 .quiz-opt:hover{border-color:var(--green-300,var(--green-400));transform:translateY(-2px)}
-.quiz-opt.on{border-color:var(--green-500);background:var(--green-50);box-shadow:0 0 0 3px rgba(34,197,94,.12)}
+.quiz-opt.on{border-color:var(--green-500);background:var(--green-50);box-shadow:var(--s-sm)}
 .quiz-opt .qo-ic{font-size:24px}
 .quiz-opt .qo-lbl{font-size:12.5px;font-weight:600;color:var(--slate-700)}
 .quiz-opt .qo-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:var(--green-500);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;opacity:0}
@@ -436,7 +477,7 @@ button{font-family:inherit}
 .quiz-nav{display:flex;gap:12px;margin-top:28px}
 .quiz-nav button{flex:1}
 .quiz-back{background:var(--slate-100);border:none;padding:14px;border-radius:16px;font-weight:600;font-size:13.5px;cursor:pointer;color:var(--slate-600)}
-.quiz-continue{background:linear-gradient(135deg,var(--green-500),var(--green-600));border:none;padding:14px;border-radius:16px;font-weight:700;font-size:13.5px;cursor:pointer;color:#fff;box-shadow:0 4px 14px rgba(34,197,94,.3)}
+.quiz-continue{background:var(--forest);border:none;padding:14px;border-radius:16px;font-weight:700;font-size:13.5px;cursor:pointer;color:#fff;box-shadow:var(--s-sm)}
 .quiz-continue:hover{transform:translateY(-1px)}
 .qsum-card{background:linear-gradient(135deg,var(--slate-900),#1a2332);border-radius:var(--r-lg);padding:24px;color:#fff;height:fit-content;position:sticky;top:20px}
 .qsum-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:4px}
@@ -502,10 +543,10 @@ button{font-family:inherit}
 .budget-label{color:#fff;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px}
 .budget-row input{width:70px;padding:8px 10px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:13px;font-family:inherit;text-align:center}
 .budget-total{margin-left:auto;font-weight:700;font-size:14px;padding:6px 14px;border-radius:12px}
-.budget-total.ok{background:rgba(34,197,94,.18);color:var(--green-400)}
+.budget-total.ok{background:rgba(20,83,45,.18);color:var(--green-400)}
 .budget-total.over{background:rgba(245,158,11,.2);color:#fbbf24}
 .budget-bar-bg{height:8px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;margin-top:14px;position:relative;z-index:1}
-.budget-bar-fg{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green-400),var(--green-600));transition:width .6s var(--tb)}
+.budget-bar-fg{height:100%;border-radius:6px;background:var(--forest);transition:width .6s var(--tb)}
 .budget-bar-fg.over{background:linear-gradient(90deg,var(--amber-500),#f97316)}
 .store-select{padding:8px 10px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:12.5px;font-family:inherit;cursor:pointer}
 .store-select option{color:#0f172a}
@@ -530,7 +571,7 @@ button{font-family:inherit}
 /* AI COACH */
 .coach-wrap{max-width:640px;margin:0 auto;background:linear-gradient(160deg,#fff,var(--green-50));border-radius:var(--r-xl);padding:8px;box-shadow:var(--s-lg);border:1px solid var(--green-100)}
 .coach-hd{display:flex;align-items:center;gap:12px;padding:18px 20px 14px}
-.coach-avatar{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--green-500),var(--green-700));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(34,197,94,.3)}
+.coach-avatar{width:44px;height:44px;border-radius:14px;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:var(--s-sm)}
 .coach-hd b{font-size:15px}.coach-hd span{display:block;font-size:11.5px;color:var(--green-600);font-weight:600}
 .coach-body{background:var(--surface);border-radius:var(--r-lg);padding:20px;min-height:220px;max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
 .msg{max-width:80%;padding:11px 16px;border-radius:16px;font-size:13.5px;line-height:1.6;animation:popIn .3s var(--ts)}
@@ -547,7 +588,7 @@ button{font-family:inherit}
 
 /* STATS */
 .stats-bar{background:linear-gradient(135deg,var(--slate-900),#1a2332);border-radius:var(--r-xl);padding:56px 40px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative;overflow:hidden}
-.stats-bar::before{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(34,197,94,.15),transparent 70%);top:-150px;right:-100px;animation:blob 16s ease-in-out infinite}
+.stats-bar::before{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(20,83,45,.15),transparent 70%);top:-150px;right:-100px;animation:blob 16s ease-in-out infinite}
 .stat-item{text-align:center;position:relative;z-index:1}
 .stat-item .num{font-family:'Playfair Display',serif;font-size:44px;font-weight:700;color:#fff;line-height:1}
 .stat-item .lbl{font-size:12.5px;color:var(--slate-400);margin-top:8px;font-weight:500}
@@ -626,7 +667,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   outline:2.5px solid var(--gold);outline-offset:3px;border-radius:10px
 }
 .search-box:focus-within,.coach-input-wrap input:focus,.prefs-exclude input:focus,.pf-row input:focus,.pf-row select:focus{
-  box-shadow:0 0 0 3px rgba(34,197,94,.22)
+  box-shadow:var(--s-sm)
 }
 
 /* A11Y: respect reduced-motion preference.
@@ -708,7 +749,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .dmacro{font-size:12px;color:var(--slate-500);font-weight:600}
 .dmacro b{display:block;color:var(--slate-900);font-size:14px;margin:2px 0 6px}
 .dbar{height:6px;background:var(--slate-100);border-radius:4px;overflow:hidden}
-.dbar-fg{height:100%;width:0%;border-radius:4px;background:linear-gradient(90deg,var(--green-400),var(--green-600));transition:width .5s var(--tb)}
+.dbar-fg{height:100%;width:0%;border-radius:4px;background:var(--forest);transition:width .5s var(--tb)}
 .dbar-fg.over{background:linear-gradient(90deg,var(--amber-500),#f97316)}
 .dash-meal-list{display:flex;flex-direction:column;gap:8px}
 .dmeal{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--slate-50);border-radius:12px;cursor:pointer;transition:background var(--tf)}
@@ -747,15 +788,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .sidebar{background:var(--ivory-2);border-right:1px solid var(--hairline)}
 /* Les liens de sidebar sont aussi .tab-link : il faut re-forcer la couleur claire
    par-dessus le color:!important de .tab-link.active (pastille vert forêt). */
-.side-link.active,.side-link.tab-link.active{background:var(--forest);color:#f5f1e8!important;box-shadow:0 4px 14px rgba(20,83,45,.28)}
+.side-link.active,.side-link.tab-link.active{background:var(--forest);color:#f5f1e8!important;box-shadow:var(--s-sm)}
 .side-link.active:hover,.side-link.tab-link.active:hover{background:var(--forest-deep);color:#fff!important}
 .side-link.active::after{display:none}
 .sidebar-foot{border-top:1px solid var(--hairline);padding-top:14px}
 
 /* Boutons primaires : vert forêt profond plutôt que vert flashy */
-.btn-p{background:linear-gradient(135deg,var(--green-700),var(--forest-deep));box-shadow:0 8px 24px rgba(20,83,45,.30),var(--s-glow)}
-.btn-p:hover{box-shadow:0 12px 32px rgba(20,83,45,.38),var(--s-glow)}
-.nb-icon{background:linear-gradient(135deg,var(--green-600),var(--forest-deep));box-shadow:0 4px 12px rgba(20,83,45,.30)}
+.btn-p{background:var(--forest);box-shadow:var(--s-sm)}
+.btn-p:hover{box-shadow:var(--s-sm)}
+.nb-icon{background:var(--forest);box-shadow:var(--s-sm)}
 .tab-link.active{color:var(--forest)!important}
 .tab-link.active::after{background:var(--forest)}
 
@@ -771,7 +812,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .dqa{background:var(--ivory-2);border:1px solid var(--hairline)}
 .dqa:hover{background:var(--gold-50);border-color:var(--gold-200);color:var(--gold-700)}
 .dbar{background:#eee8db}
-.dbar-fg{background:linear-gradient(90deg,var(--green-500),var(--forest))}
+.dbar-fg{background:var(--forest)}
 .dash-footnote{background:#f4efe5;border:1px solid var(--hairline)}
 .dash-link{color:var(--forest)}
 
@@ -789,13 +830,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Coach IA : carte ample sur ivoire, bulles raffinées, indicateur de frappe */
 .coach-wrap{max-width:680px;background:var(--ivory-2);border:1px solid var(--hairline);box-shadow:var(--s-lg)}
-.coach-avatar{background:linear-gradient(135deg,var(--green-600),var(--forest-deep));box-shadow:0 4px 12px rgba(20,83,45,.30)}
+.coach-avatar{background:var(--forest);box-shadow:var(--s-sm)}
 .coach-hd b{font-family:'Playfair Display',serif;font-size:17px;font-weight:600}
 .coach-hd span{color:var(--forest)}
 .coach-body{background:var(--surface);min-height:320px;max-height:56vh;border:1px solid var(--hairline)}
 .msg{font-size:14px;border-radius:18px}
 .msg.bot{background:#f4efe5;color:var(--slate-800);border:1px solid var(--hairline)}
-.msg.user{background:linear-gradient(135deg,var(--green-700),var(--forest-deep));box-shadow:0 3px 10px rgba(20,83,45,.22)}
+.msg.user{background:var(--forest);box-shadow:var(--s-sm)}
 .msg.typing{display:flex;gap:5px;align-items:center;padding:14px 18px}
 .msg.typing span{width:7px;height:7px;border-radius:50%;background:var(--gold-dark);opacity:.4;animation:typingDot 1.1s ease-in-out infinite}
 .msg.typing span:nth-child(2){animation-delay:.18s}
@@ -805,7 +846,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .csug:hover{background:var(--gold-50);border-color:var(--gold-200);color:var(--gold-700)}
 .coach-input-wrap input{background:var(--surface);border-color:var(--hairline);min-width:0}
 .coach-input-wrap input:focus{border-color:var(--forest)}
-.coach-send{background:linear-gradient(135deg,var(--green-700),var(--forest-deep))}
+.coach-send{background:var(--forest)}
 .coach-send:hover{background:var(--forest-deep)}
 
 /* ============ EFFETS ANIMÉS PREMIUM ============
@@ -1019,24 +1060,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   border:1px solid var(--hairline);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
 .mcl-icon.breakfast{background:linear-gradient(150deg,rgba(245,158,11,.13),transparent 70%)}
 .mcl-icon.lunch{background:linear-gradient(150deg,rgba(201,154,85,.14),transparent 70%)}
-.mcl-icon.snack{background:linear-gradient(150deg,rgba(34,197,94,.12),transparent 70%)}
+.mcl-icon.snack{background:linear-gradient(150deg,rgba(20,83,45,.12),transparent 70%)}
 .mcl-icon.dinner{background:linear-gradient(150deg,rgba(99,102,241,.13),transparent 70%)}
 [data-theme="dark"] .mcl-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 /* Pastille de statut FODMAP : la promesse de l'app, enfin visible sur la carte */
-.mcl-fod{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;
-  letter-spacing:.7px;text-transform:uppercase;padding:5px 10px;border-radius:8px;white-space:nowrap}
-.mcl-fod i{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
-/* teintes dédiées : le texte fait 9.5px, les jetons génériques ne tenaient
-   pas le 4.5:1 sur ces fonds (surtout en sombre) */
-.mcl-fod.safe{background:var(--green-100);color:var(--green-700)}
-.mcl-fod.mod{background:var(--amber-100);color:#8a5a06}
-.mcl-fod.avoid{background:var(--red-100);color:#a01818}
-[data-theme="dark"] .mcl-fod.mod{color:#f6c04f}
-[data-theme="dark"] .mcl-fod.avoid{color:#f79b9b}
+.mcl-fod,.fod-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+  letter-spacing:0;text-transform:none;padding:0;background:none;border:none;color:var(--slate-500);white-space:nowrap}
+.mcl-fod i,.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;display:inline-block;background:var(--slate-300)}
+.dot-low,.mcl-fod.safe i{background:var(--fod-low)}
+.dot-medium,.mcl-fod.mod i{background:var(--fod-medium)}
+.dot-high,.mcl-fod.avoid i{background:var(--fod-high)}
+.mcl-fod.safe,.mcl-fod.mod,.mcl-fod.avoid{background:none;color:var(--slate-500)}
 /* Part du repas dans l'objectif du jour : micro data-viz, zéro texte en plus */
 .mcl-share{height:3px;border-radius:3px;background:var(--hairline);overflow:hidden;margin-top:12px}
 .mcl-share span{display:block;height:100%;border-radius:3px;
-  background:linear-gradient(90deg,var(--green-500),var(--forest));transition:width .6s var(--tb)}
+  background:var(--forest);transition:width .6s var(--tb)}
 .mcl-tag{font-size:9.5px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;
   padding:5px 11px;border-radius:8px;background:var(--surface-dim);color:var(--slate-500);border:1px solid var(--hairline)}
 .mcl-tag.custom{background:var(--gold-50);color:var(--gold-700);border-color:var(--gold-200)}
@@ -1079,7 +1117,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   transition:background var(--tf),border-color var(--tf),color var(--tf)}
 .mcl-eat:hover{border-color:var(--forest);color:var(--forest);background:var(--green-50)}
 .mcl-eat:active{transform:scale(.985)}
-.mcl-eat.on{background:var(--forest);border-color:var(--forest);color:#f5f1e8;box-shadow:0 4px 14px rgba(20,83,45,.22)}
+.mcl-eat.on{background:var(--forest);border-color:var(--forest);color:#f5f1e8;box-shadow:var(--s-sm)}
 .mcl-eat.on:hover{background:var(--forest-deep);color:#fff}
 .mcl-eat-box{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--slate-300);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface);transition:all var(--tf)}
@@ -1139,22 +1177,44 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
    Les primitives sont réécrites : la cascade existante suit automatiquement,
    puis quelques surfaces codées en dur sont reprises ci-dessous. */
 :root[data-theme="dark"]{
-  --ivory:#12140e;--ivory-2:#1a1d15;--hairline:#2e3327;
-  --gold:#d3ad67;--gold-dark:#e0c084;
-  --gold-50:#26210f;--gold-200:#4d4224;--gold-700:#dcc084;
-  --slate-50:#1e221a;--slate-100:#252a20;--slate-200:#363c2f;--slate-300:#4c5343;
-  --slate-400:#939b83;--slate-500:#acb49a;--slate-600:#c5ccb3;--slate-700:#d8dec8;
-  --slate-800:#e8ecdb;--slate-900:#f3f5e9;
-  --green-50:#1b2a1f;--green-100:#22371f;--green-200:#2e4a2c;
-  --green-600:#3fae63;--green-700:#4cbf72;
-  --amber-100:#3a2f12;--red-100:#3a1c1c;
-  --forest:#1a6b3a;
-  --surface:#1c2016;--surface-dim:#15180f;
-  --s-xs:0 1px 2px rgba(0,0,0,.3);--s-sm:0 2px 10px rgba(0,0,0,.35);
-  --s-md:0 6px 20px rgba(0,0,0,.4);--s-lg:0 12px 36px rgba(0,0,0,.45);
+  /* ---------- palette NUIT : fond #0B0B0F, cartes #15151E ---------- */
+  --slate-900:#E6E6E6;   /* texte principal */
+  --slate-800:#D8D9DD;
+  --slate-700:#C2C4CA;
+  --slate-600:#ADB1B8;
+  --slate-500:#9AA0A6;   /* texte secondaire */
+  --slate-400:#9AA0A6;
+  --slate-300:#6E747C;
+  --slate-200:#2C2C38;
+  --slate-100:#20202B;
+  --slate-50:#1A1A24;
+
+  --ivory:#0B0B0F;
+  --ivory-2:#15151E;
+  --surface:#15151E;
+  --surface-dim:#101017;
+  --hairline:rgba(255,255,255,.08);
+  --border-subtle:rgba(255,255,255,.06);
+
+  --forest:#1B6B3C;      /* aplat éclairci : blanc dessus reste ≥ 4.5:1 */
+  --forest-ink:#57C286;  /* le vert en encre sur fond sombre */
+  --forest-deep:#14532d;
+  --gold:#C9A96A;--gold-dark:#DCC08A;--gold-ink:#DCC08A;
+  --gold-50:#1F1B11;--gold-200:#3C3423;--gold-700:#DCC08A;
+
+  --green-400:#34D399;--green-500:#10B981;--green-600:#34D399;--green-700:#57C286;--green-800:#10B981;
+  --green-50:#12211A;--green-100:#173121;--green-200:#24432D;
+  --red-500:#EF4444;--red-600:#F98080;--red-100:#2A1618;
+  --amber-500:#F59E0B;--amber-700:#F6C04F;--amber-100:#2A2010;
+
+  --s-xs:0 1px 2px rgba(0,0,0,.3);
+  --s-sm:0 2px 10px rgba(0,0,0,.35);
+  --s-md:0 8px 32px rgba(0,0,0,.4);
+  --s-lg:0 12px 36px rgba(0,0,0,.45);
   --s-xl:0 20px 56px rgba(0,0,0,.5);
+  --s-glow:none;
 }
-[data-theme="dark"] body{background:linear-gradient(180deg,#161910 0%,var(--ivory) 340px);color:var(--slate-900)}
+[data-theme="dark"] body{background:var(--ivory);color:var(--slate-900)}
 [data-theme="dark"] .topbar{background:rgba(18,20,15,.92);border-bottom-color:var(--hairline)}
 [data-theme="dark"] .tb{background:rgba(25,28,21,.96);border-top-color:var(--hairline)}
 [data-theme="dark"] .modal,[data-theme="dark"] .day-tab,[data-theme="dark"] .btn-s,
@@ -1185,7 +1245,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 [data-theme="dark"] .tb-btn.active{color:var(--green-700)}
 [data-theme="dark"] .fc-portion{color:var(--slate-500)}
 [data-theme="dark"] .mcl-swap{background:rgba(20,24,15,.92);color:var(--slate-800)}
-[data-theme="dark"] .day-tab.on{background:linear-gradient(135deg,var(--green-700),#1a6b3a)}
+[data-theme="dark"] .day-tab.on{background:var(--forest)}
 [data-theme="dark"] .sidebar{background:var(--surface-dim)}
 [data-theme="dark"] .htitle,[data-theme="dark"] .nb-text{color:var(--slate-900)}
 
@@ -1206,9 +1266,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .app-foot-meta a{color:var(--slate-400);text-decoration:none}
 
 /* ============ DICTÉE VOCALE + INSTALLATION PWA ============ */
-.voice-fab{position:fixed;right:20px;bottom:calc(22px + env(safe-area-inset-bottom));z-index:1500;display:flex;align-items:center;gap:9px;padding:14px 20px 14px 17px;border:none;border-radius:32px;cursor:pointer;background:linear-gradient(135deg,var(--green-500),var(--green-700));color:#fff;font-size:13.5px;font-weight:700;box-shadow:0 12px 30px rgba(20,83,45,.34);transition:transform var(--tf),box-shadow var(--tf)}
+.voice-fab{position:fixed;right:20px;bottom:calc(22px + env(safe-area-inset-bottom));z-index:1500;display:flex;align-items:center;gap:9px;padding:14px 20px 14px 17px;border:none;border-radius:32px;cursor:pointer;background:var(--forest);color:#fff;font-size:13.5px;font-weight:700;box-shadow:var(--s-sm);transition:transform var(--tf),box-shadow var(--tf)}
 .voice-fab svg{width:20px;height:20px;flex:none;stroke:currentColor}
-.voice-fab:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(20,83,45,.42)}
+.voice-fab:hover{transform:translateY(-3px);box-shadow:var(--s-sm)}
 .voice-fab:active{transform:scale(.95)}
 .voice-fab.listening{animation:pulseRing 1.6s infinite}
 /* escamoté pendant qu'on descend la page : rien à cacher, tout à portée de pouce */
@@ -1222,7 +1282,7 @@ body[data-activetab="coach"] .voice-fab{display:none}
 @media print{.voice-fab,.install-banner{display:none!important}}
 
 .vc-stage{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 2px}
-.vc-mic{width:104px;height:104px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green-500),var(--green-700));color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(20,83,45,.32);transition:transform var(--tf)}
+.vc-mic{width:104px;height:104px;border-radius:50%;border:none;cursor:pointer;background:var(--forest);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--s-sm);transition:transform var(--tf)}
 .vc-mic svg{width:40px;height:40px;stroke:currentColor}
 .vc-mic:hover{transform:scale(1.04)}
 .vc-mic:active{transform:scale(.94)}
@@ -1256,10 +1316,10 @@ body[data-activetab="coach"] .voice-fab{display:none}
 
 .install-banner{position:fixed;left:14px;right:14px;bottom:calc(142px + env(safe-area-inset-bottom));z-index:1400;display:none;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--hairline);box-shadow:var(--s-lg)}
 .install-banner.show{display:flex;animation:popIn .4s var(--ts)}
-.install-banner .ib-ic{width:40px;height:40px;flex:none;border-radius:12px;background:linear-gradient(135deg,var(--green-500),var(--green-700));display:flex;align-items:center;justify-content:center;font-size:20px}
+.install-banner .ib-ic{width:40px;height:40px;flex:none;border-radius:12px;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:20px}
 .install-banner .ib-txt{flex:1;font-size:12.5px;line-height:1.5;color:var(--slate-600)}
 .install-banner .ib-txt b{display:block;font-size:13.5px;color:var(--slate-900)}
-.install-banner .ib-go{background:linear-gradient(135deg,var(--green-500),var(--green-700));color:#fff;border:none;border-radius:14px;padding:10px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.install-banner .ib-go{background:var(--forest);color:#fff;border:none;border-radius:14px;padding:10px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
 .install-banner .ib-x{background:none;border:none;color:var(--slate-400);font-size:16px;cursor:pointer;padding:4px}
 @media(min-width:901px){.install-banner{left:auto;right:24px;bottom:100px;max-width:420px}}
 
@@ -1299,49 +1359,693 @@ body[data-activetab="coach"] .voice-fab{display:none}
 .scan-hit-meta{font-size:11.5px;color:var(--slate-400)}
 [data-theme="dark"] .scan-ing,[data-theme="dark"] .scan-hit,[data-theme="dark"] .scan-img{background:var(--ivory-2)}
 [data-theme="dark"] .scan-mark{background:rgba(245,158,11,.22)}
+
+/* =====================================================================
+   FODMAP+ — DESIGN SYSTEM v4
+   Couche d'override finale : icônes SVG, châssis, typo, accessibilité,
+   responsive. Doit rester le dernier bloc de la feuille de style.
+   ===================================================================== */
+
+/* ---------- 1. Système d'icônes -------------------------------------- */
+.ic{width:24px;height:24px;flex-shrink:0;display:inline-block;vertical-align:middle;
+  fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
+  transition:color var(--tf),transform var(--tf)}
+.ic-sm{width:18px;height:18px;stroke-width:1.8}
+.ic-lg{width:28px;height:28px;stroke-width:1.5}
+.ic-meal{width:22px;height:22px;stroke-width:1.6}
+/* Le CSS de base impose svg{display:block} : on le neutralise pour les icônes en ligne. */
+svg.ic{display:inline-block}
+button .ic,a .ic{pointer-events:none}
+
+/* ---------- 2. Transition de thème ----------------------------------- */
+body,.topbar,.tb,.sidebar,.modal,.dash-card,.food-card,.meal-card-lg,.btn-s,.search-box,
+.day-col,.symp-card,.phase-card,.coach-body,input,select,textarea{
+  transition:background-color .3s ease,color .3s ease,border-color .3s ease}
+
+/* ---------- 3. Châssis : barre du haut, barre du bas, sidebar -------- */
+.topbar{height:56px;background:color-mix(in srgb,var(--ivory) 92%,transparent);
+  border-bottom:1px solid var(--border-subtle);box-shadow:none}
+.topbar-title{font-weight:500;color:var(--slate-500)}
+.topbar-sep{background:var(--hairline)}
+.topbar-theme{margin-left:auto;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:12px;background:transparent;color:var(--slate-500);border:none;cursor:pointer}
+.topbar-theme:hover{background:var(--surface-dim);color:var(--gold-ink)}
+
+.nb-icon{background:var(--forest);box-shadow:none;color:#fff;border-radius:10px}
+.nb-icon .ic{width:20px;height:20px}
+.topbar-logo .nb-icon{border-radius:8px}
+.topbar-logo .nb-icon .ic{width:16px;height:16px}
+.nb-text{font-family:'Playfair Display',serif;font-weight:600;letter-spacing:-.3px;color:var(--slate-900)}
+.nb-text span{color:var(--gold)}
+.nb-logo:hover .nb-icon,.sidebar-logo:hover .nb-icon,.topbar-logo:hover .nb-icon{transform:none}
+
+/* Barre d'onglets mobile : 60 px + encoche, cible tactile pleine hauteur */
+.tb{background:color-mix(in srgb,var(--ivory) 94%,transparent);
+  border-top:1px solid var(--border-subtle);box-shadow:none;padding:4px 4px 4px}
+@supports (padding-bottom:env(safe-area-inset-bottom)){
+  .tb{padding-bottom:calc(4px + env(safe-area-inset-bottom))}
+}
+.tb-btn{min-height:56px;gap:4px;color:var(--slate-500);border-radius:12px}
+.tb-btn .ic{width:24px;height:24px}
+.tb-btn .tb-lbl{font-size:10.5px;font-weight:500;letter-spacing:0}
+.tb-btn.active{color:var(--slate-900);background:none}
+.tb-btn.active .ic{color:var(--gold);stroke-width:1.9}
+.tb-btn.active .tb-ic{transform:none}
+.tb-btn:active .ic{transform:scale(.92)}
+
+@media(min-width:901px){
+  .side-link{min-height:44px;font-weight:500;color:var(--slate-500);border-radius:12px}
+  .side-link .ic{width:20px;height:20px;color:var(--slate-500)}
+  .side-link:hover{background:var(--surface-dim);color:var(--slate-900)}
+  .side-link:hover .ic{color:var(--slate-900)}
+  /* Actif : pas d'aplat criard — surface sourde + icône dorée */
+  .side-link.active,.side-link.tab-link.active,
+  .side-link.active:hover,.side-link.tab-link.active:hover{
+    background:var(--surface-dim)!important;color:var(--slate-900)!important;
+    box-shadow:none!important;font-weight:600}
+  .side-link.active .ic,.side-link.tab-link.active .ic{color:var(--gold);stroke-width:1.9}
+  .sidebar{background:var(--ivory-2);border-right:1px solid var(--border-subtle)}
+  .sidebar-foot{color:var(--slate-500);border-top:1px solid var(--border-subtle)}
+}
+
+/* ---------- 4. Typographie ------------------------------------------- */
+/* Les titres reviennent à Playfair ; le corps reste Inter. */
+.sec-title,.dash-greet,.dash-card-hd h3,.symp-card h4,.weight-form-card h4,
+.modal-title,.quiz-q,.mcl-name{font-family:'Playfair Display',serif;letter-spacing:-.2px}
+.sec-title{font-size:26px;font-weight:600}
+.dash-greet{font-size:24px;font-weight:600}
+.dash-card-hd h3{font-size:16px;font-weight:600}
+.symp-card h4,.weight-form-card h4{font-size:17px;font-weight:600;display:flex;align-items:center;gap:9px}
+.symp-card h4 .ic,.weight-form-card h4 .ic{color:var(--gold);flex-shrink:0}
+.mcl-name{font-size:16px;font-weight:600}
+/* Playfair sur les grands nombres (kcal, poids) */
+.ring-center b,.wc-value,.dash-weight-val,.day-head .n,.phase-num{font-family:'Playfair Display',serif;font-weight:600}
+.dash-weight-val{font-size:30px}
+
+/* Plus aucune micro-capitale espacée (spec §6) */
+.label,.pib,.sec-tag,.pf-row label,.wc-label,.fc-badge,.rw-day .rwd-head,.day-tab .dtd,
+.ds-macro-label,.mcl-tag,.day-head .d,.meal .mtag,.modal-badge,.quiz-step-lbl,
+.ing-editor-title,.prefs-title,.foot-col h5,.dmeal-info b,.ccard-slot,.mcl-fod,
+.mcl-stat-l,.vc-ctx label,.dash-date{
+  text-transform:none;letter-spacing:0}
+.label,.pf-row label,.wc-label,.vc-ctx label,.ing-editor-title,.mcl-stat-l{
+  font-size:12px;font-weight:500;color:var(--slate-500)}
+.sec-tag{font-size:12px;font-weight:500;color:var(--gold-ink)}
+.dmeal-info b{font-size:11.5px;font-weight:500;color:var(--slate-500)}
+.day-head .d{font-size:11.5px;font-weight:500;color:var(--slate-500)}
+.prefs-title{font-size:13px;font-weight:500;color:var(--slate-500)}
+.quiz-step-lbl{font-size:12px;font-weight:500;color:var(--slate-500)}
+
+/* ---------- 5. Badges & pastilles ------------------------------------ */
+/* Fini les pilules pastel pleines : pastille de couleur + libellé sobre. */
+.fc-badge,.pib,.modal-badge{background:none!important;border:none!important;padding:0!important;
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--slate-500)!important}
+.fc-badge::before,.pib::before,.modal-badge::before{content:'';width:6px;height:6px;border-radius:50%;
+  flex-shrink:0;background:var(--slate-300)}
+.fc-badge.safe::before,.pib.safe::before,.pi.safe .pib::before,.modal-badge.safe::before{background:var(--fod-low)}
+.fc-badge.moderate::before,.pib.moderate::before,.pi.moderate .pib::before,.modal-badge.moderate::before{background:var(--fod-medium)}
+.fc-badge.avoid::before,.pib.avoid::before,.pi.avoid .pib::before,.modal-badge.avoid::before{background:var(--fod-high)}
+/* Le liseré latéral de la carte reste le repère couleur fort */
+.food-card.safe::before{background:var(--fod-low)}
+.food-card.moderate::before{background:var(--fod-medium)}
+.food-card.avoid::before{background:var(--fod-high)}
+/* Pastilles autonomes (spec §4) */
+.fod-badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--slate-500)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;display:inline-block}
+.dot-low{background:var(--fod-low)}.dot-medium{background:var(--fod-medium)}.dot-high{background:var(--fod-high)}
+/* Filtres de statut de l'explorateur */
+.fbtn{gap:8px;min-height:44px;border-radius:12px;border:1px solid var(--slate-200);font-weight:500;
+  background:var(--surface);color:var(--slate-600)}
+.fbtn:hover{border-color:var(--forest-ink);color:var(--slate-900)}
+.fbtn.on,.fbtn.on.safe,.fbtn.on.moderate,.fbtn.on.avoid{
+  background:var(--forest);border-color:var(--forest);color:#fff}
+.fbtn.on .dot{box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.cbtn{border-radius:10px;font-weight:500;background:var(--surface-dim);color:var(--slate-500);min-height:34px}
+.cbtn.on{background:var(--forest);color:#fff}
+/* Jetons macro : neutres, la couleur est réservée au statut FODMAP */
+.mcl-pill,.mcl-pill.k,.mcl-pill.p{background:var(--surface-dim);color:var(--slate-600);font-weight:500;
+  font-size:12px;border-radius:8px;border:1px solid var(--border-subtle)}
+.mcl-tag{font-size:11px;font-weight:500;background:var(--surface-dim);color:var(--slate-500);
+  border:1px solid var(--border-subtle);border-radius:8px;padding:4px 10px}
+.mcl-tag.custom{background:var(--gold-50);color:var(--gold-700);border-color:var(--gold-200)}
+.mcl-tag.warn{background:transparent;color:var(--amber-700);border-color:var(--amber-700)}
+.dash-badge{background:var(--surface-dim);color:var(--slate-500);border:1px solid var(--border-subtle);font-weight:500}
+.phase-dur{background:var(--surface-dim);color:var(--slate-500);font-weight:500;border-radius:8px}
+
+/* ---------- 6. Cartes ------------------------------------------------ */
+.dash-card,.food-card,.meal-card-lg,.symp-card,.day-col,.weight-chart-card,.phase-card{
+  background:var(--surface);border:1px solid var(--border-subtle);box-shadow:var(--s-sm)}
+.dash-card{border-radius:var(--r-lg)}
+.meal-card-lg{border-radius:var(--r-lg);box-shadow:var(--s-sm)}
+.meal-card-lg:hover{box-shadow:var(--s-md);border-color:var(--hairline);transform:translateY(-2px)}
+.food-card:hover{box-shadow:var(--s-md);transform:translateY(-2px)}
+.phase-card:hover{transform:translateY(-2px);box-shadow:var(--s-md)}
+.mcl-icon,.phase-icon,.coach-avatar,.dqa-ic,.dmeal-ic,.modal-hd .me{
+  color:var(--forest-ink);background-image:none}
+.mcl-icon{background:var(--surface-dim);border:1px solid var(--border-subtle);border-radius:12px;
+  width:44px;height:44px;box-shadow:none}
+.mcl-icon.breakfast,.mcl-icon.lunch,.mcl-icon.snack,.mcl-icon.dinner{background:var(--surface-dim)}
+.mcl-icon .ic{width:22px;height:22px}
+.meal-card-lg:hover .mcl-icon{transform:none}
+.phase-icon{background:var(--surface-dim);border:1px solid var(--border-subtle);border-radius:12px;
+  width:44px;height:44px;color:var(--gold)}
+.phase-num{color:var(--slate-100)}
+.coach-avatar{background:var(--forest);color:#fff;box-shadow:none;border-radius:12px}
+.coach-avatar .ic{width:22px;height:22px}
+.dmeal-ic{width:auto;font-size:0;color:var(--slate-500)}
+.dmeal-ic .ic{width:20px;height:20px}
+.modal-hd .me{font-size:34px;line-height:1;color:var(--gold);display:flex;align-items:center}
+.modal-hd .me .ic{width:30px;height:30px;stroke-width:1.5}
+/* Créneau dans la vue semaine compacte : icône miniature */
+.meal .mtag{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--slate-500)}
+.meal .mtag .ic{width:13px;height:13px;stroke-width:2}
+.mcl-share span{background:var(--forest)}
+.dbar-fg{background:var(--forest)}
+.dbar-fg.over{background:var(--fod-medium)}
+
+/* Actions rapides du tableau de bord */
+.dqa{background:var(--surface-dim);border:1px solid var(--border-subtle);border-radius:12px;
+  font-weight:500;color:var(--slate-600);min-height:72px;gap:8px}
+.dqa .ic{width:20px;height:20px;color:var(--gold)}
+.dqa:hover{background:var(--surface);border-color:var(--forest-ink);color:var(--slate-900)}
+.dqa:hover .ic{color:var(--forest-ink)}
+.dash-footnote{background:var(--surface-dim);border:1px solid var(--border-subtle);color:var(--slate-500)}
+.dash-link{color:var(--forest-ink);font-weight:500}
+.phase-link{color:var(--forest-ink);font-weight:500}
+.pfv{color:var(--slate-900)}
+
+/* ---------- 7. Champs & contrôles ------------------------------------ */
+input,select,textarea{border-radius:10px;border:1px solid var(--slate-200);background:var(--surface);
+  color:var(--slate-900);min-height:44px}
+.search-box{border-radius:12px;border:1px solid var(--slate-200);box-shadow:var(--s-xs);padding:12px 18px}
+.search-box:focus-within{border-color:var(--forest-ink);box-shadow:0 0 0 3px var(--surface-dim),var(--s-xs)}
+.search-box input{min-height:auto}
+.pf-row input:focus,.pf-row select:focus,input:focus,select:focus,textarea:focus{border-color:var(--forest-ink)}
+.chip{border-radius:12px;border:1px solid var(--slate-200);font-weight:500;min-height:40px;
+  display:inline-flex;align-items:center;gap:6px;background:var(--surface);color:var(--slate-600)}
+.chip:hover{border-color:var(--forest-ink);color:var(--slate-900)}
+.prog-arrow,.modal-close,.quiz-close,.ib-x{display:inline-flex;align-items:center;justify-content:center;
+  color:var(--slate-500);border-radius:12px}
+.prog-arrow{min-width:44px;min-height:44px}
+.modal-close:hover,.quiz-close:hover,.prog-arrow:hover{color:var(--slate-900);background:var(--surface-dim)}
+.coach-send{background:var(--forest);color:#fff;border-radius:12px;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:none}
+.coach-send .ic{width:20px;height:20px}
+.phase-btn{gap:7px;min-height:44px;border-radius:12px;font-weight:500}
+.phase-btn .ic{width:17px;height:17px}
+.voice-fab{background:var(--forest);box-shadow:var(--s-md)}
+.install-banner .ib-ic{background:var(--forest);color:#fff}
+
+/* ---------- 8. Accessibilité ----------------------------------------- */
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.tb-btn:focus-visible,.side-link:focus-visible{outline-offset:-2px}
+@media(prefers-reduced-motion:reduce){
+  html:not([data-anims="force"]) *{animation:none!important;transition-duration:.01ms!important}
+}
+/* Toute cible tactile atteint 44 px (WCAG 2.5.5) */
+button,.chip,.fbtn,.cbtn,.side-link,.tb-btn,.dqa,.day-tab,.phase-btn{cursor:pointer}
+
+/* ---------- 9. Responsive -------------------------------------------- */
+.inner,.dash-wrap,.app-foot{max-width:1160px}
+
+@media(max-width:767px){
+  .sec{padding:80px 18px 40px}
+  .dash{padding:76px 18px 40px}
+  .sec-title{font-size:22px}
+  .dash-actions{grid-template-columns:1fr 1fr}
+  .meal-grid-lg{grid-template-columns:minmax(0,1fr)}
+  .profile-wrap,.weight-wrap,.symp-wrap{grid-template-columns:minmax(0,1fr)!important;gap:18px}
+  .profile-wrap{padding:22px}
+  .phases{grid-template-columns:minmax(0,1fr)}
+  .week-actions-row .btn-s{flex:1 1 100%}
+  /* barre d'onglets (64) + bouton de dictée (68) */
+  body{padding-bottom:136px}
+}
+
+@media(min-width:768px){
+  .meal-grid-lg{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+  .food-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+  .phases{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+@media(min-width:768px) and (max-width:900px){
+  /* Tablette : encore la barre du bas, mais on profite de la largeur */
+  .dash-grid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+  .dash-actions{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+
+@media(min-width:1024px){
+  .sec{padding:44px 40px}
+  .dash{padding:36px 40px 56px}
+  .dash-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* PWA installée : pas de rebond ni de barre de défilement parasite */
+@media(display-mode:standalone){
+  html{overscroll-behavior-y:none}
+  body{-webkit-tap-highlight-color:transparent}
+  .install-banner{display:none!important}
+}
+
+/* ---------- 10. Correctifs relevés au rendu ------------------------- */
+
+/* Anneaux : dégradé forêt → or, thémable via les jetons */
+.ring-stop-a{stop-color:var(--forest)}
+.ring-stop-b{stop-color:var(--gold)}
+.ring-bg{stroke:var(--slate-100)}
+[data-theme="dark"] .ring-bg{stroke:var(--slate-200)}
+
+/* Les deux panneaux « inversés » (résumé du jour, budget) redeviennent
+   des cartes normales : ils étaient bâtis sur --slate-900, qui s'éclaircit
+   en mode nuit et retournait le contraste. */
+.day-summary,.budget-card{background:var(--surface);border:1px solid var(--border-subtle);
+  box-shadow:var(--s-sm);border-radius:var(--r-lg)}
+.day-summary::before{display:none}
+.day-summary{padding:26px 30px;gap:32px}
+.ds-ring .ring-center b,.ds-day-name,.ds-value,.budget-label{color:var(--slate-900)}
+.ds-ring .ring-bg{stroke:var(--slate-100)}
+[data-theme="dark"] .ds-ring .ring-bg{stroke:var(--slate-200)}
+.ds-macro-label,.ds-ring .ring-center span{color:var(--slate-500);font-weight:500}
+.ds-bar-bg,.budget-bar-bg{background:var(--slate-100)}
+.ds-bar-fg,.budget-bar-fg{background:var(--forest)}
+.ds-bar-fg.over,.budget-bar-fg.over{background:var(--fod-medium)}
+.ds-day-name{font-family:'Playfair Display',serif;font-weight:600}
+
+/* Badges du résumé : pastille + libellé, comme partout ailleurs */
+.ds-badge,.ds-badge.alt,.ds-badge.warn{background:none;padding:0;margin-right:14px;
+  font-size:12px;font-weight:500;color:var(--slate-500);border-radius:0}
+.ds-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--fod-low)}
+.ds-badge.alt::before{background:var(--slate-300)}
+.ds-badge.warn::before{background:var(--fod-medium)}
+.budget-total{font-weight:500;font-size:13px;border-radius:8px;padding:5px 12px}
+.budget-total.ok{background:var(--surface-dim);color:var(--slate-600)}
+.budget-total.over{background:var(--surface-dim);color:var(--amber-700)}
+.budget-row input{background:var(--surface);color:var(--slate-900);border:1px solid var(--slate-200)}
+
+/* Rangées de repas du tableau de bord : surface sourde, plus d'olive codé en dur */
+.dmeal,[data-theme="dark"] .dmeal{background:var(--surface-dim)}
+.dmeal:hover,[data-theme="dark"] .dmeal:hover{background:var(--slate-100)}
+[data-theme="dark"] .dash-footnote{background:var(--surface-dim);border-color:var(--border-subtle)}
+
+/* Note de phase : neutre plutôt que vert pâle */
+.phase-note{background:var(--surface-dim);border:1px solid var(--border-subtle);
+  color:var(--slate-500);border-radius:12px}
+.phase-note .ic{color:var(--gold);vertical-align:-3px}
+
+/* Onglets de jour */
+.day-tab{border-radius:12px;border:1px solid var(--slate-200);min-height:64px}
+.day-tab:hover{border-color:var(--forest-ink)}
+.day-tab .dtd{font-size:11px;font-weight:500;color:var(--slate-500);text-transform:none;letter-spacing:0}
+.day-tab .dtc{font-weight:500}
+.day-tab.on,[data-theme="dark"] .day-tab.on{background:var(--forest);border-color:var(--forest)}
+
+/* Jetons macro de la carte aliment : neutres, l'icône porte le sens */
+.fc-pill,.fc-pill.g,.fc-pill.k,.fc-pill.p,.fc-pill.price{
+  display:inline-flex;align-items:center;gap:5px;background:var(--surface-dim)!important;
+  color:var(--slate-600)!important;border:1px solid var(--border-subtle);
+  font-size:11.5px;font-weight:500;padding:4px 9px;border-radius:8px}
+.fc-pill .ic{width:13px;height:13px;stroke-width:2;color:var(--slate-500)}
+.fc-emoji{width:44px;height:44px;border-radius:12px;font-size:24px;
+  background:var(--surface-dim);border:1px solid var(--border-subtle)}
+.food-card:hover .fc-emoji{transform:none}
+.fc-name{font-weight:600}
+
+/* Quiz d'onboarding : mêmes rayons, mêmes verts, contraste correct en nuit */
+.quiz-ov{background:var(--ivory)}
+.quiz-opt,.quiz-chip,.quiz-slider-box,.quiz-stepper{border-radius:12px;border:1px solid var(--slate-200)}
+.quiz-opt:hover,.quiz-chip:hover{border-color:var(--forest-ink);transform:none}
+.quiz-opt.on{border-color:var(--forest-ink);background:var(--surface-dim);box-shadow:none}
+.quiz-opt .qo-check{background:var(--forest);width:18px;height:18px}
+.quiz-chip.on,.quiz-chip.all.on{background:var(--forest);border-color:var(--forest);color:#fff}
+.quiz-chip.all{background:var(--surface-dim);border-color:var(--slate-200);color:var(--slate-600)}
+.quiz-slider-val{color:var(--slate-900)}
+.quiz-slider-box input[type=range]{accent-color:var(--forest)}
+.quiz-stepper button{border-radius:12px;border:1px solid var(--slate-200);color:var(--slate-700)}
+.quiz-stepper button:hover{background:var(--surface-dim);border-color:var(--forest-ink)}
+.quiz-close{background:var(--surface-dim);border-radius:12px;width:44px;height:44px;color:var(--slate-500)}
+.quiz-close:hover{background:var(--slate-100);transform:none;color:var(--slate-900)}
+.quiz-title{font-weight:600}
+.quiz-opt .qo-lbl{font-weight:500}
+
+/* ---------- 11. Dernières surfaces codées en dur ---------------------- */
+/* Ces trois blocs partaient de dégradés fixes, invisibles ou inversés en mode nuit. */
+.profile-wrap,.weight-form-card{background:var(--surface);border:1px solid var(--border-subtle)}
+.profile-wrap{border-radius:var(--r-xl);padding:32px}
+.msg.bot,[data-theme="dark"] .msg.bot{background:var(--surface-dim);border:1px solid var(--border-subtle);color:var(--slate-800)}
+.msg.user{background:var(--forest);color:#fff}
+/* L'anneau reste monochrome : l'or est réservé aux icônes actives (spec §2). */
+.ring-stop-a{stop-color:var(--forest)}
+.ring-stop-b{stop-color:var(--forest-ink)}
+.coach-suggestions button,.coach-sugg{border-radius:12px;font-weight:500}
+.pf-stat{border-radius:10px;border:1px solid var(--border-subtle)}
+.weight-log-item,.symp-card{border-radius:var(--r-md)}
+
+/* ---------- 12. Ajustements mobiles relevés au rendu ------------------ */
+.prog-arrow{width:44px;height:44px;border-radius:12px;border:1px solid var(--slate-200)}
+.prog-arrow:hover{border-color:var(--forest-ink);color:var(--slate-900)}
+.prog-label{min-width:0;flex:1 1 auto}
+.prog-elim-config{font-weight:500}
+.prog-elim-config select{border-radius:10px;border:1px solid var(--slate-200);min-height:40px}
+@media(max-width:767px){
+  /* Grille explicite : flèche | libellé | flèche, puis le réglage sur sa propre ligne.
+     En flex, le libellé long écrasait les flèches ou les renvoyait à la ligne. */
+  .prog-nav{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:10px;align-items:center;
+    justify-items:center;row-gap:14px}
+  .prog-label{min-width:0;width:100%}
+  .prog-elim-config{grid-column:1/-1;justify-content:center;margin-top:0}
+  .prog-week{font-size:20px}
+  /* Les 3 phases occupent une grille pleine largeur plutôt que 2 + 1 */
+  .phase-selector{display:grid;grid-template-columns:1fr;gap:8px}
+  .phase-btn{width:100%;justify-content:center}
+  .day-summary{padding:20px;grid-template-columns:minmax(0,1fr);gap:20px;justify-items:center;text-align:center}
+  .ds-info{text-align:center}
+  .budget-row{justify-content:center}
+  .budget-total{margin-left:0}
+}
+
+/* =====================================================================
+   FODMAP+ — DIRECTION ÉDITORIALE v5
+   Cible : display serif crème sur vert-noir, or en accent, médaillons
+   FODMAP pleins, cartes qui respirent. Dernier bloc de la cascade.
+   ===================================================================== */
+
+/* ---------- 1. Le noir devient un vert très sombre, l'encre du crème --- */
+:root[data-theme="dark"]{
+  --ivory:#0A0F0D;        /* vert-noir : le #0B0B0F du brief, réchauffé de vert */
+  --ivory-2:#111814;
+  --surface:#111814;
+  --surface-dim:#0D1310;
+  --surface-raised:#16201A;
+  --hairline:rgba(240,232,213,.10);
+  --border-subtle:rgba(240,232,213,.08);
+
+  --slate-900:#F2E8D5;    /* crème : l'encre du display */
+  --slate-800:#E6DBC5;
+  --slate-700:#D2C7B2;
+  --slate-600:#B8AE9B;
+  --slate-500:#9A9384;    /* secondaire, chaud */
+  --slate-400:#9A9384;
+  --slate-300:#6B665C;
+  --slate-200:#26302A;
+  --slate-100:#1B241F;
+  --slate-50:#161E1A;
+
+  --gold:#D6B87C;
+  --gold-ink:#E2C793;
+  --gold-50:#1C1810;
+  --gold-200:#3E3524;
+  --forest:#1F7A45;
+  --forest-ink:#5FCB8C;
+}
+:root{
+  --surface-raised:#FFFFFF;
+  --slate-900:#14181A;    /* encre légèrement plus chaude que le noir pur */
+}
+[data-theme="dark"] body{background:var(--ivory)}
+
+/* Halo ambiant : la profondeur des maquettes sans une seule image. */
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(900px 520px at 78% -8%, rgba(31,122,69,.16), transparent 62%),
+    radial-gradient(700px 460px at 4% 4%, rgba(214,184,124,.09), transparent 60%)}
+:root:not([data-theme="dark"]) body::before{
+  background:
+    radial-gradient(900px 520px at 78% -8%, rgba(20,83,45,.07), transparent 62%),
+    radial-gradient(700px 460px at 4% 4%, rgba(193,154,85,.08), transparent 60%)}
+
+/* ---------- 2. Typographie display ------------------------------------ */
+/* C'est le levier principal : les titres passaient à 26px, ils montent à ~52. */
+.sec-title,.dash-greet{font-family:'Playfair Display',serif;font-weight:600;
+  line-height:1.04;letter-spacing:-.022em;color:var(--slate-900)}
+.sec-title{font-size:clamp(30px,4.6vw,52px);margin-bottom:14px;max-width:16ch}
+.dash-greet{font-size:clamp(30px,4.6vw,48px);letter-spacing:-.025em}
+.dash-date{font-size:14px;color:var(--slate-500);margin-top:8px}
+.sec-h{margin-bottom:40px}
+.sec-tag{display:inline-block;font-size:12.5px;font-weight:500;color:var(--gold-ink);
+  margin-bottom:16px;letter-spacing:.04em}
+.sec-sub{font-size:15.5px;line-height:1.75;color:var(--slate-500);max-width:58ch}
+.quiz-title{font-size:clamp(28px,4vw,44px);line-height:1.06;letter-spacing:-.02em}
+.modal-title{font-size:clamp(22px,3vw,30px);line-height:1.15;letter-spacing:-.015em}
+
+/* Les grands chiffres tiennent le même rôle que les titres */
+.ring-center b{font-size:34px;letter-spacing:-.02em}
+.wc-value,.dash-weight-val{font-size:clamp(30px,4vw,42px);letter-spacing:-.02em}
+.day-head .n,.day-tab .dtn{letter-spacing:-.02em}
+
+/* ---------- 3. Médaillons FODMAP pleins (cf. maquettes) ---------------- */
+/* Remplace la pastille de 6px : le statut est la promesse de l'app, il
+   redevient un aplat coloré lisible d'un coup d'œil. */
+.fc-badge,.pib,.modal-badge,.mcl-fod,.fod-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 12px!important;
+  border-radius:999px;font-size:11.5px;font-weight:600;letter-spacing:.01em;
+  border:1px solid transparent!important;white-space:nowrap}
+.fc-badge::before,.pib::before,.modal-badge::before,.ds-badge::before{display:none}
+.mcl-fod i{display:none}
+
+.fc-badge.safe,.pib.safe,.pi.safe .pib,.modal-badge.safe,.mcl-fod.safe,.fod-badge.low{
+  background:#D6F0E3!important;color:#05603D!important}
+.fc-badge.moderate,.pib.moderate,.pi.moderate .pib,.modal-badge.moderate,.mcl-fod.mod,.fod-badge.medium{
+  background:#FBEACB!important;color:#7A4D05!important}
+.fc-badge.avoid,.pib.avoid,.pi.avoid .pib,.modal-badge.avoid,.mcl-fod.avoid,.fod-badge.high{
+  background:#FADDDB!important;color:#951E18!important}
+
+[data-theme="dark"] .fc-badge.safe,[data-theme="dark"] .pib.safe,[data-theme="dark"] .pi.safe .pib,
+[data-theme="dark"] .modal-badge.safe,[data-theme="dark"] .mcl-fod.safe,[data-theme="dark"] .fod-badge.low{
+  background:rgba(16,185,129,.16)!important;color:#57D6A0!important;border-color:rgba(16,185,129,.28)!important}
+[data-theme="dark"] .fc-badge.moderate,[data-theme="dark"] .pib.moderate,[data-theme="dark"] .pi.moderate .pib,
+[data-theme="dark"] .modal-badge.moderate,[data-theme="dark"] .mcl-fod.mod,[data-theme="dark"] .fod-badge.medium{
+  background:rgba(245,158,11,.16)!important;color:#F7C563!important;border-color:rgba(245,158,11,.28)!important}
+[data-theme="dark"] .fc-badge.avoid,[data-theme="dark"] .pib.avoid,[data-theme="dark"] .pi.avoid .pib,
+[data-theme="dark"] .modal-badge.avoid,[data-theme="dark"] .mcl-fod.avoid,[data-theme="dark"] .fod-badge.high{
+  background:rgba(239,68,68,.16)!important;color:#F79A97!important;border-color:rgba(239,68,68,.30)!important}
+
+/* Le médaillon rond des maquettes, porté par la vignette de la carte aliment */
+.fc-emoji{width:52px;height:52px;border-radius:50%;font-size:25px;
+  border:1px solid var(--border-subtle);background:var(--surface-dim)}
+.food-card.safe .fc-emoji{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.30)}
+.food-card.moderate .fc-emoji{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.30)}
+.food-card.avoid .fc-emoji{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.30)}
+.food-card::before{width:0}
+.food-card:hover::before{width:0}
+
+/* Filtres de l'explorateur : la pastille reprend sa couleur pleine */
+.fbtn .dot{width:9px;height:9px}
+.fbtn.on.safe{background:#05603D;border-color:#05603D}
+.fbtn.on.moderate{background:#7A4D05;border-color:#7A4D05}
+.fbtn.on.avoid{background:#951E18;border-color:#951E18}
+[data-theme="dark"] .fbtn.on.safe{background:rgba(16,185,129,.22);border-color:rgba(16,185,129,.5);color:#7FE3B6}
+[data-theme="dark"] .fbtn.on.moderate{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.5);color:#F9D08A}
+[data-theme="dark"] .fbtn.on.avoid{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.5);color:#F9B3B0}
+
+/* Badges du résumé du jour : mêmes aplats */
+.ds-badge{padding:5px 12px;border-radius:999px;font-size:11.5px;font-weight:600;
+  background:rgba(16,185,129,.14);color:#05603D}
+[data-theme="dark"] .ds-badge{background:rgba(16,185,129,.16);color:#57D6A0}
+.ds-badge.alt{background:var(--surface-dim);color:var(--slate-600)}
+.ds-badge.warn{background:rgba(245,158,11,.16);color:#7A4D05}
+[data-theme="dark"] .ds-badge.warn{color:#F7C563}
+
+/* ---------- 4. Cartes : plus de souffle, plus de relief ---------------- */
+.dash-card,.symp-card,.weight-chart-card,.weight-form-card,.phase-card,.day-summary,.budget-card{
+  border-radius:var(--r-xl);padding:28px 30px;background:var(--surface-raised);
+  border:1px solid var(--border-subtle)}
+[data-theme="dark"] .dash-card,[data-theme="dark"] .symp-card,[data-theme="dark"] .weight-chart-card,
+[data-theme="dark"] .weight-form-card,[data-theme="dark"] .phase-card,[data-theme="dark"] .day-summary,
+[data-theme="dark"] .budget-card{background:var(--surface-raised)}
+.dash-card{box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px -18px rgba(0,0,0,.22)}
+[data-theme="dark"] .dash-card{box-shadow:0 1px 2px rgba(0,0,0,.5),0 18px 44px -22px rgba(0,0,0,.8)}
+.dash-grid{gap:20px}
+.dash-card-hd{margin-bottom:20px}
+.dash-card-hd h3{font-size:17px;font-weight:600}
+.meal-card-lg,.food-card{border-radius:var(--r-lg);padding:22px}
+.meal-card-lg{padding:24px}
+.phase-card{padding:32px 30px}
+.phase-card h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;letter-spacing:-.015em}
+.phase-num{font-size:60px;color:var(--surface-dim)}
+[data-theme="dark"] .phase-num{color:rgba(240,232,213,.05)}
+.phase-icon{width:52px;height:52px;border-radius:50%;background:var(--gold-50);
+  border:1px solid var(--gold-200);color:var(--gold)}
+.phase-icon .ic{width:24px;height:24px}
+.mcl-icon{width:48px;height:48px;border-radius:50%}
+.coach-avatar{border-radius:50%}
+.dqa{min-height:84px;padding:16px;border-radius:14px}
+.dqa .ic{width:22px;height:22px}
+.dmeal{padding:13px 15px;border-radius:14px}
+.dmeal-ic .ic{width:22px;height:22px;color:var(--gold)}
+
+/* ---------- 5. Boutons : le CTA de la maquette 3 ----------------------- */
+/* Le radius 12 du brief est conservé ; seul le CTA principal des blocs
+   d'accueil prend la forme pilule pleine largeur des maquettes. */
+.btn-p{padding:14px 28px;font-size:14.5px;font-weight:600;min-height:48px}
+.voice-fab{border-radius:999px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45)}
+.coach-send{border-radius:50%}
+.btn-s{font-weight:500}
+.dash-link,.phase-link{color:var(--gold-ink);font-weight:600}
+
+/* ---------- 6. Châssis ------------------------------------------------- */
+.nb-text{font-size:21px;letter-spacing:-.02em}
+.nb-icon{border-radius:50%;background:var(--forest)}
+.topbar{background:color-mix(in srgb,var(--ivory) 90%,transparent)}
+.tb{background:color-mix(in srgb,var(--ivory) 92%,transparent)}
+[data-theme="dark"] .sidebar{background:var(--surface-dim)}
+.side-link{font-size:14.5px}
+@media(min-width:901px){
+  .side-link.active,.side-link.tab-link.active{background:var(--gold-50)!important}
+  [data-theme="dark"] .side-link.active,[data-theme="dark"] .side-link.tab-link.active{
+    background:rgba(214,184,124,.10)!important}
+}
+.tb-btn .tb-lbl{font-size:11px}
+
+/* ---------- 7. Respiration générale ------------------------------------ */
+@media(min-width:768px){
+  .sec{padding:64px 40px}
+  .dash{padding:48px 40px 64px}
+}
+@media(max-width:767px){
+  .sec{padding:84px 20px 44px}
+  .dash{padding:80px 20px 44px}
+  .sec-h{margin-bottom:28px}
+  .dash-card,.symp-card,.weight-chart-card,.weight-form-card,.phase-card,
+  .day-summary,.budget-card{padding:22px 20px;border-radius:var(--r-lg)}
+}
+
+/* ---------- 8. Correctifs de la passe éditoriale ---------------------- */
+/* 16ch cassait les titres longs en trois lignes : deux suffisent. */
+.sec-title{max-width:22ch}
+@media(max-width:767px){.sec-title{max-width:none}}
+
+/* La carte « Aujourd'hui » s'étirait sur deux rangées et laissait un grand
+   vide sous la barre de budget : les cartes se dimensionnent au contenu. */
+.dash-grid{align-items:start}
+.dash-today{grid-row:auto}
+
+/* Explorateur : les contrôles s'alignent sur le titre plutôt que de rester
+   centrés sous un hero aligné à gauche. */
+#explorer .search-wrap{margin-left:0;margin-right:auto}
+#explorer .chips,#explorer .explorer-bar,#explorer .cat-select{justify-content:flex-start}
+#explorer .food-count{text-align:left}
+@media(max-width:767px){
+  #explorer .chips,#explorer .explorer-bar,#explorer .cat-select{justify-content:center}
+  #explorer .food-count{text-align:center}
+}
+.fc-pill .ic{width:14px;height:14px}
+
+/* L'onglet actif était repris en vert par la règle sombre d'origine, alors que
+   l'icône passait en or : libellé et icône s'alignent sur l'or. */
+.tb-btn.active,[data-theme="dark"] .tb-btn.active{color:var(--gold-ink)}
+.tb-btn.active .ic,[data-theme="dark"] .tb-btn.active .ic{color:var(--gold)}
+.ring-fg,.ds-ring .ring-fg{stroke-width:9}
+
+/* Sur desktop le libellé ne doit pas s'étirer : les flèches se retrouvaient
+   plaquées aux deux extrémités de la page. */
+@media(min-width:768px){
+  .prog-nav{gap:18px}
+  .prog-label{flex:0 1 auto;min-width:220px}
+}
 </style>
 </head>
 <body>
 
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+<defs>
+<!-- ===== NAVIGATION ===== -->
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.2 12 3l9 7.2V20a1.6 1.6 0 0 1-1.6 1.6h-4.2v-6.1H9.8v6.1H5.6A1.6 1.6 0 0 1 4 20z"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-salad" viewBox="0 0 24 24"><path d="M3.5 12.5h17a8.5 8.5 0 0 1-17 0Z"/><path d="M6 17.5h12l-1.2 2.6a1.6 1.6 0 0 1-1.5.9H8.7a1.6 1.6 0 0 1-1.5-.9Z"/><path d="M12 12.5V9a3.5 3.5 0 0 1 3.5-3.5"/><path d="M9.4 12.5a3 3 0 0 0-3-3"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.5 12a8.5 8.5 0 0 1-12.4 7.6L3.5 21l1.4-4.6A8.5 8.5 0 1 1 20.5 12Z"/><path d="M8.5 11.5h7M8.5 14.5h4"/></symbol>
+
+<!-- ===== THÈME / RÉGLAGES ===== -->
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z"/></symbol>
+<symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M11 3.5 12.7 8 17 9.7 12.7 11.4 11 15.8 9.3 11.4 5 9.7 9.3 8Z"/><path d="M18 15l.8 2.1L21 18l-2.2.9L18 21l-.8-2.1L15 18l2.2-.9Z"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 14.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.55V21a2 2 0 1 1-4 0v-.11a1.7 1.7 0 0 0-1.1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1.03H3a2 2 0 1 1 0-4h.11a1.7 1.7 0 0 0 1.55-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.11a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.11a1.7 1.7 0 0 0-1.49 1.03Z"/></symbol>
+
+<!-- ===== CRÉNEAUX DE REPAS ===== -->
+<symbol id="i-sunrise" viewBox="0 0 24 24"><path d="M12 3v3.2M5.3 8.3l1.6 1.6M2.5 15h2.2M19.3 15h2.2M17.1 9.9l1.6-1.6"/><path d="M8 15a4 4 0 0 1 8 0"/><path d="M3 19h18"/></symbol>
+<symbol id="i-sun-high" viewBox="0 0 24 24"><circle cx="12" cy="11" r="4"/><path d="M12 2.5v2M12 17.5v2M4.6 4.6 6 6M18 16l1.4 1.4M2.5 11h2M19.5 11h2M4.6 17.4 6 16M18 6l1.4-1.4"/></symbol>
+<symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 8.2c-1.2-1.1-2.6-1.6-3.9-1.3C5.7 7.4 4 9.9 4 13c0 4.2 2.7 8 4.9 8 1 0 1.6-.4 3.1-.4s2.1.4 3.1.4c2.2 0 4.9-3.8 4.9-8 0-3.1-1.7-5.6-4.1-6.1-1.3-.3-2.7.2-3.9 1.3Z"/><path d="M12 8.2V5.6A2.6 2.6 0 0 1 14.6 3"/></symbol>
+<symbol id="i-moon-star" viewBox="0 0 24 24"><path d="M20 14.3A8.6 8.6 0 0 1 9.2 3.5 8.6 8.6 0 1 0 20 14.3Z"/><path d="m18.5 3 .7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7Z"/></symbol>
+
+<!-- ===== ACTIONS ===== -->
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11.5v.5a6.5 6.5 0 0 0 13 0v-.5M12 18.5V21.5M8.5 21.5h7"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8.5A1.8 1.8 0 0 1 4.8 6.7h2.4l1.3-2.2h7l1.3 2.2h2.4A1.8 1.8 0 0 1 21 8.5v9.2a1.8 1.8 0 0 1-1.8 1.8H4.8A1.8 1.8 0 0 1 3 17.7Z"/><circle cx="12" cy="12.7" r="3.4"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.4-4.4"/></symbol>
+<symbol id="i-cart" viewBox="0 0 24 24"><path d="M2.5 3.5h2.2l2.3 11.1a1.8 1.8 0 0 0 1.8 1.4h8.4a1.8 1.8 0 0 0 1.8-1.4L21 7.5H6"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/></symbol>
+<symbol id="i-stethoscope" viewBox="0 0 24 24"><path d="M5 3v5a4 4 0 0 0 8 0V3"/><path d="M5 3H3.2M13 3h1.8"/><path d="M9 15v-3"/><path d="M9 15a5 5 0 0 0 10 0v-1.5"/><circle cx="19" cy="11.5" r="2.2"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M7 8.5V3h10v5.5"/><path d="M7 17.5H5.2A2.2 2.2 0 0 1 3 15.3v-4.6a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 10.7v4.6a2.2 2.2 0 0 1-2.2 2.2H17"/><rect x="7" y="14" width="10" height="7" rx="1.4"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 10.5 13.5"/><path d="M21 3 14.3 21l-3.8-7.5L3 9.7Z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-pencil" viewBox="0 0 24 24"><path d="M16.2 3.6a2.3 2.3 0 0 1 3.2 3.2L7.6 18.6 3 20l1.4-4.6Z"/><path d="m14.5 5.3 4.2 4.2"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="17" rx="2.2"/><path d="M9 4.5V3.4A1.4 1.4 0 0 1 10.4 2h3.2A1.4 1.4 0 0 1 15 3.4v1.1Z"/><path d="M8.5 11h7M8.5 15h4.5"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.5 11a8.5 8.5 0 0 0-14.9-4.4L3 9.5"/><path d="M3.5 13a8.5 8.5 0 0 0 14.9 4.4L21 14.5"/><path d="M3 4.5v5h5M21 19.5v-5h-5"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M5.5 5.5l13 13M18.5 5.5l-13 13"/></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"/></symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9.5 5 7 7-7 7"/></symbol>
+
+<!-- ===== STATUTS ===== -->
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="m8.2 12.2 2.6 2.6 5-5.4"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="m6 6 12 12"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.6 3.9a1.6 1.6 0 0 1 2.8 0l7.3 13a1.6 1.6 0 0 1-1.4 2.4H4.7a1.6 1.6 0 0 1-1.4-2.4Z"/><path d="M12 9v4M12 16.3v.1"/></symbol>
+<symbol id="i-leaf" viewBox="0 0 24 24"><path d="M4 20c0-9 5.5-14 17-14 0 8-4.5 13.5-12 13.5H4Z"/><path d="M4 20c2-5.5 5.5-9 10-11"/></symbol>
+
+<!-- ===== DONNÉES / APP ===== -->
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M6.8 18.5a4.3 4.3 0 0 1-.4-8.6 5.8 5.8 0 0 1 11.1-1.2 4.4 4.4 0 0 1 .3 8.7Z"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5"/><path d="M4 17v2.2A1.8 1.8 0 0 0 5.8 21h12.4A1.8 1.8 0 0 0 20 19.2V17"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5"/><path d="M4 17v2.2A1.8 1.8 0 0 0 5.8 21h12.4A1.8 1.8 0 0 0 20 19.2V17"/></symbol>
+<symbol id="i-package" viewBox="0 0 24 24"><path d="M20.5 8.2v7.6a1.7 1.7 0 0 1-.9 1.5l-6.8 3.7a1.7 1.7 0 0 1-1.6 0l-6.8-3.7a1.7 1.7 0 0 1-.9-1.5V8.2a1.7 1.7 0 0 1 .9-1.5L11.2 3a1.7 1.7 0 0 1 1.6 0l6.8 3.7a1.7 1.7 0 0 1 .9 1.5Z"/><path d="m3.7 7.4 8.3 4.5 8.3-4.5M12 20.8v-8.9"/></symbol>
+<symbol id="i-smartphone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.4"/><path d="M10.8 18.5h2.4"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M3.5 4.2A1.7 1.7 0 0 1 5.2 2.5h5.1A1.7 1.7 0 0 1 12 4.2v15.6a1.7 1.7 0 0 0-1.7-1.7H5.2a1.7 1.7 0 0 1-1.7-1.7Z"/><path d="M20.5 4.2a1.7 1.7 0 0 0-1.7-1.7h-5.1A1.7 1.7 0 0 0 12 4.2v15.6a1.7 1.7 0 0 1 1.7-1.7h5.1a1.7 1.7 0 0 0 1.7-1.7Z"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3.5 3.5v15a2 2 0 0 0 2 2h15"/><path d="m7.5 15.5 3.5-4.2 3 2.6 4.5-6"/></symbol>
+<symbol id="i-scale" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M8.5 15.5a3.5 3.5 0 0 1 7 0"/><path d="m12 12 2.6-3.2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.8 20 6v6c0 4.6-3.3 8-8 9.2C8 20 4.7 16.6 4.7 12V6Z"/><path d="M12 8v4M12 15.2v.1"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2.8s5.2 3.8 5.2 9.2a5.2 5.2 0 0 1-10.4 0c0-1.7.7-3 1.5-4 .2 1.2.9 2 1.8 2 1.3 0 1.9-1.4 1.9-3.4 0-1.4-.3-2.7 0-3.8Z"/></symbol>
+</defs>
+</svg>
+
 <svg width="0" height="0" style="position:absolute"><defs>
   <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-    <stop offset="0%" stop-color="#22c55e"/><stop offset="100%" stop-color="#15803d"/>
+    <stop offset="0%" class="ring-stop-a"/><stop offset="100%" class="ring-stop-b"/>
   </linearGradient>
 </defs></svg>
 
 <aside class="sidebar" aria-label="Navigation principale">
   <a class="sidebar-logo" onclick="switchTab('accueil')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')" aria-label="FODMAP+ — retour à l'accueil">
-    <div class="nb-icon">🌿</div>
+    <div class="nb-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></div>
     <div class="nb-text">FODMAP<span>+</span></div>
   </a>
   <nav class="sidebar-nav" id="navLinks" role="tablist" aria-label="Navigation principale">
-    <a onclick="switchTab('accueil')" class="side-link tab-link" data-tablink="accueil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')"><span class="side-ic">🏠</span>Accueil</a>
-    <a onclick="switchTab('menu')" class="side-link tab-link" data-tablink="menu" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('menu')"><span class="side-ic">📅</span>Menu</a>
-    <a onclick="switchTab('aliments')" class="side-link tab-link" data-tablink="aliments" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('aliments')"><span class="side-ic">🥑</span>Aliments</a>
-    <a onclick="switchTab('profil')" class="side-link tab-link" data-tablink="profil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('profil')"><span class="side-ic">👤</span>Profil</a>
-    <a onclick="switchTab('coach')" class="side-link tab-link" data-tablink="coach" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('coach')"><span class="side-ic">💬</span>Coach IA</a>
+    <a onclick="switchTab('accueil')" class="side-link tab-link" data-tablink="accueil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')"><svg class="ic side-ic" aria-hidden="true"><use href="#i-home"/></svg>Accueil</a>
+    <a onclick="switchTab('menu')" class="side-link tab-link" data-tablink="menu" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('menu')"><svg class="ic side-ic" aria-hidden="true"><use href="#i-calendar"/></svg>Menu</a>
+    <a onclick="switchTab('aliments')" class="side-link tab-link" data-tablink="aliments" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('aliments')"><svg class="ic side-ic" aria-hidden="true"><use href="#i-salad"/></svg>Aliments</a>
+    <a onclick="switchTab('profil')" class="side-link tab-link" data-tablink="profil" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('profil')"><svg class="ic side-ic" aria-hidden="true"><use href="#i-user"/></svg>Profil</a>
+    <a onclick="switchTab('coach')" class="side-link tab-link" data-tablink="coach" role="tab" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('coach')"><svg class="ic side-ic" aria-hidden="true"><use href="#i-chat"/></svg>Coach IA</a>
   </nav>
-  <button class="side-link theme-toggle" onclick="toggleTheme()" aria-label="Basculer le mode nuit"><span class="side-ic" id="themeIcSide">🌙</span><span id="themeLblSide">Mode nuit</span></button>
-  <button class="side-link theme-toggle" onclick="toggleAnims()" aria-label="Activer ou couper les animations"><span class="side-ic" id="animIcSide">✨</span><span id="animLblSide">Animations : on</span></button>
+  <button class="side-link theme-toggle" onclick="toggleTheme()" aria-label="Basculer le mode nuit"><svg class="ic side-ic" aria-hidden="true"><use id="themeUseSide" href="#i-moon"/></svg><span id="themeLblSide">Mode nuit</span></button>
+  <button class="side-link theme-toggle" onclick="toggleAnims()" aria-label="Activer ou couper les animations"><svg class="ic side-ic" aria-hidden="true"><use id="animUseSide" href="#i-sparkles"/></svg><span id="animLblSide">Animations : on</span></button>
   <div class="sidebar-foot">⚕️ Outil éducatif, seuils Monash University — ne remplace pas un avis médical.</div>
 </aside>
 
 <header class="topbar" id="topbar">
   <a class="topbar-logo" onclick="switchTab('accueil')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('accueil')" aria-label="FODMAP+ — retour à l'accueil">
-    <div class="nb-icon">🌿</div>
+    <div class="nb-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></div>
     <div class="nb-text">FODMAP<span>+</span></div>
   </a>
   <div class="topbar-sep"></div>
   <span class="topbar-title" id="topbarTitle">Accueil</span>
-  <button class="topbar-theme" onclick="toggleTheme()" aria-label="Basculer le mode nuit" id="themeIcTop">🌙</button>
+  <button class="topbar-theme" onclick="toggleTheme()" aria-label="Basculer le mode nuit" id="themeIcTop"><svg class="ic" aria-hidden="true"><use id="themeUseTop" href="#i-moon"/></svg></button>
 </header>
 
 <nav class="tb" id="tabBar" role="tablist" aria-label="Navigation">
-  <button class="tb-btn" data-tablink="accueil" onclick="switchTab('accueil')" role="tab" aria-label="Accueil"><span class="tb-ic">🏠</span><span class="tb-lbl">Accueil</span></button>
-  <button class="tb-btn" data-tablink="menu" onclick="switchTab('menu')" role="tab" aria-label="Menu"><span class="tb-ic">📅</span><span class="tb-lbl">Menu</span></button>
-  <button class="tb-btn" data-tablink="aliments" onclick="switchTab('aliments')" role="tab" aria-label="Aliments"><span class="tb-ic">🥑</span><span class="tb-lbl">Aliments</span></button>
-  <button class="tb-btn" data-tablink="profil" onclick="switchTab('profil')" role="tab" aria-label="Profil"><span class="tb-ic">👤</span><span class="tb-lbl">Profil</span></button>
-  <button class="tb-btn" data-tablink="coach" onclick="switchTab('coach')" role="tab" aria-label="Coach IA"><span class="tb-ic">💬</span><span class="tb-lbl">Coach</span></button>
+  <button class="tb-btn" data-tablink="accueil" onclick="switchTab('accueil')" role="tab" aria-label="Accueil"><svg class="ic tb-ic" aria-hidden="true"><use href="#i-home"/></svg><span class="tb-lbl">Accueil</span></button>
+  <button class="tb-btn" data-tablink="menu" onclick="switchTab('menu')" role="tab" aria-label="Menu"><svg class="ic tb-ic" aria-hidden="true"><use href="#i-calendar"/></svg><span class="tb-lbl">Menu</span></button>
+  <button class="tb-btn" data-tablink="aliments" onclick="switchTab('aliments')" role="tab" aria-label="Aliments"><svg class="ic tb-ic" aria-hidden="true"><use href="#i-salad"/></svg><span class="tb-lbl">Aliments</span></button>
+  <button class="tb-btn" data-tablink="profil" onclick="switchTab('profil')" role="tab" aria-label="Profil"><svg class="ic tb-ic" aria-hidden="true"><use href="#i-user"/></svg><span class="tb-lbl">Profil</span></button>
+  <button class="tb-btn" data-tablink="coach" onclick="switchTab('coach')" role="tab" aria-label="Coach IA"><svg class="ic tb-ic" aria-hidden="true"><use href="#i-chat"/></svg><span class="tb-lbl">Coach</span></button>
 </nav>
 
 <section class="dash" data-tab="accueil">
@@ -1389,14 +2093,14 @@ body[data-activetab="coach"] .voice-fab{display:none}
       <div class="dash-card dash-quick">
         <div class="dash-card-hd"><h3>Actions rapides</h3></div>
         <div class="dash-actions">
-          <button class="dqa" onclick="openVoiceMeal()"><span>🎙️</span>Dicter mon repas</button>
-          <button class="dqa" onclick="openScanner()"><span>📷</span>Scanner un produit</button>
-          <button class="dqa" onclick="switchTab('aliments')"><span>🔍</span>Chercher un aliment</button>
-          <button class="dqa" onclick="switchTab('coach')"><span>💬</span>Demander au coach</button>
-          <button class="dqa" onclick="openShoppingList()"><span>🛒</span>Liste de courses</button>
-          <button class="dqa" onclick="openSymptomModal()"><span>🩺</span>Noter un symptôme</button>
-          <button class="dqa" onclick="exportMenuPdf()"><span>🖨️</span>Exporter le menu PDF</button>
-          <button class="dqa" onclick="openQuiz()"><span>⚙️</span>Refaire le quiz</button>
+          <button class="dqa" onclick="openVoiceMeal()"><svg class="ic dqa-ic" aria-hidden="true"><use href="#i-mic"/></svg>Dicter mon repas</button>
+          <button class="dqa" onclick="openScanner()"><svg class="ic dqa-ic" aria-hidden="true"><use href="#i-camera"/></svg>Scanner un produit</button>
+          <button class="dqa" onclick="switchTab('aliments')"><svg class="ic dqa-ic" aria-hidden="true"><use href="#i-search"/></svg>Chercher un aliment</button>
+          <button class="dqa" onclick="switchTab('coach')"><svg class="ic dqa-ic" aria-hidden="true"><use href="#i-chat"/></svg>Demander au coach</button>
+          <button class="dqa" onclick="openShoppingList()"><svg class="ic dqa-ic" aria-hidden="true"><use href="#i-cart"/></svg>Liste de courses</button>
+          <button class="dqa" onclick="openSymptomModal()"><svg class="ic dqa-ic" aria-hidden="true"><use href="#i-stethoscope"/></svg>Noter un symptôme</button>
+          <button class="dqa" onclick="exportMenuPdf()"><svg class="ic dqa-ic" aria-hidden="true"><use href="#i-printer"/></svg>Exporter le menu PDF</button>
+          <button class="dqa" onclick="openQuiz()"><svg class="ic dqa-ic" aria-hidden="true"><use href="#i-settings"/></svg>Refaire le quiz</button>
         </div>
       </div>
     </div>
@@ -1462,7 +2166,7 @@ body[data-activetab="coach"] .voice-fab{display:none}
       <div class="prefs-exclude">
         <input type="text" id="prefsExcludeInput" placeholder="Aliments à exclure, séparés par une virgule (ex : champignon, olives)" onchange="updateExcluded(this.value)">
       </div>
-      <button class="btn-s" style="margin-top:16px" onclick="openQuiz()">🔄 Refaire le quiz équipement / budget / magasin</button>
+      <button class="btn-s" style="margin-top:16px" onclick="openQuiz()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Refaire le quiz équipement / budget / magasin</button>
     </div>
   </div>
 </section>
@@ -1487,7 +2191,7 @@ body[data-activetab="coach"] .voice-fab{display:none}
         <h4>Ajouter une pesée</h4>
         <div class="pf-row" style="margin-bottom:12px"><label>Date</label><input type="date" id="wDate"></div>
         <div class="pf-row" style="margin-bottom:14px"><label>Poids (kg)</label><input type="number" step="0.1" id="wWeight" placeholder="85.0"></div>
-        <button class="btn-p" style="width:100%;justify-content:center" onclick="addWeightEntry()">+ Ajouter la pesée</button>
+        <button class="btn-p" style="width:100%;justify-content:center" onclick="addWeightEntry()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Ajouter la pesée</button>
         <div class="weight-log" id="weightLogList"></div>
       </div>
     </div>
@@ -1503,11 +2207,11 @@ body[data-activetab="coach"] .voice-fab{display:none}
     </div>
     <div class="symp-wrap">
       <div class="symp-card">
-        <div class="symp-card-hd"><h4>📓 Journal</h4><button class="btn-p" style="padding:10px 18px;font-size:13px" onclick="openSymptomModal()">🩺 Noter un symptôme</button></div>
+        <div class="symp-card-hd"><h4><svg class="ic ic-sm hd-ic" aria-hidden="true"><use href="#i-book"/></svg><span>Journal</span></h4><button class="btn-p" style="padding:10px 18px;font-size:13px" onclick="openSymptomModal()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-stethoscope"/></svg> Noter un symptôme</button></div>
         <div id="sympList" class="symp-list"></div>
       </div>
       <div class="symp-card">
-        <h4>📈 Corrélations détectées</h4>
+        <h4><svg class="ic ic-sm hd-ic" aria-hidden="true"><use href="#i-chart"/></svg><span>Corrélations détectées</span></h4>
         <div id="sympInsights" class="symp-insights"></div>
         <div class="ccard-disc" style="margin-top:12px">⚕️ Corrélations statistiques indicatives — seule la réintroduction encadrée (idéalement avec un diététicien) confirme une sensibilité.</div>
       </div>
@@ -1524,14 +2228,14 @@ body[data-activetab="coach"] .voice-fab{display:none}
     </div>
     <div class="symp-wrap">
       <div class="symp-card">
-        <h4>☁️ Synchronisation entre appareils</h4>
+        <h4><svg class="ic ic-sm hd-ic" aria-hidden="true"><use href="#i-cloud"/></svg><span>Synchronisation entre appareils</span></h4>
         <div id="syncCard"></div>
       </div>
       <div class="symp-card">
-        <h4>📦 Sauvegarde manuelle (fichier)</h4>
+        <h4><svg class="ic ic-sm hd-ic" aria-hidden="true"><use href="#i-package"/></svg><span>Sauvegarde manuelle (fichier)</span></h4>
         <div class="pplx-row">
-          <button class="btn-s" onclick="exportBackupFile()">📤 Exporter mes données</button>
-          <button class="btn-s" onclick="document.getElementById('importFileInput').click()">📥 Importer un fichier</button>
+          <button class="btn-s" onclick="exportBackupFile()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-upload"/></svg> Exporter mes données</button>
+          <button class="btn-s" onclick="document.getElementById('importFileInput').click()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-download"/></svg> Importer un fichier</button>
           <input type="file" id="importFileInput" accept="application/json,.json" style="display:none" onchange="importBackupFile(this)">
         </div>
         <div class="modal-tip">💡 Le fichier JSON contient tout (menus, poids, symptômes, aliments persos…). Garde-en un de temps en temps : c'est ton filet de sécurité même sans synchro.</div>
@@ -1549,13 +2253,13 @@ body[data-activetab="coach"] .voice-fab{display:none}
     </div>
     <div class="symp-wrap">
       <div class="symp-card">
-        <h4>📱 État &amp; installation</h4>
+        <h4><svg class="ic ic-sm hd-ic" aria-hidden="true"><use href="#i-smartphone"/></svg><span>État &amp; installation</span></h4>
         <div id="installCard"></div>
       </div>
       <div class="symp-card">
-        <h4>🎙️ Dicter un repas</h4>
+        <h4><svg class="ic ic-sm hd-ic" aria-hidden="true"><use href="#i-mic"/></svg><span>Dicter un repas</span></h4>
         <p style="font-size:13px;line-height:1.7;color:var(--slate-600)">Dites ce que vous avez mangé — <i>« ce midi 150 g de poulet, du riz basmati et des courgettes »</i> — et FODMAP+ reconnaît les aliments, estime les grammages, vérifie les seuils Monash, complète le repas si besoin et l'enregistre comme repas du moment.</p>
-        <div class="pplx-row"><button class="btn-p" style="padding:12px 18px;font-size:13px" onclick="openVoiceMeal()">🎙️ Dicter mon repas</button></div>
+        <div class="pplx-row"><button class="btn-p" style="padding:12px 18px;font-size:13px" onclick="openVoiceMeal()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-mic"/></svg> Dicter mon repas</button></div>
         <div class="modal-tip">💡 Une fois l'app installée, un appui long sur l'icône ouvre directement la dictée.</div>
       </div>
     </div>
@@ -1570,9 +2274,9 @@ body[data-activetab="coach"] .voice-fab{display:none}
       <p class="sec-sub">Rappel de la méthode clinique en trois phases (Université Monash) et réponses aux questions fréquentes.</p>
     </div>
     <div class="phases" id="phases">
-      <div class="phase-card"><div class="phase-num">01</div><div class="phase-icon">🚫</div><h3>Élimination</h3><p>Suppression stricte des aliments riches en FODMAP pendant une période courte, pour laisser le système digestif se calmer.</p><span class="phase-dur">2 à 6 semaines</span><button class="phase-link" onclick="goToPhase('elimination')">Voir dans mon menu →</button></div>
-      <div class="phase-card"><div class="phase-num">02</div><div class="phase-icon">🔄</div><h3>Réintroduction</h3><p>Chaque famille de FODMAP est réintroduite une à une, à dose croissante, pour repérer précisément vos seuils de tolérance.</p><span class="phase-dur">6 à 8 semaines</span><button class="phase-link" onclick="goToPhase('reintroduction')">Voir mon protocole →</button></div>
-      <div class="phase-card"><div class="phase-num">03</div><div class="phase-icon">🌿</div><h3>Personnalisation</h3><p>Construction de votre régime durable sur mesure, aussi varié que possible, en évitant seulement vos réels déclencheurs.</p><span class="phase-dur">Long terme</span><button class="phase-link" onclick="goToPhase('personnalisation')">Voir dans mon menu →</button></div>
+      <div class="phase-card"><div class="phase-num">01</div><div class="phase-icon"><svg class="ic" aria-hidden="true"><use href="#i-ban"/></svg></div><h3>Élimination</h3><p>Suppression stricte des aliments riches en FODMAP pendant une période courte, pour laisser le système digestif se calmer.</p><span class="phase-dur">2 à 6 semaines</span><button class="phase-link" onclick="goToPhase('elimination')">Voir dans mon menu →</button></div>
+      <div class="phase-card"><div class="phase-num">02</div><div class="phase-icon"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg></div><h3>Réintroduction</h3><p>Chaque famille de FODMAP est réintroduite une à une, à dose croissante, pour repérer précisément vos seuils de tolérance.</p><span class="phase-dur">6 à 8 semaines</span><button class="phase-link" onclick="goToPhase('reintroduction')">Voir mon protocole →</button></div>
+      <div class="phase-card"><div class="phase-num">03</div><div class="phase-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></div><h3>Personnalisation</h3><p>Construction de votre régime durable sur mesure, aussi varié que possible, en évitant seulement vos réels déclencheurs.</p><span class="phase-dur">Long terme</span><button class="phase-link" onclick="goToPhase('personnalisation')">Voir dans mon menu →</button></div>
     </div>
     <div id="faq"></div>
     <div class="faq-wrap" id="faqWrap" style="margin-top:36px"></div>
@@ -1605,15 +2309,15 @@ body[data-activetab="coach"] .voice-fab{display:none}
 
     <div class="explorer-bar">
       <button class="fbtn on" data-f="all" onclick="ff('all')">Tous</button>
-      <button class="fbtn safe" data-f="safe" onclick="ff('safe')">✅ Safe</button>
-      <button class="fbtn moderate" data-f="moderate" onclick="ff('moderate')">⚠️ Modéré</button>
-      <button class="fbtn avoid" data-f="avoid" onclick="ff('avoid')">🚫 À éviter</button>
+      <button class="fbtn safe" data-f="safe" onclick="ff('safe')"><span class="dot dot-low"></span>Safe</button>
+      <button class="fbtn moderate" data-f="moderate" onclick="ff('moderate')"><span class="dot dot-medium"></span>Modéré</button>
+      <button class="fbtn avoid" data-f="avoid" onclick="ff('avoid')"><span class="dot dot-high"></span>À éviter</button>
     </div>
     <div class="cat-select" id="catSelect"></div>
     <div class="food-count-row">
       <div class="food-count" id="foodCount"></div>
-      <button class="btn-s add-food-btn" onclick="openScanner()">📷 Scanner un produit</button>
-      <button class="btn-s add-food-btn" onclick="openCustomFoodModal()">➕ Ajouter un aliment</button>
+      <button class="btn-s add-food-btn" onclick="openScanner()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-camera"/></svg> Scanner un produit</button>
+      <button class="btn-s add-food-btn" onclick="openCustomFoodModal()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Ajouter un aliment</button>
     </div>
     <div class="food-grid" id="fg"></div>
     <button class="load-more" id="loadMoreBtn" onclick="loadMore()">Voir plus d'aliments</button>
@@ -1629,18 +2333,18 @@ body[data-activetab="coach"] .voice-fab{display:none}
     </div>
 
     <div class="phase-selector">
-      <button class="phase-btn on" data-phase="elimination" onclick="selectPhase('elimination')">🚫 Élimination</button>
-      <button class="phase-btn" data-phase="reintroduction" onclick="selectPhase('reintroduction')">🔄 Réintroduction</button>
-      <button class="phase-btn" data-phase="personnalisation" onclick="selectPhase('personnalisation')">🌿 Personnalisation</button>
+      <button class="phase-btn on" data-phase="elimination" onclick="selectPhase('elimination')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-ban"/></svg> Élimination</button>
+      <button class="phase-btn" data-phase="reintroduction" onclick="selectPhase('reintroduction')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Réintroduction</button>
+      <button class="phase-btn" data-phase="personnalisation" onclick="selectPhase('personnalisation')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-leaf"/></svg> Personnalisation</button>
     </div>
 
     <div class="prog-nav">
-      <button class="prog-arrow" onclick="progWeek(-1)">←</button>
+      <button class="prog-arrow" onclick="progWeek(-1)" aria-label="Semaine précédente"><svg class="ic" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
       <div class="prog-label">
         <div class="prog-week">Semaine <span id="progWeekNum">1</span></div>
         <div class="prog-phase" id="progPhaseLabel"></div>
       </div>
-      <button class="prog-arrow" onclick="progWeek(1)">→</button>
+      <button class="prog-arrow" onclick="progWeek(1)" aria-label="Semaine suivante"><svg class="ic" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
       <div class="prog-elim-config"><label>Durée élimination :</label>
         <select id="elimWeeksSelect" onchange="onElimWeeksChange()">
           <option value="2">2 sem.</option><option value="3">3 sem.</option><option value="4" selected>4 sem.</option><option value="5">5 sem.</option><option value="6">6 sem.</option>
@@ -1657,9 +2361,9 @@ body[data-activetab="coach"] .voice-fab{display:none}
       <div class="meal-grid-lg" id="mealGridLg"></div>
 
       <div class="week-actions-row">
-        <button class="btn-s" onclick="openShoppingList()">🛒 Liste de courses de la semaine</button>
-        <button class="btn-s" id="toggleWeekBtn" onclick="toggleWeekView()">📊 Vue semaine complète</button>
-        <button class="btn-s" onclick="exportMenuPdf()">🖨️ Exporter en PDF</button>
+        <button class="btn-s" onclick="openShoppingList()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-cart"/></svg> Liste de courses de la semaine</button>
+        <button class="btn-s" id="toggleWeekBtn" onclick="toggleWeekView()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-grid"/></svg> Vue semaine complète</button>
+        <button class="btn-s" onclick="exportMenuPdf()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-printer"/></svg> Exporter en PDF</button>
       </div>
       <div class="week-grid-compact" id="weekGridCompact" style="display:none"></div>
     </div>
@@ -1681,14 +2385,14 @@ body[data-activetab="coach"] .voice-fab{display:none}
       <p class="sec-sub">Posez une question sur un aliment, ses macros, ou votre objectif calorique — le coach connaît toute votre base et votre profil.</p>
     </div>
     <div class="coach-wrap">
-      <div class="coach-hd"><div class="coach-avatar">🌿</div><div><b>Coach FODMAP</b><span>● En ligne</span></div></div>
+      <div class="coach-hd"><div class="coach-avatar"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></div><div><b>Coach FODMAP</b><span>● En ligne</span></div></div>
       <div class="coach-body" id="coachBody">
         <div class="msg bot">Salut ! 👋 Moi c'est ton coach FODMAP — direct, efficace, et incollable sur les 131 aliments de ta base. Demande-moi une idée de repas (« idée dîner avec poulet »), un menu complet, le statut d'un aliment, ou dis-moi « j'ai des ballonnements » et on enquête. Attention : coach IA, pas médecin 😉 Tu commences par quoi ?</div>
       </div>
       <div class="coach-suggestions" id="coachSuggestions"></div>
       <div class="coach-input-wrap">
         <input type="text" id="coachInput" placeholder="Ex : « idée dîner avec poulet et courgettes »" onkeydown="if(event.key==='Enter')sendCoach()">
-        <button class="coach-send" onclick="sendCoach()" aria-label="Envoyer le message">➤</button>
+        <button class="coach-send" onclick="sendCoach()" aria-label="Envoyer le message"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></button>
       </div>
       <div class="coach-disc">⚕️ Coach IA éducatif (seuils type Monash), pas un médecin — pour un vrai suivi, consultez un diététicien spécialisé.</div>
     </div>
@@ -1706,7 +2410,7 @@ body[data-activetab="coach"] .voice-fab{display:none}
   <div class="quiz-shell">
     <div class="quiz-top">
       <span class="quiz-step-lbl" id="quizStepLbl">Étape 1 sur 8</span>
-      <button class="quiz-close" onclick="closeQuiz()" aria-label="Fermer le quiz">✕</button>
+      <button class="quiz-close" onclick="closeQuiz()" aria-label="Fermer le quiz"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>
     <div class="quiz-progress"><div class="quiz-progress-fg" id="quizProgressFg"></div></div>
     <div class="quiz-main">
@@ -1726,10 +2430,10 @@ body[data-activetab="coach"] .voice-fab{display:none}
 </button>
 
 <div class="install-banner" id="installBanner">
-  <div class="ib-ic">🌿</div>
+  <div class="ib-ic"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></div>
   <div class="ib-txt"><b>Installer FODMAP+</b>Pour l'ouvrir en plein ecran, hors navigateur, et hors ligne.</div>
   <button class="ib-go" onclick="triggerInstall()">Installer</button>
-  <button class="ib-x" onclick="dismissInstallBanner()" aria-label="Masquer">✕</button>
+  <button class="ib-x" onclick="dismissInstallBanner()" aria-label="Masquer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2027,8 +2731,12 @@ function clearWeekOverride(day,key){
 }
 let menuData = JSON.parse(JSON.stringify(menuTemplateA));
 let menuDataOriginal = JSON.parse(JSON.stringify(menuTemplateA));
-const mealLabels = {breakfast:'🌅 Petit-déj',lunch:'☀️ Déjeuner',snack:'🍏 Collation',dinner:'🌙 Dîner'};
-const mealIcons = {breakfast:'🌅',lunch:'☀️',snack:'🍏',dinner:'🌙'};
+const mealLabels = {breakfast:'Petit-déj',lunch:'Déjeuner',snack:'Collation',dinner:'Dîner'};
+const mealIcons = {
+  breakfast:'<svg class="ic ic-meal" aria-hidden="true"><use href="#i-sunrise"/></svg>',
+  lunch:'<svg class="ic ic-meal" aria-hidden="true"><use href="#i-sun-high"/></svg>',
+  snack:'<svg class="ic ic-meal" aria-hidden="true"><use href="#i-apple"/></svg>',
+  dinner:'<svg class="ic ic-meal" aria-hidden="true"><use href="#i-moon-star"/></svg>'};
 const fullDayNames = {Lun:'Lundi',Mar:'Mardi',Mer:'Mercredi',Jeu:'Jeudi',Ven:'Vendredi',Sam:'Samedi',Dim:'Dimanche'};
 const moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 
@@ -2575,7 +3283,7 @@ function renderBudgetBar(){
   const storeOpts=Object.keys(STORES).map(k=>`<option value="${k}" ${k===selectedStore?'selected':''}>${STORES[k].logo} ${STORES[k].label}</option>`).join('');
   el.innerHTML=`
     <div class="budget-row">
-      <span class="budget-label">💰 Budget semaine</span>
+      <span class="budget-label"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-cart"/></svg> Budget semaine</span>
       <select id="storeSelect" class="store-select" onchange="setStore(this.value)">${storeOpts}</select>
       <input type="number" id="budgetInput" value="${weeklyBudget}" min="10" step="5" onchange="updateBudget(this.value)">
       <span class="budget-total ${over?'over':'ok'}">${total.toFixed(2)}€ / ${weeklyBudget}€ ${over?'⚠️':'✓'}</span>
@@ -2616,7 +3324,7 @@ function renderFoods(){
     return `<div class="food-card ${f.s}" style="animation:fadeUp .5s var(--tb) backwards;animation-delay:${(i%12)*.04}s" onclick='openFoodModal(${JSON.stringify(f.n)})'>
       <div class="fc-top"><div class="fc-emoji">${f.e}</div><div class="fc-badge ${f.s}">${badge}</div></div>
       <div class="fc-name">${f.n}${f.custom?' <span class="fc-custom" title="Aliment personnalisé">✏️</span>':''}</div><div class="fc-portion">${f.p}</div>
-      <div class="fc-macros"><span class="fc-pill g">📏 ${f.g}g</span><span class="fc-pill k">🔥 ${f.k} kcal</span><span class="fc-pill p">💪 ${f.pr}g</span><span class="fc-pill p" style="background:var(--slate-100);color:var(--slate-600)">💶 ${f.price.toFixed(2)}€</span></div>
+      <div class="fc-macros"><span class="fc-pill g">${f.g} g</span><span class="fc-pill k"><svg class="ic" aria-hidden="true"><use href="#i-flame"/></svg>${f.k} kcal</span><span class="fc-pill p">${f.pr} g prot.</span><span class="fc-pill price">${f.price.toFixed(2)}€</span></div>
     </div>`;
   }).join('');
 }
@@ -2627,7 +3335,7 @@ function openFoodModal(name){
   const badge=f.s==='safe'?'Safe ✅':f.s==='moderate'?'Modéré ⚠️':'À éviter 🚫';
   const tips={safe:'Vous pouvez consommer cet aliment librement dans le cadre d\'une alimentation low-FODMAP.',moderate:'Respectez la portion indiquée : au-delà, cet aliment peut devenir riche en FODMAP.',avoid:'Cet aliment est généralement mal toléré en phase d\'élimination. Essayez une alternative safe de la même catégorie.'};
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">${f.e}</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me">${f.e}</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">${f.n}</div>
       <div class="modal-badge ${f.s}">${badge}</div>
@@ -2638,7 +3346,7 @@ function openFoodModal(name){
       <div class="modal-row"><span>Protéines</span><span>${f.pr} g</span></div>
       <div class="modal-row"><span>Prix estimé</span><span>${f.price.toFixed(2)} €</span></div>
       <div class="modal-tip">💡 ${tips[f.s]}</div>
-      ${f.custom?`<button class="reset-btn" style="margin-top:12px" onclick="deleteCustomFood(${JSON.stringify(f.n).replace(/"/g,'&quot;')})">🗑️ Supprimer cet aliment personnalisé</button>`:''}
+      ${f.custom?`<button class="reset-btn" style="margin-top:12px" onclick="deleteCustomFood(${JSON.stringify(f.n).replace(/"/g,'&quot;')})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg> Supprimer cet aliment personnalisé</button>`:''}
     </div>`;
   document.getElementById('modalBg').classList.add('show');
 }
@@ -2758,8 +3466,8 @@ function renderReintroWeek(info){
     <div class="rfc-protocol">${fam.protocole}</div>
     <div class="rfc-actions">
       <span class="reintro-status ${fam.statut}">${statusLabel(fam.statut)}</span>
-      <button class="reintro-btn ok" onclick="setReintroStatus(${info.familyIndex},'tolere')">✅ Toléré</button>
-      <button class="reintro-btn bad" onclick="setReintroStatus(${info.familyIndex},'reaction')">⚠️ Réaction</button>
+      <button class="reintro-btn ok" onclick="setReintroStatus(${info.familyIndex},'tolere')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-check"/></svg> Toléré</button>
+      <button class="reintro-btn bad" onclick="setReintroStatus(${info.familyIndex},'reaction')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-alert"/></svg> Réaction</button>
     </div>`;
   document.getElementById('rwGrid').innerHTML = week.map(d=>{
     const meals = Object.keys(d.meals).map(k=>{
@@ -2868,9 +3576,9 @@ function renderMenuDay(){
   const offset=RING_C*(1-ringPct/100);
   const protPct=Math.min(100,Math.round((t.pr/profile.protTarget)*100));
   let statusBadge;
-  if(pct>=90&&pct<=110) statusBadge='✅ Dans l\'objectif calorique';
-  else if(pct<90) statusBadge='🔵 '+(100-pct)+'% sous l\'objectif';
-  else statusBadge='🟠 '+(pct-100)+'% au-dessus de l\'objectif';
+  if(pct>=90&&pct<=110) statusBadge='Dans l\'objectif calorique';
+  else if(pct<90) statusBadge=''+(100-pct)+'% sous l\'objectif';
+  else statusBadge=''+(pct-100)+'% au-dessus de l\'objectif';
   const safe=dayIsFodmapSafe(d);
   const dateLabel = weekDates[idx] ? `${weekDates[idx].getDate()} ${moisFr[weekDates[idx].getMonth()]}` : '';
 
@@ -2890,7 +3598,7 @@ function renderMenuDay(){
     <div class="ds-info">
       <div class="ds-day-name">${fullDayNames[d.day]} ${dateLabel}</div>
       <div>
-        <span class="ds-badge ${safe?'':'warn'}">${safe?'🌿 100% FODMAP-friendly':'⚠️ Contient un aliment à réintroduire'}</span>
+        <span class="ds-badge ${safe?'':'warn'}">${safe?'100% FODMAP-friendly':'Contient un aliment à réintroduire'}</span>
         <span class="ds-badge alt">${statusBadge}</span>
       </div>
       ${(function(){
@@ -3063,11 +3771,11 @@ function openMealModal(day,key){
        <input type="number" class="ing-g-input" value="${g}" min="0" step="5" onchange="updateIngredientGrams('${day}','${key}',${idx},this.value)">
        <span class="ing-unit">g</span>
        <span class="ing-kcal">${ik} kcal</span>
-       <button class="ing-del" onclick="removeIngredient('${day}','${key}',${idx})" title="Retirer">✕</button>
+       <button class="ing-del" onclick="removeIngredient('${day}','${key}',${idx})" title="Retirer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
      </li>`;
   }).join('');
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">${mealIcons[key]}</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me">${mealIcons[key]}</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">${meal.name}</div>
       <div class="modal-badge safe">${mealLabels[key]} · ${d.day}</div>
@@ -3077,9 +3785,9 @@ function openMealModal(day,key){
       <div class="modal-row"><span>Protéines</span><span>${Math.round(macros.pr)} g (${protPct}% de l'objectif jour)</span></div>
       <div class="modal-row"><span>Coût estimé</span><span>${price.toFixed(2)} €</span></div>
       <div class="modal-actions-row">
-        <button class="reset-btn" onclick="swapMeal('${day}','${key}')">🔄 Remplacer ce repas</button>
-        <button class="reset-btn" onclick="openMealBuilder('${day}','${key}',${meal.customized?'true':'false'})">✏️ Créer un repas perso</button>
-        ${meal.customized?`<button class="reset-btn" onclick="resetMeal('${day}','${key}')">↺ Réinitialiser la recette d'origine</button>`:''}
+        <button class="reset-btn" onclick="swapMeal('${day}','${key}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Remplacer ce repas</button>
+        <button class="reset-btn" onclick="openMealBuilder('${day}','${key}',${meal.customized?'true':'false'})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-pencil"/></svg> Créer un repas perso</button>
+        ${meal.customized?`<button class="reset-btn" onclick="resetMeal('${day}','${key}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Réinitialiser la recette d'origine</button>`:''}
       </div>
       ${(function(){
         const mine=myMeals.filter(m=>m.slot===key);
@@ -3088,7 +3796,7 @@ function openMealModal(day,key){
           mine.map(m=>`<div class="mymeal-row">
             <span class="mymeal-name">${m.name}</span>
             <button class="mymeal-use" onclick="applyMyMeal('${day}','${key}',${m.id})">Utiliser</button>
-            <button class="ing-del" onclick="deleteMyMeal('${day}','${key}',${m.id})" title="Supprimer">✕</button>
+            <button class="ing-del" onclick="deleteMyMeal('${day}','${key}',${m.id})" title="Supprimer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
           </div>`).join('')+`</div>`;
       })()}
       <div class="recipe-box">
@@ -3203,11 +3911,11 @@ function renderMealBuilder(){
       <input type="number" class="ing-g-input" value="${ing.g}" min="5" step="5" onchange="builderSetG(${idx},this.value)">
       <span class="ing-unit">g</span>
       <span class="ing-kcal">${ik} kcal</span>
-      <button class="ing-del" onclick="builderDelIng(${idx})" title="Retirer">✕</button>
+      <button class="ing-del" onclick="builderDelIng(${idx})" title="Retirer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
     </li>`;
   }).join('');
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">✏️</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Mon repas perso</div>
       <div class="modal-badge safe">${mealLabels[builderState.key]} · ${builderState.day}</div>
@@ -3231,7 +3939,7 @@ function renderMealBuilder(){
       ${pickerHtml({slot:builderState.key,target:'builder'})}
       <div class="modal-actions-row">
         <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="builderApply()">✓ Utiliser pour ce repas</button>
-        <button class="reset-btn" onclick="builderSaveOnly()">💾 Garder dans mes repas</button>
+        <button class="reset-btn" onclick="builderSaveOnly()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-download"/></svg> Garder dans mes repas</button>
         <button class="reset-btn" onclick="openMealModal('${builderState.day}','${builderState.key}')">← Retour</button>
       </div>
       <div class="modal-tip">💡 Les aliments « à éviter » ne sont pas proposés ici. Pour les modérés, restez sous le grammage indiqué pour rester compatible élimination.</div>
@@ -3361,7 +4069,7 @@ function openCustomFoodModal(returnCtx,prefillName){
   customFoodReturn=returnCtx||null;
   const catOpts=Object.keys(catLabels).map(c=>`<option value="${c}">${catLabels[c]}</option>`).join('');
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">➕</div><button class="modal-close" onclick="${customFoodReturn?`openMealBuilderBack()`:'closeModal()'}" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></div><button class="modal-close" onclick="${customFoodReturn?`openMealBuilderBack()`:'closeModal()'}" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Nouvel aliment</div>
       <div class="pplx-box">
@@ -3464,8 +4172,8 @@ function pickerHtml(ctx){
     <input type="text" id="pickerSearch" class="picker-search" placeholder="🔍 Chercher un aliment…" oninput="pickerQuery=this.value;renderPickerResults()">
     <div class="picker-cats" id="pickerCats"></div>
     <div class="picker-results" id="pickerResults"></div>
-    <button class="picker-newfood" onclick="openCustomFoodModal({target:'${ctx.target}',day:'${ctx.day||''}',key:'${ctx.key||''}'},pickerQuery)">➕ Aliment hors liste (assistant Perplexity)</button>
-    <button class="picker-newfood" onclick="openScanner('${ctx.slot}','${ctx.day||''}')">📷 Scanner un produit emballé</button>
+    <button class="picker-newfood" onclick="openCustomFoodModal({target:'${ctx.target}',day:'${ctx.day||''}',key:'${ctx.key||''}'},pickerQuery)"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Aliment hors liste (assistant Perplexity)</button>
+    <button class="picker-newfood" onclick="openScanner('${ctx.slot}','${ctx.day||''}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-camera"/></svg> Scanner un produit emballé</button>
   </div>`;
 }
 function renderPickerCats(){
@@ -3656,7 +4364,7 @@ async function copyShoppingList(){
 }
 function showShoppingText(txt){
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">📋</div><button class="modal-close" onclick="openShoppingList()" aria-label="Retour">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-clipboard"/></svg></div><button class="modal-close" onclick="openShoppingList()" aria-label="Retour"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Copier la liste</div>
       <p class="modal-badge safe">Sélectionnez le texte puis copiez-le (le presse-papiers automatique a été refusé par le navigateur)</p>
@@ -3677,7 +4385,7 @@ function openShoppingList(){
   const totalAll = Object.values(priceAgg).reduce((a,b)=>a+b,0);
   const totalRemaining = items.reduce((s,n)=>s+(pantryItems.has(n)?0:priceAgg[n]),0);
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">🛒</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-cart"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Liste de courses</div>
       <div class="modal-badge safe">${items.length} articles · ~${Math.round(weekK).toLocaleString('fr-FR')} kcal / semaine · ${STORES[selectedStore].logo} ${STORES[selectedStore].label} · dîner pour ${householdDiners} pers.</div>
@@ -3696,9 +4404,9 @@ function openShoppingList(){
       <div class="shop-budget-row">${totalRemaining<=weeklyBudget?'✅':'⚠️'} Objectif budget : ${weeklyBudget} €${pantryItems.size?` · Prix plein sans le placard : ${totalAll.toFixed(2)} €`:''}</div>
       <div style="font-size:11.5px;color:var(--slate-400);text-align:center;margin-top:6px">Cliquez un article pour le marquer « déjà en stock » · prix estimés ${STORES[selectedStore].label}, pas de tarif temps réel</div>
       <div class="shop-actions">
-        <button class="btn-p" onclick="copyShoppingList()">📋 Copier la liste</button>
-        ${navigator.share?`<button class="btn-s" onclick="shareShoppingList()">📤 Partager</button>`:''}
-        <button class="btn-s" onclick="exportMenuPdf()">🖨️ Imprimer</button>
+        <button class="btn-p" onclick="copyShoppingList()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-clipboard"/></svg> Copier la liste</button>
+        ${navigator.share?`<button class="btn-s" onclick="shareShoppingList()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-upload"/></svg> Partager</button>`:''}
+        <button class="btn-s" onclick="exportMenuPdf()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-printer"/></svg> Imprimer</button>
       </div>
     </div>`;
   document.getElementById('modalBg').classList.add('show');
@@ -3723,7 +4431,7 @@ function renderWeekCompact(){
       ${Object.keys(d.meals).map(k=>{
         const meal=d.meals[k]; const mm=mealDisplayMacros(d,k); const warn=mealViolatesPrefs(meal);
         return `<div class="meal" onclick='openMealModal(${JSON.stringify(d.day)},${JSON.stringify(k)})'>
-        <span class="mtag">${warn?'⚠️ ':''}${mealIcons[k]} ${mealLabels[k].replace(/^\S+\s/,'')}${meal.customized?' ✏️':''}</span><span class="mname">${meal.name}</span><span class="mmacros">🔥 ${Math.round(mm.k)} · 💪 ${Math.round(mm.pr)}g · 💶 ${mealPrice(d,k).toFixed(2)}€</span>
+        <span class="mtag">${warn?'<svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg>':''}${mealIcons[k]} ${mealLabels[k].replace(/^\S+\s/,'')}${meal.customized?'<svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg>':''}</span><span class="mname">${meal.name}</span><span class="mmacros">🔥 ${Math.round(mm.k)} · 💪 ${Math.round(mm.pr)}g · 💶 ${mealPrice(d,k).toFixed(2)}€</span>
       </div>`}).join('')}
       <div class="day-cal">~<b>${Math.round(t.k)}</b> kcal · <b>${Math.round(t.pr)}</b>g · <b>${dayPrice(d).toFixed(2)}</b>€</div>
     </div>`;
@@ -3780,7 +4488,7 @@ function renderWeightStats(){
 function renderWeightLogList(){
   const sorted=[...weightLog].map((e,i)=>({...e,_i:i})).sort((a,b)=>b.date.localeCompare(a.date));
   document.getElementById('weightLogList').innerHTML = sorted.map(e=>
-    `<div class="weight-log-item"><span>${fmtDateShort(e.date)}</span><b>${e.w.toFixed(1)} kg</b><button class="wlog-del" onclick="removeWeightEntry(${e._i})">✕</button></div>`
+    `<div class="weight-log-item"><span>${fmtDateShort(e.date)}</span><b>${e.w.toFixed(1)} kg</b><button class="wlog-del" onclick="removeWeightEntry(${e._i})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>`
   ).join('');
 }
 function addWeightEntry(){
@@ -4070,10 +4778,10 @@ function coachShowInsights(){
   const ins=computeSymptomInsights();
   if(!ins.length){ pushMsg('Rien à signaler pour l\'instant — et c\'est plutôt bon signe 🌿 Note tes symptômes après les repas (bouton 🩺) et je croiserai avec les familles FODMAP. Tu digères bien en ce moment ?','bot'); return; }
   const adjustBtns=ins.filter(i=>i.count>=2&&FAM_TO_PLAN[i.fam]!==undefined&&reintroPlan[FAM_TO_PLAN[i.fam]].statut!=='reaction')
-    .map(i=>`<button class="ccard-btn" onclick="coachMarkReaction('${i.fam}')">⚠️ Marquer ${i.fam} en réaction</button>`).join('');
+    .map(i=>`<button class="ccard-btn" onclick="coachMarkReaction('${i.fam}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-alert"/></svg> Marquer ${i.fam} en réaction</button>`).join('');
   pushHtml(`<div class="ccard"><div class="ccard-hd"><b>Tes corrélations 📈</b><span class="ccard-slot">${symptomLog.length} entrées</span></div>
     <div class="ccard-list">${ins.map(i=>`<div class="ccard-li"><b>${FAMILY_LABELS[i.fam]||i.fam}</b> : ${i.label} — ${i.detail}</div>`).join('')}</div>
-    <div class="ccard-actions"><button class="ccard-btn" onclick="ss('symptomes')">📓 Journal complet</button>${adjustBtns}</div>
+    <div class="ccard-actions"><button class="ccard-btn" onclick="ss('symptomes')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-book"/></svg> Journal complet</button>${adjustBtns}</div>
     <div class="ccard-disc">Statistique indicative — la vraie confirmation, c'est la réintroduction encadrée. Coach IA, pas médecin.</div></div>`);
 }
 function coachPhaseReply(){
@@ -4101,10 +4809,10 @@ function pushCoachCard(p,skipLog){
     <div class="ccard-tot">🔥 ${p.k} kcal <span>(cible ~${p.target})</span> · 💪 ${p.pr} g · 💶 ${p.price.toFixed(2)} €</div>
     <div class="ccard-badge ${p.hasModerate?'moderate':'safe'}">${p.hasModerate?'🟡 Modérés présents — seuils Monash respectés':'✅ 100% safe élimination'}</div>
     <div class="ccard-actions">
-      <button class="ccard-btn primary" onclick="coachApply(${id},null)">➕ ${SLOT_FR[p.slot]} d'aujourd'hui</button>
-      <button class="ccard-btn" onclick="coachToggleDays(${id})">📅 Autre jour</button>
-      <button class="ccard-btn" onclick="coachOther(${id})">🔁 Autre idée</button>
-      <button class="ccard-btn" onclick="coachKeep(${id})">💾 Garder</button>
+      <button class="ccard-btn primary" onclick="coachApply(${id},null)"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> ${SLOT_FR[p.slot]} d'aujourd'hui</button>
+      <button class="ccard-btn" onclick="coachToggleDays(${id})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-calendar"/></svg> Autre jour</button>
+      <button class="ccard-btn" onclick="coachOther(${id})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Autre idée</button>
+      <button class="ccard-btn" onclick="coachKeep(${id})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-download"/></svg> Garder</button>
     </div>
     <div class="ccard-days" id="ccardDays${id}" style="display:none">
       ${menuData.map(d=>`<button class="ccard-day" onclick="coachApply(${id},'${d.day}')">${d.day}</button>`).join('')}
@@ -4140,7 +4848,7 @@ function coachDayMenu(){
     const pr=genMealProposal(s,[]);
     if(pr){ pr.required=[]; lastDayMenuIds.push(pushCoachCard(pr)); }
   });
-  pushHtml(`<div class="ccard-allrow"><button class="ccard-btn primary" onclick="coachApplyDayMenu()">➕ Tout mettre sur aujourd'hui</button></div>`);
+  pushHtml(`<div class="ccard-allrow"><button class="ccard-btn primary" onclick="coachApplyDayMenu()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Tout mettre sur aujourd'hui</button></div>`);
 }
 function coachApplyDayMenu(){
   lastDayMenuIds.forEach(id=>coachApply(id,todayDayCode()));
@@ -4150,7 +4858,7 @@ function coachApplyDayMenu(){
 /* ============ COACH v2 : ANALYSE DE RECETTE (réelle, pas simulée) ============ */
 function analyzeRecipeModal(){
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">📋</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-clipboard"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Analyser une recette</div>
       <p class="modal-badge safe">Un ingrédient par ligne, grammage optionnel (ex : « 150g de riz »)</p>
@@ -4326,7 +5034,7 @@ function openSymptomModal(prefTypes){
 function renderSymptomModal(){
   const d=sympDraft;
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">🩺</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-stethoscope"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Noter un symptôme</div>
       <div class="ing-editor-title">Quels symptômes ?</div>
@@ -4392,7 +5100,7 @@ function renderSymptoms(){
         <b>${s.types.map(t=>(SYMPTOM_TYPES.find(x=>x[0]===t)||[t,t])[1]).join(' · ')}</b>
         <span>${s.date} · ${'▮'.repeat(s.severity)}${s.meal?' · après '+SLOT_FR[s.meal.slot]+' « '+s.meal.name+' »':''}${s.note?' · '+s.note:''}</span>
       </div>
-      <button class="ing-del" onclick="deleteSymptom(${s.id})" title="Supprimer">✕</button>
+      <button class="ing-del" onclick="deleteSymptom(${s.id})" title="Supprimer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>`).join(''):'<div class="picker-empty">Aucun symptôme noté — c\'est plutôt bon signe 🌿</div>';
   const ins=computeSymptomInsights();
   insEl.innerHTML=ins.length?ins.map(i=>`
@@ -4413,7 +5121,7 @@ function exportMenuPdf(){
   cont.innerHTML=`
     <h1>FODMAP+ — Menu de la semaine ${programWeek}</h1>
     <p class="pr-meta">Objectif ${profile.calTarget} kcal · ${profile.protTarget} g protéines / jour · budget ${weeklyBudget} € · ${STORES[selectedStore].label} · généré le ${new Date().toLocaleDateString('fr-FR')}</p>
-    <table class="pr-table"><tr><th>Jour</th><th>🌅 Petit-déj</th><th>☀️ Déjeuner</th><th>🍏 Collation</th><th>🌙 Dîner</th><th>Total</th></tr>
+    <table class="pr-table"><tr><th>Jour</th><th>Petit-déj</th><th>Déjeuner</th><th>Collation</th><th>Dîner</th><th>Total</th></tr>
     ${menuData.map(d=>{const t=dayDisplayTotals(d);return `<tr><td><b>${fullDayNames[d.day]}</b></td>${Object.keys(d.meals).map(k=>{const mm=mealDisplayMacros(d,k);return `<td>${d.meals[k].name}<br><small>${Math.round(mm.k)} kcal · ${Math.round(mm.pr)}g</small></td>`}).join('')}<td><b>${Math.round(t.k)} kcal</b><br><small>${Math.round(t.pr)}g prot · ${dayPrice(d).toFixed(2)}€</small></td></tr>`}).join('')}
     </table>
     <h2>🛒 Liste de courses (${Object.keys(agg).length} articles · ~${weekPrice().toFixed(2)} €)</h2>
@@ -4519,8 +5227,8 @@ function generateCoachReply(q){
     pushHtml(`<div class="ccard"><div class="ccard-hd"><b>Aïe, pas cool 📓</b><span class="ccard-slot">symptômes</span></div>
       <div class="ccard-list"><div class="ccard-li">On note ça avec le repas concerné — c'est comme ça qu'on démasque le coupable. Plus ton journal est rempli, plus mes corrélations par famille FODMAP deviennent fiables.</div></div>
       <div class="ccard-actions">
-        <button class="ccard-btn primary" onclick='openSymptomModal(${JSON.stringify(pre)})'>🩺 Noter ce symptôme</button>
-        <button class="ccard-btn" onclick="coachShowInsights()">📈 Mes corrélations</button>
+        <button class="ccard-btn primary" onclick='openSymptomModal(${JSON.stringify(pre)})'><svg class="ic ic-sm" aria-hidden="true"><use href="#i-stethoscope"/></svg> Noter ce symptôme</button>
+        <button class="ccard-btn" onclick="coachShowInsights()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-chart"/></svg> Mes corrélations</button>
       </div>
       <div class="ccard-disc">Coach IA, pas médecin — si ça persiste ou s'intensifie, vois un professionnel.</div></div>`);
     return null;
@@ -4759,7 +5467,7 @@ function renderSyncCard(){
     el.innerHTML=`
       <div class="sync-status" id="syncStatus">${syncCfg.last?'✅ Dernière synchro : '+new Date(syncCfg.last).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Connecté — pas encore synchronisé'}</div>
       <div class="pplx-row">
-        <button class="btn-p" style="padding:11px 18px;font-size:13px" onclick="syncNow('full')">🔄 Synchroniser maintenant</button>
+        <button class="btn-p" style="padding:11px 18px;font-size:13px" onclick="syncNow('full')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Synchroniser maintenant</button>
         <button class="btn-s" onclick="disconnectSync()">Déconnecter</button>
       </div>
       <div class="modal-tip">💡 Sauvegarde automatique quelques secondes après chaque modification, récupération à chaque ouverture. Pour un nouvel appareil : colle le même token, l'app retrouve tes données toute seule.</div>`;
@@ -4767,7 +5475,7 @@ function renderSyncCard(){
     el.innerHTML=`
       <div class="sync-status" id="syncStatus">Hors ligne — données sur cet appareil uniquement</div>
       <input type="password" id="syncToken" class="bld-name" style="font-family:Inter" placeholder="Colle ici ton token GitHub (scope « gist » uniquement)">
-      <div class="pplx-row"><button class="btn-p" style="padding:11px 18px;font-size:13px" onclick="connectSync()">☁️ Connecter la synchro</button></div>
+      <div class="pplx-row"><button class="btn-p" style="padding:11px 18px;font-size:13px" onclick="connectSync()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-cloud"/></svg> Connecter la synchro</button></div>
       <div class="modal-tip">💡 <b>Création du token (une fois)</b> : github.com → Settings → Developer settings → Personal access tokens → <b>Tokens (classic)</b> → Generate new token → coche uniquement <b>gist</b> → expiration longue → copie le token.<br>
       Colle ensuite <b>le même token</b> sur chaque appareil (téléphone, tablette…) : vos menus, pesées, symptômes et réglages se suivent partout. Le token ne donne accès qu'aux gists — jamais à tes dépôts.</div>`;
   }
@@ -4783,12 +5491,15 @@ function applyTheme(t){
   document.documentElement.dataset.theme=t;
   lsSet('fodmapTheme',t);
   const dark=t==='dark';
-  const icS=document.getElementById('themeIcSide'), lbS=document.getElementById('themeLblSide'), icT=document.getElementById('themeIcTop');
-  if(icS) icS.textContent=dark?'☀️':'🌙';
+  const useS=document.getElementById('themeUseSide'), lbS=document.getElementById('themeLblSide'), useT=document.getElementById('themeUseTop');
+  const sym=dark?'#i-sun':'#i-moon';
+  if(useS) useS.setAttribute('href',sym);
   if(lbS) lbS.textContent=dark?'Mode jour':'Mode nuit';
-  if(icT) icT.textContent=dark?'☀️':'🌙';
+  if(useT) useT.setAttribute('href',sym);
+  const btnT=document.getElementById('themeIcTop');
+  if(btnT) btnT.setAttribute('aria-label',dark?'Passer en mode jour':'Passer en mode nuit');
   const meta=document.querySelector('meta[name=theme-color]');
-  if(meta) meta.content=dark?'#12140f':'#14532d';
+  if(meta) meta.content=dark?'#0B0B0F':'#14532d';
 }
 function toggleTheme(){ applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'); }
 applyTheme(lsGet('fodmapTheme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
@@ -4798,12 +5509,12 @@ applyTheme(lsGet('fodmapTheme')||(matchMedia('(prefers-color-scheme: dark)').mat
 function applyAnims(mode){
   document.documentElement.dataset.anims=mode;
   lsSet('fodmapAnims',mode);
-  const ic=document.getElementById('animIcSide'), lb=document.getElementById('animLblSide');
-  if(ic) ic.textContent=mode==='force'?'✨':'🚫';
+  const use=document.getElementById('animUseSide'), lb=document.getElementById('animLblSide');
+  if(use) use.setAttribute('href',mode==='force'?'#i-sparkles':'#i-ban');
   if(lb) lb.textContent=mode==='force'?'Animations : on':'Animations : off';
 }
 function toggleAnims(){ applyAnims(document.documentElement.dataset.anims==='force'?'sys':'force'); }
-applyAnims(lsGet('fodmapAnims')||'force');
+applyAnims(lsGet('fodmapAnims')||(matchMedia('(prefers-reduced-motion: reduce)').matches?'sys':'force'));
 
 /* Spotlight + tilt 3D premium : halo doré et inclinaison qui suivent le curseur */
 document.addEventListener('pointermove',(e)=>{
@@ -5227,7 +5938,7 @@ function renderVoiceStage(){
   const txt=(voiceEsc(voiceText())+(voiceInterim?' <span class="vc-interim">'+voiceEsc(voiceInterim)+'</span>':'')).trim();
   const err=voiceError?voiceErrorMsg():'';
   el.innerHTML=`
-    <div class="modal-hd"><div class="me">🎙️</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Dicte ton repas</div>
       <div class="modal-badge safe">Repas du moment · ${SLOT_FR[slotByHour()]}</div>
@@ -5240,11 +5951,11 @@ function renderVoiceStage(){
       </div>
       <div class="vc-transcript ${txt?'':'empty'}" id="vcTranscript">${txt||"Ta dictée s'affichera ici…"}</div>
       ${err?`<div class="vc-err">${err}</div>`:''}
-      <div class="vc-examples">${VOICE_EXAMPLES.map((e,i)=>`<button class="vc-ex" onclick="voiceUseExample(${i})">💬 ${voiceEsc(e.slice(0,40))}…</button>`).join('')}</div>
+      <div class="vc-examples">${VOICE_EXAMPLES.map((e,i)=>`<button class="vc-ex" onclick="voiceUseExample(${i})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-chat"/></svg> ${voiceEsc(e.slice(0,40))}…</button>`).join('')}</div>
       <textarea id="vcManual" class="pplx-txt" style="margin-top:12px" placeholder="…ou écris ici : « 150 g de poulet, du riz et des courgettes »">${voiceListening?'':voiceEsc(voiceText())}</textarea>
       <div class="modal-actions-row">
         <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="voiceAnalyzeFromUi()">✓ Analyser ma dictée</button>
-        <button class="reset-btn" onclick="voiceReset()">↺ Effacer</button>
+        <button class="reset-btn" onclick="voiceReset()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Effacer</button>
       </div>
       <div class="modal-tip">💡 Précise le moment (« ce midi », « hier soir ») et les quantités (« 150 g », « deux œufs », « une cuillère à soupe »). Sans quantité, j'applique la portion de référence de la base et je la marque « estimé ».</div>
     </div>`;
@@ -5308,7 +6019,7 @@ function renderVoiceReview(){
       <input type="number" class="ing-g-input" value="${i.g}" min="1" step="5" onchange="voiceSetG(${idx},this.value)">
       <span class="ing-unit">g</span>
       <span class="ing-kcal">${ik} kcal</span>
-      <button class="ing-del" onclick="voiceDelItem(${idx})" title="Retirer">✕</button>
+      <button class="ing-del" onclick="voiceDelItem(${idx})" title="Retirer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
     </li>`;
   }).join('');
   const dayOpts=menuData.map(d=>`<option value="${d.day}" ${d.day===voiceDraft.day?'selected':''}>${fullDayNames[d.day]}</option>`).join('');
@@ -5316,7 +6027,7 @@ function renderVoiceReview(){
   const weekNote = programWeek!==1
     ? `<div class="modal-tip warn">📅 Tu consultes la semaine ${programWeek} du programme : le repas dicté sera enregistré sur la semaine en cours, celle qui correspond aux vraies dates.</div>` : '';
   document.getElementById('modalContent').innerHTML=`
-    <div class="modal-hd"><div class="me">🎙️</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Ce que j'ai compris</div>
       <span class="modal-badge ${st.v.cls}">${st.v.txt}</span>
@@ -5331,17 +6042,17 @@ function renderVoiceReview(){
       <div class="ing-editor-title">Ingrédients détectés <span class="ing-scale-note">· corrige un grammage si je me suis trompé</span></div>
       <ul class="ing-list-edit">${rows||'<li class="vc-empty">Aucun aliment reconnu — ajoute-les à la main juste en dessous.</li>'}</ul>
       ${voiceDraft.unknown.length?`<div class="vc-unknown">❔ Absents de la base : ${voiceDraft.unknown.map(u=>`<span class="vc-unknown-chip">${voiceEsc(u)}</span>`).join(' ')}
-        <div class="vc-unknown-row">${voiceDraft.unknown.map((u,i)=>`<button class="vc-unknown-add" onclick="voiceAddUnknown(${i})">➕ Créer « ${voiceEsc(u.slice(0,20))} »</button>`).join('')}</div></div>`:''}
+        <div class="vc-unknown-row">${voiceDraft.unknown.map((u,i)=>`<button class="vc-unknown-add" onclick="voiceAddUnknown(${i})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Créer « ${voiceEsc(u.slice(0,20))} »</button>`).join('')}</div></div>`:''}
       ${(st.avoid.length||st.over.length)?`<div class="vc-fill">🌿 Je peux basculer ce repas en version 100% compatible élimination${st.avoid.length?' en remplaçant '+st.avoid.map(r=>r.f.n.toLowerCase()).join(', '):' en ramenant les portions sous le seuil Monash'}.
-        <div><button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="voiceMakeSafe()">🌿 Rendre 100% safe</button></div></div>`:''}
+        <div><button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="voiceMakeSafe()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-leaf"/></svg> Rendre 100% safe</button></div></div>`:''}
       ${(voiceDraft.items.length&&gap>target*0.12)?`<div class="vc-fill">🍽️ Il manque environ <b>${gap} kcal</b> pour couvrir ton ${SLOT_FR[voiceDraft.slot]} (${target} kcal visés selon ton objectif).
-        <div><button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="voiceComplete()">✨ Compléter le repas</button></div></div>`:''}
+        <div><button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="voiceComplete()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-sparkles"/></svg> Compléter le repas</button></div></div>`:''}
       ${pickerHtml({slot:voiceDraft.slot,target:'voice'})}
       ${weekNote}
       <div class="modal-actions-row">
         <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="voiceSave('replace')">✓ En faire le repas du moment</button>
-        <button class="reset-btn" onclick="voiceSave('add')">➕ Ajouter au repas existant</button>
-        <button class="reset-btn" onclick='openVoiceMeal(${JSON.stringify(voiceDraft.slot)},${JSON.stringify(voiceDraft.day)})'>🎙️ Redicter</button>
+        <button class="reset-btn" onclick="voiceSave('add')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Ajouter au repas existant</button>
+        <button class="reset-btn" onclick='openVoiceMeal(${JSON.stringify(voiceDraft.slot)},${JSON.stringify(voiceDraft.day)})'><svg class="ic ic-sm" aria-hidden="true"><use href="#i-mic"/></svg> Redicter</button>
       </div>
       <div class="modal-tip">💡 « En faire le repas du moment » remplace le repas prévu du créneau, l'enregistre comme recette personnalisée et le marque comme mangé : ton bilan de la journée est à jour immédiatement.</div>
     </div>`;
@@ -5843,8 +6554,8 @@ function renderScanner(){
       <div class="pf-row" style="margin-bottom:12px"><label>Quantité (g)</label><input type="number" id="scanGrams" min="1" step="5" value="${p.serving||100}"></div>
       <div class="modal-actions-row">
         <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="scanSave(true)">✓ Ajouter au repas</button>
-        <button class="reset-btn" onclick="scanSave(false)">💾 Ajouter à ma base seulement</button>
-        <button class="reset-btn" onclick="scanBack()">📷 Scanner un autre</button>
+        <button class="reset-btn" onclick="scanSave(false)"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-download"/></svg> Ajouter à ma base seulement</button>
+        <button class="reset-btn" onclick="scanBack()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-camera"/></svg> Scanner un autre</button>
       </div>
       <div class="modal-tip">⚕️ Le verdict porte sur la <b>liste d'ingrédients</b>, pas sur les quantités : les seuils Monash dépendent de la dose, et un produit contenant 0,1 % d'oignon peut très bien passer. Lis la liste, c'est toi qui juges.</div>`;
   } else {
@@ -5871,7 +6582,7 @@ function renderScanner(){
   }
 
   el.innerHTML=`
-    <div class="modal-hd"><div class="me">📷</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button></div>
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">${body}</div>`;
   document.getElementById('modalBg').classList.add('show');
 }
@@ -5985,7 +6696,7 @@ function renderInstallCard(){
       ? "✅ Parfait : FODMAP+ tourne en mode application, hors navigateur."
       : "🌐 FODMAP+ tourne actuellement dans un onglet de navigateur."}</div>
     ${standalone?'':`
-      ${deferredInstall?'<button class="btn-p" style="width:100%;justify-content:center" onclick="triggerInstall()">📱 Installer l\'application</button>':''}
+      ${deferredInstall?'<button class="btn-p" style="width:100%;justify-content:center" onclick="triggerInstall()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-smartphone"/></svg> Installer l\'application</button>':''}
       <ol class="inst-steps">${steps.map(s=>'<li>'+s+'</li>').join('')}</ol>
       ${secure?'':'<div class="vc-err" style="margin-top:12px">⚠️ Cette page n\'est pas servie en HTTPS : le navigateur bloque l\'installation et la dictée vocale. Ouvre l\'app via son adresse https:// (GitHub Pages) plutôt qu\'en fichier local.</div>'}
     `}
