@@ -2972,7 +2972,9 @@ function lsSet(k,v){
   /* horodatage UNIQUEMENT pour un vrai changement utilisateur, jamais pendant
      l'initialisation — sinon les valeurs par défaut de l'appareil paraissent
      « plus récentes » que les données du cloud et les bloquent. */
-  try{ if(window.__appReady && prev!==v) stampAndSchedule(k); }catch(e){}
+  /* pendant l'application d'une synchro, les rendus réécrivent des réglages
+     à l'identique : les horodater relancerait un aller-retour pour rien */
+  try{ if(window.__appReady && prev!==v && !window.__syncApplying) stampAndSchedule(k,prev,v); }catch(e){}
 }
 
 /* ============ PERSISTANCE LOCALE COMPLÈTE ============
@@ -3479,6 +3481,7 @@ function openFoodModal(name){
   document.getElementById('modalBg').classList.add('show');
 }
 function closeModal(){
+  modalScreen=null;
   document.getElementById('modalBg').classList.remove('show');
   if(typeof voiceAbort==='function') voiceAbort(); /* coupe le micro si la dictée était ouverte */
   if(typeof scanStop==='function') scanStop();       /* et la caméra si le scanner était ouvert */
@@ -3889,6 +3892,9 @@ function buildRecipeSteps(meal,ingWithGrams,mealKey){
    l'utilisateur en haut du modal, vidait sa recherche et lui coupait le
    clavier. modalRender() rejoue le rendu en conservant le contexte :
    position de défilement, champ actif et curseur. */
+/* Écran actuellement affiché dans le modal : permet de le rafraîchir quand des
+   données arrivent d'un autre appareil, sans jamais interrompre une saisie. */
+let modalScreen=null;
 function modalRender(html){
   const box=document.getElementById('modalContent');
   if(!box) return;
@@ -4023,7 +4029,7 @@ function mealRestore(s){
 
 function openMealModal(day,key){
   const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
-  mealCtx={day,key};
+  mealCtx={day,key}; modalScreen='meal';
   const scale = meal.customized?1:dayScaleFactor(d);
   const macros = mealDisplayMacros(d,key);
   const price = mealPrice(d,key);
@@ -4200,6 +4206,7 @@ function builderFodmapStatus(){
   return {cls:'safe', txt:'✅ 100% compatible phase d\'élimination'};
 }
 function renderMealBuilder(){
+  modalScreen='builder';
   const t=builderTotals(); const st=builderFodmapStatus();
   const editing=!!builderState.editId;
   const rows = builderState.ingr.map((ing,idx)=>
@@ -4383,6 +4390,7 @@ function myMealsNew(){
 function myMealsSetFilter(v){ myMealsFilter=v; renderMyMeals(); }
 function myMealsSetQuery(v){ myMealsQuery=v; renderMyMeals(); }
 function renderMyMeals(){
+  modalScreen='library';
   const q=normNameFP(myMealsQuery);
   const list=myMeals.slice().reverse().filter(m=>
     (myMealsFilter==='all'||m.slot===myMealsFilter) &&
@@ -5868,35 +5876,184 @@ function toast(msg,action){
    par lsSet). Le même token collé sur chaque appareil suffit — l'app
    retrouve le gist toute seule. */
 const SYNC_KEYS=['fodmapQuizState','fodmapOnboarded','fodmapWeekOverrides','fodmapMyMeals','fodmapCustomFoods','fodmapSymptoms','fodmapCoachLog','fodmapWeight','fodmapSettings','fodmapMealsEaten','fodmapTheme','fodmapAnims'];
+
+/* --- Fusion entrée par entrée ---------------------------------------------
+   Comparer une clé entière (« le dernier qui écrit gagne ») fait disparaître
+   le travail de l'autre appareil : si le téléphone modifie le déjeuner de
+   lundi pendant que l'ordinateur coche un repas mangé, l'un des deux écrase
+   l'autre. Ces collections sont donc fusionnées ligne à ligne, chaque entrée
+   portant son propre horodatage. */
+const SEP='\u0001';   /* séparateur d'identifiant composite, absent des données */
+const MERGEABLE={
+  fodmapWeekOverrides:{
+    entries(o){ const e={}; Object.keys(o||{}).forEach(w=>Object.keys(o[w]||{}).forEach(d=>
+      Object.keys(o[w][d]||{}).forEach(s=>{ e[w+SEP+d+SEP+s]=o[w][d][s]; }))); return e; },
+    assemble(e){ const o={}; Object.keys(e).forEach(id=>{ const [w,d,s]=id.split(SEP);
+      ((o[w]=o[w]||{})[d]=o[w][d]||{})[s]=e[id]; }); return o; },
+    empty(){ return {}; }
+  },
+  fodmapMealsEaten:{
+    entries(o){ const e={}; Object.keys(o||{}).forEach(d=>Object.keys(o[d]||{}).forEach(s=>{ e[d+SEP+s]=o[d][s]; })); return e; },
+    assemble(e){ const o={}; Object.keys(e).forEach(id=>{ const [d,s]=id.split(SEP); (o[d]=o[d]||{})[s]=e[id]; }); return o; },
+    empty(){ return {}; }
+  },
+  fodmapMyMeals:{
+    entries(a){ const e={}; (a||[]).forEach(m=>{ if(m&&m.id!=null) e['m'+m.id]=m; }); return e; },
+    assemble(e){ return Object.keys(e).map(k=>e[k]).sort((a,b)=>(a.id||0)-(b.id||0)); },
+    empty(){ return []; }
+  },
+  fodmapCustomFoods:{
+    entries(a){ const e={}; (a||[]).forEach(f=>{ if(f&&f.n) e['f'+f.n]=f; }); return e; },
+    assemble(e){ return Object.keys(e).map(k=>e[k]); },
+    empty(){ return []; }
+  },
+  fodmapWeight:{
+    entries(a){ const e={}; (a||[]).forEach(w=>{ if(w&&w.date) e['w'+w.date]=w; }); return e; },
+    assemble(e){ return Object.keys(e).map(k=>e[k]).sort((a,b)=>a.date<b.date?-1:1); },
+    empty(){ return []; }
+  },
+  fodmapSymptoms:{
+    entries(a){ const e={}; (a||[]).forEach(s=>{ if(s&&s.id!=null) e['s'+s.id]=s; }); return e; },
+    assemble(e){ return Object.keys(e).map(k=>e[k]).sort((a,b)=>(a.id||0)-(b.id||0)); },
+    empty(){ return []; }
+  }
+};
+/* Clés dont l'état en mémoire sait se rafraîchir sans recharger la page */
+const REHYDRATABLE=['fodmapWeekOverrides','fodmapMealsEaten','fodmapMyMeals','fodmapCustomFoods','fodmapWeight','fodmapSymptoms'];
+function syncParse(raw,fallback){ try{ const v=JSON.parse(raw); return v==null?fallback:v; }catch(e){ return fallback; } }
+
 let syncCfg={token:'',gistId:'',auto:true,last:0};
 try{ syncCfg=Object.assign(syncCfg,JSON.parse(lsGet('fodmapSync')||'{}')||{}); }catch(e){}
 function persistSyncCfg(){ try{ localStorage.setItem('fodmapSync',JSON.stringify(syncCfg)); }catch(e){} }
 let keyStamps={};
 try{ keyStamps=JSON.parse(lsGet('fodmapStamps')||'{}')||{}; }catch(e){}
-let syncTimer=null, syncBusy=false;
-function stampAndSchedule(k){
-  if(!SYNC_KEYS.includes(k)) return;
-  keyStamps[k]=Date.now();
+let itemStamps={};
+try{ itemStamps=JSON.parse(lsGet('fodmapItemStamps')||'{}')||{}; }catch(e){}
+let syncTimer=null, syncBusy=false, syncDirty=false;
+function persistStamps(){
   try{ localStorage.setItem('fodmapStamps',JSON.stringify(keyStamps)); }catch(e){}
-  if(syncCfg.token&&syncCfg.auto){ clearTimeout(syncTimer); syncTimer=setTimeout(()=>syncNow('push'),6000); }
+  try{ localStorage.setItem('fodmapItemStamps',JSON.stringify(itemStamps)); }catch(e){}
+}
+/* Horodate la clé, et — pour les collections fusionnables — les seules entrées
+   qui ont réellement changé, déduites de la comparaison avant/après.
+   Une entrée supprimée laisse un horodatage NÉGATIF (pierre tombale) : sans
+   cette trace, impossible de distinguer « supprimé ici » de « pas encore vu
+   par l'autre appareil », et l'un des deux cas se règle toujours de travers. */
+const TOMB_TTL=60*24*3600*1000;   /* on oublie une suppression au bout de 60 jours */
+function stampAndSchedule(k,prev,next){
+  if(!SYNC_KEYS.includes(k)) return;
+  const now=Date.now();
+  keyStamps[k]=now;
+  const M=MERGEABLE[k];
+  if(M){
+    const a=M.entries(syncParse(prev,M.empty())), b=M.entries(syncParse(next,M.empty()));
+    const s=itemStamps[k]=itemStamps[k]||{};
+    Object.keys(b).forEach(id=>{ if(JSON.stringify(a[id])!==JSON.stringify(b[id])) s[id]=now; });
+    Object.keys(a).forEach(id=>{ if(!(id in b)) s[id]=-now; });
+  }
+  persistStamps();
+  scheduleSync();
+}
+function pruneTombs(){
+  const cut=Date.now()-TOMB_TTL;
+  Object.keys(itemStamps).forEach(k=>{
+    const s=itemStamps[k]; if(!s) return;
+    Object.keys(s).forEach(id=>{ if(s[id]<0 && -s[id]<cut) delete s[id]; });
+  });
+}
+function scheduleSync(){
+  syncDirty=true;
+  if(!(syncCfg.token&&syncCfg.auto)) return;
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(()=>{ syncTimer=null; syncNow('auto'); },6000);
 }
 function setSyncStatus(msg){ const el=document.getElementById('syncStatus'); if(el) el.textContent=msg; }
 function collectState(){
   const data={};
   SYNC_KEYS.forEach(k=>{ const v=lsGet(k); if(v!==null) data[k]=v; });
-  return {v:1, savedAt:Date.now(), stamps:keyStamps, data};
+  return {v:2, savedAt:Date.now(), stamps:keyStamps, items:itemStamps, data};
 }
+/* Fusionne le distant dans le local. Renvoie les clés effectivement modifiées
+   ici — le distant, lui, sera réécrit ensuite avec le résultat de la fusion. */
 function applyRemote(remote){
   const taken=[];
+  const rStamps=remote.stamps||{}, rItems=remote.items||{};
   SYNC_KEYS.forEach(k=>{
-    const rs=(remote.stamps||{})[k]||0, ls=keyStamps[k]||0;
-    if(remote.data && remote.data[k]!==undefined && rs>ls){
-      try{ localStorage.setItem(k,remote.data[k]); }catch(e){}
-      keyStamps[k]=rs; taken.push(k);
+    const rRaw=remote.data?remote.data[k]:undefined;
+    if(rRaw===undefined) return;
+    const lRaw=lsGet(k);
+    const rs=rStamps[k]||0, ls=keyStamps[k]||0;
+    const M=MERGEABLE[k];
+    if(!M){
+      /* valeurs indivisibles (réglages, quiz, thème…) : le plus récent gagne */
+      if(rs>ls && rRaw!==lRaw){
+        try{ localStorage.setItem(k,rRaw); }catch(e){}
+        keyStamps[k]=rs; taken.push(k);
+      }
+      return;
+    }
+    const L=M.entries(syncParse(lRaw,M.empty())), R=M.entries(syncParse(rRaw,M.empty()));
+    const li=itemStamps[k]||{}, ri=rItems[k]||{};
+    const out={}, stamps={};
+    const ids={}; Object.keys(L).forEach(i=>ids[i]=1); Object.keys(R).forEach(i=>ids[i]=1);
+    Object.keys(ids).forEach(id=>{
+      const inL=(id in L), inR=(id in R);
+      /* sans horodatage d'entrée (données d'avant cette version), on retombe
+         sur l'horodatage de la clé : comportement d'origine, jamais pire */
+      const lt=(id in li)?li[id]:ls, rt=(id in ri)?ri[id]:rs;
+      const la=Math.abs(lt), ra=Math.abs(rt);
+      if(inL&&inR){ out[id]=ra>la?R[id]:L[id]; stamps[id]=Math.max(la,ra); }
+      /* Absente d'un côté : suppression, ou entrée que l'autre n'a pas encore
+         vue ? Seule une pierre tombale plus récente que la version conservée
+         tranche pour la suppression — sinon on garde, et le téléphone resté
+         hors ligne retrouve ses créations au lieu de les perdre. */
+      else if(inL){
+        if(rt<0 && ra>la){ stamps[id]=-ra; return; }
+        out[id]=L[id]; stamps[id]=la;
+      } else {
+        if(lt<0 && la>ra){ stamps[id]=-la; return; }
+        out[id]=R[id]; stamps[id]=ra;
+      }
+    });
+    const merged=JSON.stringify(M.assemble(out));
+    itemStamps[k]=stamps;
+    keyStamps[k]=Math.max(ls,rs);
+    if(merged!==lRaw){
+      try{ localStorage.setItem(k,merged); }catch(e){}
+      taken.push(k);
     }
   });
-  try{ localStorage.setItem('fodmapStamps',JSON.stringify(keyStamps)); }catch(e){}
+  pruneTombs();
+  persistStamps();
   return taken;
+}
+/* Recharge l'état en mémoire depuis le localStorage fusionné, sans recharger
+   la page : le repas modifié sur l'autre appareil apparaît, point. */
+function rehydrate(keys){
+  window.__syncApplying=true;
+  try{ rehydrateInner(keys); } finally { window.__syncApplying=false; }
+}
+function rehydrateInner(keys){
+  let menu=false;
+  keys.forEach(k=>{
+    if(k==='fodmapWeekOverrides'){ weekOverrides=syncParse(lsGet(k),{}); loadWeekMenu(programWeek); menu=true; }
+    else if(k==='fodmapMealsEaten'){ mealsEaten=syncParse(lsGet(k),{}); menu=true; }
+    else if(k==='fodmapMyMeals'){ myMeals=syncParse(lsGet(k),[]); }
+    else if(k==='fodmapCustomFoods'){
+      customFoods=syncParse(lsGet(k),[]);
+      customFoods.forEach(cf=>{ const i=foods.findIndex(f=>f.n===cf.n); if(i>=0) foods[i]=cf; else foods.push(cf); });
+      renderFoods();
+    }
+    else if(k==='fodmapWeight'){ weightLog=syncParse(lsGet(k),weightLog); refreshWeight(); }
+    else if(k==='fodmapSymptoms'){ symptomLog=syncParse(lsGet(k),[]); renderSymptoms(); }
+  });
+  if(menu){ refreshActiveMenuView(); renderHome(); }
+  /* La fiche ou la bibliothèque ouverte se remet à jour ; le créateur et la
+     dictée sont laissés tranquilles — on n'écrase pas une saisie en cours. */
+  if(document.getElementById('modalBg').classList.contains('show')){
+    if(modalScreen==='meal'&&mealCtx&&menuData.find(x=>x.day===mealCtx.day)) openMealModal(mealCtx.day,mealCtx.key);
+    else if(modalScreen==='library') renderMyMeals();
+  }
 }
 async function gistApi(path,method,body){
   const res=await fetch('https://api.github.com/'+path,{
@@ -5921,9 +6078,14 @@ async function findOrCreateGist(){
   syncCfg.gistId=created.id; persistSyncCfg();
   return created;
 }
+/* Envoyer sans avoir lu, c'est écraser : le moindre geste sur un appareil
+   effaçait dans le cloud tout ce que l'autre venait d'y déposer. On lit et on
+   fusionne TOUJOURS avant d'écrire, quel que soit le déclencheur. */
 async function syncNow(mode){
   if(!syncCfg.token){ toast('Configure d\'abord la synchro (Profil → ☁️)'); return; }
-  if(syncBusy) return; syncBusy=true;
+  if(syncBusy){ scheduleSync(); return; }   /* jamais perdre un changement pendant qu'un envoi est en cours */
+  syncBusy=true;
+  const wasDirty=syncDirty;
   setSyncStatus('⏳ Synchronisation…');
   try{
     const gist=await findOrCreateGist();
@@ -5932,16 +6094,25 @@ async function syncNow(mode){
       const f=gist.files&&gist.files['fodmap-data.json'];
       if(f) remote=JSON.parse(f.truncated? await (await fetch(f.raw_url)).text() : f.content);
     }catch(e){}
-    let taken=[];
-    if(remote&&mode!=='push') taken=applyRemote(remote);
+    const taken=remote?applyRemote(remote):[];
     if(mode!=='pull'){
       await gistApi('gists/'+syncCfg.gistId,'PATCH',{files:{'fodmap-data.json':{content:JSON.stringify(collectState())}}});
+      syncDirty=false;
     }
     syncCfg.last=Date.now(); persistSyncCfg();
     setSyncStatus('✅ Synchronisé · '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}));
-    if(taken.length){ toast('Données mises à jour depuis le cloud ☁️'); setTimeout(()=>location.reload(),900); }
+    if(taken.length){
+      const soft=taken.filter(k=>REHYDRATABLE.indexOf(k)>=0);
+      const hard=taken.filter(k=>REHYDRATABLE.indexOf(k)<0);
+      if(soft.length) rehydrate(soft);
+      if(!hard.length) toast(taken.length+' élément'+(taken.length>1?'s':'')+' repris d\'un autre appareil ☁️');
+      else if(mode==='full'&&!wasDirty){ toast('Données mises à jour depuis le cloud ☁️'); setTimeout(()=>location.reload(),900); }
+      /* en tâche de fond on ne recharge jamais sous les doigts de l'utilisateur */
+      else toast('Réglages modifiés sur un autre appareil ☁️',{label:'Actualiser',fn:()=>location.reload()});
+    }
   }catch(e){
     setSyncStatus('⚠️ '+(e.message||'erreur réseau'));
+    if(wasDirty&&syncCfg.token&&syncCfg.auto){ clearTimeout(syncTimer); syncTimer=setTimeout(()=>{syncTimer=null;syncNow('auto');},30000); }
   }
   syncBusy=false;
 }
@@ -5974,10 +6145,16 @@ function importBackupFile(input){
     try{
       const remote=JSON.parse(r.result);
       if(!remote||!remote.data) throw new Error('format');
+      const now=Date.now();
       SYNC_KEYS.forEach(k=>{
-        if(remote.data[k]!==undefined){ localStorage.setItem(k,remote.data[k]); keyStamps[k]=Date.now(); }
+        if(remote.data[k]!==undefined){
+          localStorage.setItem(k,remote.data[k]); keyStamps[k]=now;
+          /* la sauvegarde fait autorité : on repart de ses horodatages, ou
+             d'aucun (l'horodatage de clé prendra alors le relais) */
+          if(remote.items&&remote.items[k]) itemStamps[k]=remote.items[k]; else delete itemStamps[k];
+        }
       });
-      localStorage.setItem('fodmapStamps',JSON.stringify(keyStamps));
+      persistStamps();
       toast('Sauvegarde importée ✅');
       setTimeout(()=>location.reload(),800);
     }catch(e){ toast('Fichier de sauvegarde invalide 😕'); }
@@ -5994,7 +6171,7 @@ function renderSyncCard(){
         <button class="btn-p" style="padding:11px 18px;font-size:13px" onclick="syncNow('full')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Synchroniser maintenant</button>
         <button class="btn-s" onclick="disconnectSync()">Déconnecter</button>
       </div>
-      <div class="modal-tip">💡 Sauvegarde automatique quelques secondes après chaque modification, récupération à chaque ouverture. Pour un nouvel appareil : colle le même token, l'app retrouve tes données toute seule.</div>`;
+      <div class="modal-tip">💡 Sauvegarde automatique quelques secondes après chaque modification, récupération à chaque ouverture. Les changements sont <b>fusionnés</b> repas par repas : deux appareils peuvent modifier deux jours différents sans que l'un efface l'autre. Pour un nouvel appareil : colle le même token, l'app retrouve tes données toute seule.</div>`;
   } else {
     el.innerHTML=`
       <div class="sync-status" id="syncStatus">Hors ligne — données sur cet appareil uniquement</div>
@@ -6004,10 +6181,18 @@ function renderSyncCard(){
       Colle ensuite <b>le même token</b> sur chaque appareil (téléphone, tablette…) : vos menus, pesées, symptômes et réglages se suivent partout. Le token ne donne accès qu'aux gists — jamais à tes dépôts.</div>`;
   }
 }
-/* rejouer les changements en attente quand l'app passe en arrière-plan */
+/* Un changement en attente ne doit pas mourir avec l'onglet : on l'envoie
+   quand l'app passe en arrière-plan, et on retente au retour ou au réseau. */
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden&&syncCfg.token&&syncCfg.auto&&syncTimer){ clearTimeout(syncTimer); syncNow('push'); }
+  if(!(syncCfg.token&&syncCfg.auto)) return;
+  if(document.hidden){
+    if(syncDirty){ clearTimeout(syncTimer); syncTimer=null; syncNow('auto'); }
+  } else {
+    /* de retour : on récupère ce que les autres appareils ont fait entre-temps */
+    if(Date.now()-(syncCfg.last||0)>60000) syncNow('auto');
+  }
 });
+window.addEventListener('online',()=>{ if(syncDirty&&syncCfg.token&&syncCfg.auto) syncNow('auto'); });
 window.__syncReady=true;
 
 /* ============ THÈME (mode nuit) ============ */
