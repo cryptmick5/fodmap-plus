@@ -632,13 +632,21 @@ footer{padding:60px 32px 30px;border-top:1px solid var(--slate-100);margin-top:4
 .foot-disclaimer{max-width:1280px;margin:0 auto;padding-top:26px;border-top:1px solid var(--slate-100);font-size:12px;color:var(--slate-400);line-height:1.7}
 .foot-bottom{max-width:1280px;margin:20px auto 0;display:flex;justify-content:space-between;font-size:12.5px;color:var(--slate-400);flex-wrap:wrap;gap:10px}
 
-/* TOAST */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%)translateY(100px);background:var(--slate-900);color:var(--ivory);padding:14px 22px;border-radius:26px;font-size:13.5px;font-weight:600;box-shadow:var(--s-xl);z-index:3000;transition:transform .4s var(--ts);display:flex;align-items:center;gap:12px;
+/* TOAST
+   L'état masqué ne repose PAS sur la seule translation : sur mobile le toast
+   est remonté au-dessus de la barre d'onglets, et une sortie de 100 px n'allait
+   plus jusqu'au bord de l'écran — il restait un bandeau collé en bas, à demeure.
+   opacity + visibility le font disparaître quelle que soit sa position, et
+   pointer-events l'empêche d'intercepter les appuis sur la navigation. */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%)translateY(140px);background:var(--slate-900);color:var(--ivory);padding:14px 22px;border-radius:26px;font-size:13.5px;font-weight:600;box-shadow:var(--s-xl);z-index:3000;display:flex;align-items:center;gap:12px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .4s var(--ts),opacity .28s ease,visibility 0s linear .4s;
   /* sans width:max-content, le shrink-to-fit d'un élément calé à left:50%
      plafonne la largeur à la moitié de l'écran — le message se coupait en trois lignes */
   width:max-content;max-width:calc(100vw - 28px);text-align:left}
 @media(max-width:900px){.toast{bottom:calc(78px + env(safe-area-inset-bottom))}}
-.toast.show{transform:translateX(-50%)translateY(0)}
+.toast.show{transform:translateX(-50%)translateY(0);opacity:1;visibility:visible;pointer-events:auto;
+  transition:transform .4s var(--ts),opacity .2s ease,visibility 0s}
 
 @media(max-width:1024px){
   .hc{grid-template-columns:1fr;gap:50px}
