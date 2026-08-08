@@ -633,7 +633,11 @@ footer{padding:60px 32px 30px;border-top:1px solid var(--slate-100);margin-top:4
 .foot-bottom{max-width:1280px;margin:20px auto 0;display:flex;justify-content:space-between;font-size:12.5px;color:var(--slate-400);flex-wrap:wrap;gap:10px}
 
 /* TOAST */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%)translateY(100px);background:var(--slate-900);color:#fff;padding:14px 26px;border-radius:26px;font-size:13.5px;font-weight:600;box-shadow:var(--s-xl);z-index:3000;transition:transform .4s var(--ts);display:flex;align-items:center;gap:10px}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%)translateY(100px);background:var(--slate-900);color:var(--ivory);padding:14px 22px;border-radius:26px;font-size:13.5px;font-weight:600;box-shadow:var(--s-xl);z-index:3000;transition:transform .4s var(--ts);display:flex;align-items:center;gap:12px;
+  /* sans width:max-content, le shrink-to-fit d'un élément calé à left:50%
+     plafonne la largeur à la moitié de l'écran — le message se coupait en trois lignes */
+  width:max-content;max-width:calc(100vw - 28px);text-align:left}
+@media(max-width:900px){.toast{bottom:calc(78px + env(safe-area-inset-bottom))}}
 .toast.show{transform:translateX(-50%)translateY(0)}
 
 @media(max-width:1024px){
@@ -902,6 +906,114 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .mymeal-name{flex:1;font-size:13px;font-weight:600;color:var(--slate-800);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mymeal-use{background:var(--forest);color:#f5f1e8;border:none;padding:7px 14px;border-radius:10px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background var(--tf)}
 .mymeal-use:hover{background:var(--forest-deep)}
+
+/* --- Barre d'actions collante : le geste principal reste sous le pouce,
+       même quand la fiche est longue (sélecteur d'ingrédients, recette…). --- */
+.modal-sticky{position:sticky;bottom:0;z-index:3;margin:18px -28px -28px;padding:14px 28px calc(14px + env(safe-area-inset-bottom));
+  background:var(--surface);border-top:1px solid var(--hairline);box-shadow:0 -6px 18px rgba(0,0,0,.06);
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.modal-sticky .btn-p{flex:1 1 160px;padding:12px 16px;font-size:13px;min-height:46px}
+.modal-sticky .reset-btn{margin-bottom:0;min-height:46px;padding:10px 14px}
+@media(max-width:600px){.modal-sticky{margin-left:-18px;margin-right:-18px;padding-left:18px;padding-right:18px}}
+
+/* --- Grammage : moins de clavier, plus de pouce --- */
+.ing-gwrap{display:flex;align-items:center;gap:0;flex-shrink:0;border:1px solid var(--slate-200);border-radius:10px;background:var(--surface);overflow:hidden}
+.ing-gwrap .ing-g-input{width:52px;border:none;border-left:1px solid var(--slate-200);border-right:1px solid var(--slate-200);border-radius:0;background:transparent}
+.ing-gwrap .ing-g-input:focus{outline:2px solid var(--forest);outline-offset:-2px}
+.ing-step{width:30px;min-height:32px;border:none;background:transparent;color:var(--slate-500);font-size:15px;font-weight:700;
+  line-height:1;cursor:pointer;font-family:inherit;transition:background var(--tf),color var(--tf)}
+.ing-step:hover{background:var(--green-50);color:var(--forest)}
+.ing-step:active{background:var(--green-100)}
+.ing-row .ing-name{min-width:0;overflow-wrap:anywhere}
+
+/* --- Cible calorique du créneau --- */
+.slot-target{margin:14px 0 4px;padding:13px 15px;border:1px solid var(--hairline);border-radius:14px;background:var(--surface-dim)}
+.slot-target-hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12.5px;font-weight:700;color:var(--slate-700)}
+.slot-target-hd span{font-size:11.5px;font-weight:600;color:var(--slate-500)}
+.slot-target-bar{height:6px;border-radius:6px;background:var(--hairline);overflow:hidden;margin-top:9px}
+.slot-target-bar i{display:block;height:100%;border-radius:6px;background:var(--forest);transition:width .45s var(--tb)}
+.slot-target.over .slot-target-bar i{background:var(--amber-500)}
+.slot-target-note{margin-top:8px;font-size:11.5px;color:var(--slate-500);line-height:1.55}
+.slot-target-note b{color:var(--slate-800)}
+.slot-target-note button{display:inline-flex;align-items:center;margin-top:9px;border:1px solid var(--hairline);background:var(--surface);
+  color:var(--forest-ink);font-family:inherit;min-height:38px;
+  font-size:11.5px;font-weight:700;padding:7px 12px;border-radius:10px;cursor:pointer;transition:all var(--tf)}
+.slot-target-note button:hover{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
+
+/* Écrans étroits : le nom prend sa ligne, les contrôles la suivante —
+   plus de nom coupé en deux ni de champ écrasé à 40 px. */
+@media(max-width:560px){
+  .ing-row{flex-wrap:wrap;row-gap:9px}
+  .ing-row .ing-name{flex:1 1 100%}
+  .ing-row .ing-kcal{margin-left:auto}
+}
+.pick-have{font-size:10px;font-weight:700;color:var(--gold-700);background:var(--gold-50);border:1px solid var(--gold-200);
+  padding:3px 8px;border-radius:8px;flex-shrink:0;white-space:nowrap}
+/* Cibles tactiles : les actions secondaires d'une fiche restent cliquables au pouce */
+.modal-actions-row .reset-btn{min-height:40px;display:inline-flex;align-items:center;gap:7px}
+
+/* --- Sections repliables (import Perplexity, recette…) : le secondaire
+       ne bouscule plus le primaire, mais reste à un clic. --- */
+.fold{margin-top:14px;border:1px solid var(--hairline);border-radius:14px;background:var(--surface);overflow:hidden}
+.fold>summary{list-style:none;cursor:pointer;padding:13px 15px;font-size:12.5px;font-weight:700;color:var(--slate-700);
+  display:flex;align-items:center;gap:9px;transition:background var(--tf)}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary::after{content:'▾';margin-left:auto;color:var(--slate-400);font-size:12px;transition:transform var(--tb)}
+.fold[open]>summary::after{transform:rotate(180deg)}
+.fold>summary:hover{background:var(--surface-dim)}
+.fold-body{padding:0 15px 15px}
+.fold-body .pplx-box{margin-top:0}
+
+/* --- Champs étiquetés --- */
+.field-lbl{display:block;font-size:11px;font-weight:700;color:var(--slate-500);text-transform:uppercase;letter-spacing:.5px;margin-top:14px}
+.field-lbl+.bld-name{margin-top:7px}
+.field-hint{font-size:11.5px;color:var(--slate-500);margin-top:-8px;margin-bottom:10px;line-height:1.5}
+
+/* --- Choix des jours d'application --- */
+.days-pick{display:flex;gap:5px;margin:9px 0 2px}
+.day-chip{flex:1 1 0;min-width:0;min-height:42px;padding:9px 4px;border:1px solid var(--hairline);background:var(--surface);border-radius:11px;
+  font-family:inherit;font-size:11.5px;font-weight:700;color:var(--slate-600);cursor:pointer;transition:all var(--tf)}
+.day-chip.on{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
+.day-chip.today{box-shadow:inset 0 0 0 1px var(--gold-200)}
+
+/* --- Recherche du sélecteur : bouton d'effacement --- */
+.picker-search-wrap{position:relative}
+.picker-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;
+  border:none;background:var(--slate-100);color:var(--slate-500);cursor:pointer;font-size:13px;line-height:1;font-family:inherit}
+.picker-clear:hover{background:var(--slate-200)}
+.picker-count{font-size:11px;color:var(--slate-400);font-weight:600;margin:8px 2px 2px}
+
+/* --- Bibliothèque « Mes repas » --- */
+.mm-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 10px}
+.mm-toolbar input{flex:1 1 180px;padding:11px 14px;border:1.5px solid var(--hairline);border-radius:12px;font-size:13.5px;font-family:inherit;background:var(--surface);outline:none}
+.mm-toolbar input:focus{border-color:var(--forest)}
+.mm-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.mm-list{display:flex;flex-direction:column;gap:10px}
+.mm-card{border:1px solid var(--hairline);border-radius:16px;padding:14px 15px;background:var(--surface);transition:border-color var(--tf),box-shadow var(--tf)}
+.mm-card:hover{border-color:var(--gold-200);box-shadow:var(--s-sm)}
+.mm-card-hd{display:flex;align-items:flex-start;gap:10px}
+.mm-card-name{flex:1;min-width:0;font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--slate-900);line-height:1.35}
+.mm-slot{font-size:9.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--gold-700);
+  background:var(--gold-50);border:1px solid var(--gold-200);padding:4px 9px;border-radius:9px;white-space:nowrap;flex-shrink:0}
+.mm-macros{display:flex;gap:6px;flex-wrap:wrap;align-items:baseline;margin-top:8px;font-size:12px;font-weight:700;color:var(--slate-700)}
+.mm-macros span{color:var(--slate-500);font-weight:600}
+.mm-macros i{color:var(--slate-300);font-style:normal;margin:0 4px}
+.mm-ings{margin-top:8px;font-size:11.5px;color:var(--slate-500);line-height:1.6}
+.mm-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.mm-btn{border:1px solid var(--hairline);background:var(--surface-dim);color:var(--slate-700);font-family:inherit;
+  font-size:11.5px;font-weight:700;padding:9px 13px;border-radius:11px;cursor:pointer;transition:all var(--tf);min-height:38px}
+.mm-btn:hover{background:var(--gold-50);border-color:var(--gold-200);color:var(--gold-700)}
+.mm-btn.primary{background:var(--forest);border-color:var(--forest);color:#f5f1e8}
+.mm-btn.primary:hover{background:var(--forest-deep);color:#fff}
+.mm-btn.danger:hover{background:var(--red-100);border-color:var(--red-100);color:var(--red-600)}
+.mm-empty{padding:26px 18px;text-align:center;font-size:13px;color:var(--slate-500);line-height:1.7;
+  border:1.5px dashed var(--hairline);border-radius:16px}
+.mm-empty b{display:block;font-size:14px;color:var(--slate-800);margin-bottom:6px}
+
+/* --- Toast avec action (annulation) --- */
+.toast-act{background:transparent;border:1.5px solid currentColor;color:inherit;font-family:inherit;font-size:12.5px;font-weight:800;
+  padding:7px 13px;border-radius:14px;cursor:pointer;opacity:.85;transition:opacity var(--tf);flex-shrink:0;min-height:38px}
+.toast-act:hover{opacity:1;text-decoration:underline}
 
 /* Badge Monash : reflet doré qui balaie doucement */
 .dash-badge{position:relative;overflow:hidden}
@@ -1234,7 +1346,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 [data-theme="dark"] .food-card::after,[data-theme="dark"] .meal-card-lg::after,[data-theme="dark"] .dash-card::after,[data-theme="dark"] .day-col::after{
   background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(217,188,134,.10),transparent 65%)}
 [data-theme="dark"] .nb-text{color:var(--slate-900)}
-[data-theme="dark"] .picker-search,[data-theme="dark"] .pplx-txt,[data-theme="dark"] .cf-grid input,[data-theme="dark"] .cf-grid select,[data-theme="dark"] .bld-name{background:var(--slate-50)}
+[data-theme="dark"] .picker-search,[data-theme="dark"] .pplx-txt,[data-theme="dark"] .cf-grid input,[data-theme="dark"] .cf-grid select,[data-theme="dark"] .bld-name,
+[data-theme="dark"] .mm-toolbar input,[data-theme="dark"] .ing-gwrap{background:var(--slate-50)}
+[data-theme="dark"] .modal-sticky{box-shadow:0 -6px 18px rgba(0,0,0,.35)}
 [data-theme="dark"] .picker-newfood:hover{background:#2e2818}
 [data-theme="dark"] .topbar-theme:hover{background:var(--slate-100)}
 /* Fix contraste : les .on utilisaient slate-900 (devenu clair en dark) avec texte blanc */
@@ -2373,6 +2487,8 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
       <div class="meal-grid-lg" id="mealGridLg"></div>
 
       <div class="week-actions-row">
+        <button class="btn-s" onclick="openMealBuilder(null,null,false)"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-pencil"/></svg> Composer un repas</button>
+        <button class="btn-s" onclick="openMyMeals(null)"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-download"/></svg> Mes repas</button>
         <button class="btn-s" onclick="openShoppingList()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-cart"/></svg> Liste de courses de la semaine</button>
         <button class="btn-s" id="toggleWeekBtn" onclick="toggleWeekView()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-grid"/></svg> Vue semaine complète</button>
         <button class="btn-s" onclick="exportMenuPdf()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-printer"/></svg> Exporter en PDF</button>
@@ -3559,6 +3675,9 @@ function toggleMealEaten(dayCode,slot){
   if(!Object.keys(mealsEaten[k]).length) delete mealsEaten[k];
   persistMealsEaten();
   renderMenuDay(); renderHome();
+  /* la fiche ouverte porte le même bouton : elle doit refléter le nouvel état */
+  if(document.getElementById('modalBg').classList.contains('show') && mealCtx
+     && mealCtx.day===dayCode && mealCtx.key===slot) openMealModal(dayCode,slot);
 }
 function eatenTotals(d){
   return Object.keys(d.meals).reduce((acc,k)=>{
@@ -3764,8 +3883,147 @@ function buildRecipeSteps(meal,ingWithGrams,mealKey){
   return steps;
 }
 
+/* ============ SOCLE COMMUN DES FICHES REPAS ============
+   Ces écrans (fiche repas, créateur, dictée) se re-rendent entièrement à
+   chaque micro-action. Sans précaution, chaque ajout d'ingrédient renvoyait
+   l'utilisateur en haut du modal, vidait sa recherche et lui coupait le
+   clavier. modalRender() rejoue le rendu en conservant le contexte :
+   position de défilement, champ actif et curseur. */
+function modalRender(html){
+  const box=document.getElementById('modalContent');
+  if(!box) return;
+  const top=box.scrollTop;
+  const act=document.activeElement;
+  const fid=(act&&box.contains(act)&&act.id)?act.id:null;
+  let selS=null,selE=null;
+  if(fid&&act.selectionStart!=null){ selS=act.selectionStart; selE=act.selectionEnd; }
+  const res=document.getElementById('pickerResults');
+  const resTop=res?res.scrollTop:0;
+  /* Ancre : le sélecteur d'ingrédients doit rester exactement là où il est à
+     l'écran, même quand la ligne ajoutée fait grandir la liste au-dessus. */
+  const offOf=el=>el?(el.getBoundingClientRect().top-box.getBoundingClientRect().top+box.scrollTop):null;
+  const anchorBefore=offOf(box.querySelector('.ing-picker'));
+  box.innerHTML=html;
+  renderPickerResults();               /* no-op si la fiche n'a pas de sélecteur */
+  const anchorAfter=offOf(box.querySelector('.ing-picker'));
+  box.scrollTop=(anchorBefore!=null&&anchorAfter!=null)? top+(anchorAfter-anchorBefore) : top;
+  const res2=document.getElementById('pickerResults');
+  if(res2) res2.scrollTop=resTop;
+  /* Après un ajout depuis le sélecteur, le bouton cliqué a disparu : on rend
+     la main à la recherche pour enchaîner (et garder le clavier ouvert). */
+  const wanted = pickerRefocus ? 'pickerSearch' : fid;
+  const keep=box.scrollTop;
+  pickerRefocus=false;
+  if(wanted){
+    const el=document.getElementById(wanted);
+    if(el){
+      try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); }
+      if(el===document.activeElement && selS!=null && wanted===fid && el.setSelectionRange){
+        try{ el.setSelectionRange(selS,selE); }catch(e){}
+      }
+      box.scrollTop=keep;
+    }
+  }
+  document.getElementById('modalBg').classList.add('show');
+}
+
+/* ---- Lignes d'ingrédient partagées (fiche repas / créateur / dictée) ----
+   Un seul rendu, un seul jeu de contrôles : pas + / − pour éviter le clavier
+   numérique sur mobile, et le pas s'adapte à l'ordre de grandeur. */
+let mealCtx=null;   /* {day,key} de la fiche repas ouverte */
+function ingStepSize(g){ return g>=200?25:g>=60?10:5; }
+/* Les aliments personnalisés portent un nom saisi par l'utilisateur :
+   il traverse des attributs HTML, il faut l'échapper. */
+function htmlEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function ingRowHtml(ns,idx,name,g,opts){
+  opts=opts||{};
+  const f=findFood(name);
+  const ik=f?Math.round(f.k/f.g*g):0;
+  const safeName=htmlEsc(name);
+  return `<li class="ing-row">
+    <span class="ing-name">${f?f.e+' ':''}${safeName}${opts.chip||''}${opts.extra||''}</span>
+    <div class="ing-gwrap">
+      <button class="ing-step" type="button" onclick="ingStep('${ns}',${idx},-1)" aria-label="Diminuer ${safeName}">−</button>
+      <input type="number" id="ingG-${ns}-${idx}" class="ing-g-input" value="${g}" min="0" step="5"
+             aria-label="Grammes de ${safeName}" onchange="ingSet('${ns}',${idx},this.value)">
+      <button class="ing-step" type="button" onclick="ingStep('${ns}',${idx},1)" aria-label="Augmenter ${safeName}">+</button>
+    </div>
+    <span class="ing-unit">g</span>
+    <span class="ing-kcal">${ik} kcal</span>
+    <button class="ing-del" onclick="ingDel('${ns}',${idx})" title="Retirer" aria-label="Retirer ${safeName}"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </li>`;
+}
+/* Pastille de statut FODMAP, seuil Monash appliqué au grammage réel */
+function ingChip(name,g){
+  const f=findFood(name); if(!f) return '';
+  if(f.s==='safe') return '<span class="bld-chip safe">safe</span>';
+  if(f.s==='avoid') return '<span class="bld-chip avoid">à éviter</span>';
+  return `<span class="bld-chip ${g>f.g?'avoid':'moderate'}">modéré · ≤${f.g}g</span>`;
+}
+function ingCurG(ns,idx){
+  if(ns==='builder') return builderState.ingr[idx].g;
+  if(ns==='voice') return voiceDraft.items[idx].g;
+  const d=menuData.find(x=>x.day===mealCtx.day); const meal=d.meals[mealCtx.key];
+  return scaledGrams(meal,meal.ingr[idx],meal.customized?1:dayScaleFactor(d));
+}
+function ingSet(ns,idx,val){
+  if(ns==='builder') builderSetG(idx,val);
+  else if(ns==='voice') voiceSetG(idx,val);
+  else updateIngredientGrams(mealCtx.day,mealCtx.key,idx,val);
+}
+function ingStep(ns,idx,dir){
+  const g=ingCurG(ns,idx);
+  ingSet(ns,idx,Math.max(ns==='meal'?0:5, g+dir*ingStepSize(g)));
+}
+function ingDel(ns,idx){
+  if(ns==='builder') builderDelIng(idx);
+  else if(ns==='voice') voiceDelItem(idx);
+  else removeIngredient(mealCtx.day,mealCtx.key,idx);
+}
+
+/* ---- Cible calorique du créneau : sans repère, impossible de savoir si le
+        repas qu'on compose « fait le compte ». ---- */
+function slotTargetHtml(slot,kcal,completeFn){
+  const target=slotKcalTarget(slot);
+  const pct=Math.min(100,Math.round(kcal/Math.max(1,target)*100));
+  const gap=Math.round(target-kcal);
+  const over=kcal>target*1.12;
+  let note;
+  if(!kcal) note='Composez votre repas : je suis la cible au fur et à mesure.';
+  else if(gap>target*0.12) note=`Il manque environ <b>${gap} kcal</b> pour couvrir ce créneau.`;
+  else if(over) note=`<b>${Math.abs(gap)} kcal</b> au-dessus de la cible du créneau — à vous de voir.`;
+  else note='✅ Dans la cible du créneau.';
+  const btn=(completeFn&&kcal&&gap>target*0.12)
+    ? `<button type="button" onclick="${completeFn}">✨ Compléter automatiquement</button>` : '';
+  return `<div class="slot-target ${over?'over':''}">
+    <div class="slot-target-hd"><b>${Math.round(kcal)} kcal</b><span>cible ${target} kcal · ${SLOT_FR[slot]||mealLabels[slot]}</span></div>
+    <div class="slot-target-bar"><i style="width:${pct}%"></i></div>
+    <div class="slot-target-note">${note}${btn}</div>
+  </div>`;
+}
+
+/* ---- Annulation : toute action destructive sur un repas est réversible ---- */
+function mealSnapshot(day,key){
+  const d=menuData.find(x=>x.day===day); if(!d) return null;
+  const wk=weekOverrides[programWeek];
+  const ov=wk&&wk[day]?wk[day][key]:null;
+  return {day,key,week:programWeek,meal:JSON.parse(JSON.stringify(d.meals[key])),hadOverride:!!ov};
+}
+function mealRestore(s){
+  if(!s) return;
+  if(s.week!==programWeek){ toast('Retour impossible : vous avez changé de semaine'); return; }
+  const d=menuData.find(x=>x.day===s.day); if(!d) return;
+  d.meals[s.key]=JSON.parse(JSON.stringify(s.meal));
+  if(s.hadOverride) saveWeekOverride(s.day,s.key); else clearWeekOverride(s.day,s.key);
+  renderMenuDay(); renderHome();
+  if(document.getElementById('modalBg').classList.contains('show') && mealCtx
+     && mealCtx.day===s.day && mealCtx.key===s.key) openMealModal(s.day,s.key);
+  toast('Annulé ↩︎');
+}
+
 function openMealModal(day,key){
   const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
+  mealCtx={day,key};
   const scale = meal.customized?1:dayScaleFactor(d);
   const macros = mealDisplayMacros(d,key);
   const price = mealPrice(d,key);
@@ -3776,52 +4034,44 @@ function openMealModal(day,key){
   const recipeSteps = meal.prep ? [meal.prep] : buildRecipeSteps(meal,ingWithGrams,key);
   const rows = meal.ingr.map((ing,idx)=>{
      const g=scaledGrams(meal,ing,scale);
-     const f=findFood(ing.n);
-     const ik = f? Math.round(f.k/f.g*g):0;
-     return `<li class="ing-row">
-       <span class="ing-name">${f?f.e+' ':''}${ing.n}</span>
-       <input type="number" class="ing-g-input" value="${g}" min="0" step="5" onchange="updateIngredientGrams('${day}','${key}',${idx},this.value)">
-       <span class="ing-unit">g</span>
-       <span class="ing-kcal">${ik} kcal</span>
-       <button class="ing-del" onclick="removeIngredient('${day}','${key}',${idx})" title="Retirer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
-     </li>`;
+     return ingRowHtml('meal',idx,ing.n,g,{chip:ingChip(ing.n,g)});
   }).join('');
-  document.getElementById('modalContent').innerHTML=`
+  const eaten=isMealEaten(day,key);
+  const future=isFutureDay(day);
+  const nbMine=myMeals.length;
+  modalRender(`
     <div class="modal-hd"><div class="me">${mealIcons[key]}</div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
-      <div class="modal-title">${meal.name}</div>
-      <div class="modal-badge safe">${mealLabels[key]} · ${d.day}</div>
+      <div class="modal-title">${htmlEsc(meal.name)}</div>
+      <div class="modal-badge safe">${mealLabels[key]} · ${fullDayNames[d.day]||d.day}</div>
       ${meal.customized?'<span class="modal-badge moderate">✏️ Recette personnalisée</span>':''}
       ${warn?'<span class="modal-badge avoid">⚠️ Hors préférences</span>':''}
       <div class="modal-row"><span>Calories</span><span>${Math.round(macros.k)} kcal (${calPct}% de l'objectif jour)</span></div>
       <div class="modal-row"><span>Protéines</span><span>${Math.round(macros.pr)} g (${protPct}% de l'objectif jour)</span></div>
       <div class="modal-row"><span>Coût estimé</span><span>${price.toFixed(2)} €</span></div>
+      ${slotTargetHtml(key,macros.k,null)}
       <div class="modal-actions-row">
-        <button class="reset-btn" onclick="swapMeal('${day}','${key}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Remplacer ce repas</button>
-        <button class="reset-btn" onclick="openMealBuilder('${day}','${key}',${meal.customized?'true':'false'})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-pencil"/></svg> Créer un repas perso</button>
-        ${meal.customized?`<button class="reset-btn" onclick="resetMeal('${day}','${key}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Réinitialiser la recette d'origine</button>`:''}
+        <button class="reset-btn" onclick="openMealBuilder('${day}','${key}',true)"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-pencil"/></svg> Modifier</button>
+        <button class="reset-btn" onclick="openMyMeals({day:'${day}',key:'${key}'})"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-download"/></svg> Mes repas${nbMine?' ('+nbMine+')':''}</button>
+        <button class="reset-btn" onclick="swapMeal('${day}','${key}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Remplacer</button>
+        <button class="reset-btn" onclick="saveMealToLibrary('${day}','${key}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Garder</button>
+        ${meal.customized?`<button class="reset-btn" onclick="resetMeal('${day}','${key}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-refresh"/></svg> Recette d'origine</button>`:''}
       </div>
-      ${(function(){
-        const mine=myMeals.filter(m=>m.slot===key);
-        if(!mine.length) return '';
-        return `<div class="mymeals-box"><div class="mymeals-title">📔 Mes repas (${mealLabels[key].replace(/^\S+\s/,'')})</div>`+
-          mine.map(m=>`<div class="mymeal-row">
-            <span class="mymeal-name">${m.name}</span>
-            <button class="mymeal-use" onclick="applyMyMeal('${day}','${key}',${m.id})">Utiliser</button>
-            <button class="ing-del" onclick="deleteMyMeal('${day}','${key}',${m.id})" title="Supprimer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
-          </div>`).join('')+`</div>`;
-      })()}
-      <div class="recipe-box">
-        <div class="recipe-title">👩‍🍳 Comment la préparer</div>
-        <ol class="recipe-steps">${recipeSteps.map(s=>`<li>${s}</li>`).join('')}</ol>
-      </div>
+      <details class="fold">
+        <summary>👩‍🍳 Comment la préparer</summary>
+        <div class="fold-body"><ol class="recipe-steps">${recipeSteps.map(s=>`<li>${s}</li>`).join('')}</ol></div>
+      </details>
       <div class="ing-editor-title">Ingrédients ${!meal.customized?'<span class="ing-scale-note">· ajustés à '+Math.round(scale*100)+'% selon votre objectif</span>':''}</div>
-      <ul class="ing-list-edit">${rows}</ul>
+      <ul class="ing-list-edit">${rows||'<li class="ing-row" style="justify-content:center;color:var(--slate-400)">Aucun ingrédient — ajoutez-en ci-dessous</li>'}</ul>
       ${pickerHtml({slot:key,target:'meal',day:day,key:key})}
       <div class="modal-tip">💡 Modifier, ajouter ou retirer un ingrédient rend la recette personnalisée : elle ne sera plus recalculée automatiquement selon votre objectif, sauf réinitialisation.</div>
-    </div>`;
-  document.getElementById('modalBg').classList.add('show');
-  renderPickerResults();
+      <div class="modal-sticky">
+        ${future
+          ? `<button class="btn-p" disabled style="opacity:.5;cursor:default">Journée à venir</button>`
+          : `<button class="btn-p" onclick="toggleMealEaten('${day}','${key}')">${eaten?'✓ Repas validé — annuler':'✓ Marquer comme mangé'}</button>`}
+        <button class="reset-btn" onclick="closeModal()">Fermer</button>
+      </div>
+    </div>`);
 }
 function bakeIfNeeded(d,meal){
   if(!meal.customized){
@@ -3840,21 +4090,24 @@ function updateIngredientGrams(day,key,idx,val){
 }
 function removeIngredient(day,key,idx){
   const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
+  const snap=mealSnapshot(day,key);
+  const name=meal.ingr[idx]?meal.ingr[idx].n:'Ingrédient';
   bakeIfNeeded(d,meal);
   meal.ingr.splice(idx,1);
   saveWeekOverride(day,key);
   openMealModal(day,key);
   renderMenuDay();
-  toast('Ingrédient retiré 🗑️');
+  toast(name+' retiré 🗑️',{label:'Annuler',fn:()=>mealRestore(snap)});
 }
 function resetMeal(day,key){
   const d=menuData.find(x=>x.day===day);
   const orig=menuDataOriginal.find(x=>x.day===day);
+  const snap=mealSnapshot(day,key);
   d.meals[key] = JSON.parse(JSON.stringify(orig.meals[key]));
   clearWeekOverride(day,key);
   openMealModal(day,key);
   renderMenuDay();
-  toast('Recette réinitialisée ↺');
+  toast('Recette d\'origine rétablie ↺',{label:'Annuler',fn:()=>mealRestore(snap)});
 }
 function swapMeal(day,key){
   const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
@@ -3862,12 +4115,26 @@ function swapMeal(day,key){
   const candidates=pool.filter(r=>r.name!==meal.name && !mealViolatesPrefs(r));
   const finalPool = candidates.length?candidates:pool.filter(r=>r.name!==meal.name);
   if(!finalPool.length){toast('Pas d\'alternative disponible pour ce repas');return}
+  const snap=mealSnapshot(day,key);
   const pick=finalPool[Math.floor(Math.random()*finalPool.length)];
   d.meals[key] = {name:pick.name, ingr:JSON.parse(JSON.stringify(pick.ingr)), customized:true};
   saveWeekOverride(day,key);
   if(document.getElementById('modalBg').classList.contains('show')) openMealModal(day,key);
-  renderMenuDay();
-  toast('Repas remplacé 🔄');
+  renderMenuDay(); renderHome();
+  toast('« '+pick.name+' » 🔄',{label:'Annuler',fn:()=>mealRestore(snap)});
+}
+/* Un repas du menu (ou modifié à la main) part dans la bibliothèque sans
+   repasser par le créateur : « il me plaît, je le garde ». */
+function saveMealToLibrary(day,key){
+  const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
+  const scale=meal.customized?1:dayScaleFactor(d);
+  const ingr=meal.ingr.map(ing=>({n:ing.n,g:scaledGrams(meal,ing,scale)}));
+  if(!ingr.length){ toast('Ce repas est vide 🥕'); return; }
+  const m={id:Date.now(),slot:key,name:meal.name,ingr,prep:meal.prep||''};
+  myMeals=myMeals.filter(x=>!(x.slot===m.slot&&x.name===m.name));
+  myMeals.push(m); persistMyMeals();
+  openMealModal(day,key);
+  toast('« '+m.name+' » gardé dans mes repas 💾',{label:'Ouvrir',fn:()=>openMyMeals({day,key})});
 }
 
 /* ============ MES REPAS PERSOS ============
@@ -3879,17 +4146,39 @@ try{ myMeals = JSON.parse(lsGet('fodmapMyMeals')||'[]')||[]; }catch(e){ myMeals=
 function persistMyMeals(){ lsSet('fodmapMyMeals', JSON.stringify(myMeals)); }
 let builderState = null;
 
-function openMealBuilder(day,key,fromCurrent){
-  const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
-  builderState = {day,key,name:'',ingr:[],prep:''};
-  if(fromCurrent){
+/* Le créateur s'ouvre dans trois situations, toutes légitimes :
+   - depuis une fiche repas, en repartant de ce qu'il y a dans l'assiette ;
+   - depuis la bibliothèque, pour modifier un repas déjà enregistré (editId) ;
+   - à vide, pour composer un repas sans toucher au menu.
+   Le jour et le créneau restent modifiables dans l'écran : composer d'abord,
+   décider ensuite où ça va — l'inverse de ce qu'imposait la version précédente. */
+function openMealBuilder(day,key,fromCurrent,opts){
+  opts=opts||{};
+  day=day||todayDayCode();
+  key=key||slotByHour();
+  const d=menuData.find(x=>x.day===day); const meal=d?d.meals[key]:null;
+  builderState = {day,key,name:'',ingr:[],prep:'',editId:opts.editId||null,days:[day],
+                  back:opts.back||(fromCurrent?'meal':'close'),returnCtx:opts.returnCtx||null};
+  if(opts.meal){
+    builderState.name=opts.meal.name||'';
+    builderState.prep=opts.meal.prep||'';
+    builderState.ingr=JSON.parse(JSON.stringify(opts.meal.ingr||[]));
+    if(opts.meal.slot) builderState.key=opts.meal.slot;
+  } else if(fromCurrent&&meal){
     const scale = meal.customized?1:dayScaleFactor(d);
-    builderState.name = meal.customized? meal.name : '';
+    builderState.name = meal.name||'';
     builderState.prep = meal.prep||'';
     builderState.ingr = meal.ingr
       .filter(ing=>{const f=findFood(ing.n);return !f||f.s!=='avoid'})
       .map(ing=>({n:ing.n,g:scaledGrams(meal,ing,scale)}));
   }
+  renderMealBuilder();
+}
+function builderSetSlot(v){ builderState.key=v; renderMealBuilder(); }
+function builderToggleDay(day){
+  const i=builderState.days.indexOf(day);
+  if(i>=0){ if(builderState.days.length>1) builderState.days.splice(i,1); }
+  else builderState.days.push(day);
   renderMealBuilder();
 }
 function builderTotals(){
@@ -3900,6 +4189,7 @@ function builderTotals(){
   },{k:0,pr:0,price:0});
 }
 function builderFodmapStatus(){
+  if(!builderState.ingr.length) return {cls:'moderate', txt:'🧺 Repas vide — ajoutez un premier aliment'};
   let overs=[], hasModerate=false;
   builderState.ingr.forEach(ing=>{
     const f=findFood(ing.n); if(!f) return;
@@ -3911,93 +4201,241 @@ function builderFodmapStatus(){
 }
 function renderMealBuilder(){
   const t=builderTotals(); const st=builderFodmapStatus();
-  const rows = builderState.ingr.map((ing,idx)=>{
-    const f=findFood(ing.n);
-    const over = f && f.s==='moderate' && ing.g>f.g;
-    const chip = !f?'':f.s==='safe'
-      ? '<span class="bld-chip safe">safe</span>'
-      : `<span class="bld-chip ${over?'avoid':'moderate'}">modéré · ≤${f.g}g</span>`;
-    const ik = f? Math.round(f.k/f.g*ing.g):0;
-    return `<li class="ing-row">
-      <span class="ing-name">${f?f.e+' ':''}${ing.n} ${chip}</span>
-      <input type="number" class="ing-g-input" value="${ing.g}" min="5" step="5" onchange="builderSetG(${idx},this.value)">
-      <span class="ing-unit">g</span>
-      <span class="ing-kcal">${ik} kcal</span>
-      <button class="ing-del" onclick="builderDelIng(${idx})" title="Retirer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
-    </li>`;
-  }).join('');
-  document.getElementById('modalContent').innerHTML=`
+  const editing=!!builderState.editId;
+  const rows = builderState.ingr.map((ing,idx)=>
+    ingRowHtml('builder',idx,ing.n,ing.g,{chip:ingChip(ing.n,ing.g)})).join('');
+  const slotChips=Object.keys(mealLabels).map(k=>
+    `<button type="button" class="pcat ${k===builderState.key?'on':''}" onclick="builderSetSlot('${k}')">${mealLabels[k]}</button>`).join('');
+  const today=todayDayCode();
+  const dayChips=menuData.map(d=>
+    `<button type="button" class="day-chip ${builderState.days.indexOf(d.day)>=0?'on':''} ${d.day===today?'today':''}"
+      aria-pressed="${builderState.days.indexOf(d.day)>=0}" onclick="builderToggleDay('${d.day}')">${d.day}</button>`).join('');
+  const nbDays=builderState.days.length;
+  modalRender(`
     <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
-      <div class="modal-title">Mon repas perso</div>
-      <div class="modal-badge safe">${mealLabels[builderState.key]} · ${builderState.day}</div>
+      <div class="modal-title">${editing?'Modifier mon repas':'Composer un repas'}</div>
       <span class="modal-badge ${st.cls}">${st.txt}</span>
-      <div class="pplx-box">
-        <b>🔮 Assistant Perplexity :</b> 1) ouvre la demande pré-remplie (adaptée à ton objectif, tes régimes et tes exclusions), 2) copie toute la réponse, 3) « Coller &amp; importer » — nom, ingrédients et préparation se remplissent seuls, les aliments inconnus sont ajoutés à la base.
-      </div>
-      <div class="pplx-row">
-        <button class="btn-s" onclick="openPerplexityRecipeFP()">1. Ouvrir Perplexity (pré-rempli)</button>
-        <button class="btn-p pplx-import" onclick="pasteAndImportRecipeFP()">2. Coller &amp; importer</button>
-        <button class="btn-s" onclick="openPerplexityIdeesFP()">💡 Idées repas</button>
-      </div>
-      <textarea id="bldImpTxt" class="pplx-txt" placeholder="…ou colle la réponse ici (lignes NOM: / TYPE: / INGREDIENT: / PREPARATION:)"></textarea>
-      <div class="pplx-row"><button class="btn-s" style="font-size:12px" onclick="importRecipeTextFP()">Importer le texte collé</button></div>
-      <input type="text" id="bldName" class="bld-name" placeholder="Nom du repas (ex : Ma salade riz-thon)" value="${builderState.name.replace(/"/g,'&quot;')}" oninput="builderState.name=this.value">
-      <div class="modal-row"><span>Calories</span><span>${Math.round(t.k)} kcal</span></div>
+
+      <label class="field-lbl" for="bldName">Nom du repas</label>
+      <input type="text" id="bldName" class="bld-name" placeholder="${htmlEsc(builderPlaceholderName())}"
+             value="${htmlEsc(builderState.name)}" oninput="builderState.name=this.value">
+      <div class="field-hint">Laissé vide, il prendra le nom de ses ingrédients principaux.</div>
+
+      <label class="field-lbl">Créneau</label>
+      <div class="picker-cats" style="margin:7px 0 0">${slotChips}</div>
+
+      ${slotTargetHtml(builderState.key,t.k,'builderComplete()')}
       <div class="modal-row"><span>Protéines</span><span>${Math.round(t.pr)} g</span></div>
       <div class="modal-row"><span>Coût estimé</span><span>${t.price.toFixed(2)} €</span></div>
+
       <div class="ing-editor-title">Ingrédients <span class="ing-scale-note">· uniquement safe & modérés — un repas perso reste low-FODMAP</span></div>
-      <ul class="ing-list-edit">${rows || '<li class="ing-row" style="justify-content:center;color:var(--slate-400)">Ajoutez vos ingrédients ci-dessous</li>'}</ul>
+      <ul class="ing-list-edit">${rows || '<li class="ing-row" style="justify-content:center;color:var(--slate-400)">Cherchez un aliment ci-dessous pour commencer</li>'}</ul>
       ${pickerHtml({slot:builderState.key,target:'builder'})}
-      <div class="modal-actions-row">
-        <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="builderApply()">✓ Utiliser pour ce repas</button>
-        <button class="reset-btn" onclick="builderSaveOnly()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-download"/></svg> Garder dans mes repas</button>
-        <button class="reset-btn" onclick="openMealModal('${builderState.day}','${builderState.key}')">← Retour</button>
-      </div>
+
+      <details class="fold">
+        <summary>🔮 Importer une recette (assistant Perplexity)</summary>
+        <div class="fold-body">
+          <div class="pplx-box">1) ouvrez la demande pré-remplie (adaptée à votre objectif, vos régimes et vos exclusions), 2) copiez toute la réponse, 3) « Coller &amp; importer » — nom, ingrédients et préparation se remplissent seuls, les aliments inconnus sont ajoutés à la base.</div>
+          <div class="pplx-row">
+            <button class="btn-s" onclick="openPerplexityRecipeFP()">1. Ouvrir Perplexity (pré-rempli)</button>
+            <button class="btn-p pplx-import" onclick="pasteAndImportRecipeFP()">2. Coller &amp; importer</button>
+            <button class="btn-s" onclick="openPerplexityIdeesFP()">💡 Idées repas</button>
+          </div>
+          <textarea id="bldImpTxt" class="pplx-txt" placeholder="…ou collez la réponse ici (lignes NOM: / TYPE: / INGREDIENT: / PREPARATION:)"></textarea>
+          <div class="pplx-row"><button class="btn-s" style="font-size:12px" onclick="importRecipeTextFP()">Importer le texte collé</button></div>
+        </div>
+      </details>
+
+      <label class="field-lbl">Mettre ce repas au menu de</label>
+      <div class="days-pick">${dayChips}</div>
+      <div class="field-hint">Sélectionnez plusieurs jours pour cuisiner une fois et manger plusieurs fois.</div>
+
       <div class="modal-tip">💡 Les aliments « à éviter » ne sont pas proposés ici. Pour les modérés, restez sous le grammage indiqué pour rester compatible élimination.</div>
-    </div>`;
-  document.getElementById('modalBg').classList.add('show');
-  renderPickerResults();
+
+      <div class="modal-sticky">
+        <button class="btn-p" onclick="builderApply()" ${builderState.ingr.length?'':'style="opacity:.45"'}>✓ Mettre au menu${nbDays>1?' ('+nbDays+' jours)':''}</button>
+        <button class="reset-btn" onclick="builderSaveOnly()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-download"/></svg> ${editing?'Enregistrer':'Garder sans l\'appliquer'}</button>
+        <button class="reset-btn" onclick="builderCancel()">${builderBackLabel()}</button>
+      </div>
+    </div>`);
 }
-function builderDelIng(idx){ builderState.ingr.splice(idx,1); renderMealBuilder(); }
+function builderBackLabel(){
+  if(!builderState) return 'Fermer';
+  if(builderState.back==='library') return '← Mes repas';
+  if(builderState.back==='meal') return '← Retour au repas';
+  return 'Fermer';
+}
+function builderCancel(){
+  if(!builderState){ closeModal(); return; }
+  if(builderState.back==='library') openMyMeals(builderState.returnCtx);
+  else if(builderState.back==='meal'&&menuData.find(x=>x.day===builderState.day)) openMealModal(builderState.day,builderState.key);
+  else closeModal();
+}
+function builderDelIng(idx){
+  const gone=builderState.ingr[idx];
+  builderState.ingr.splice(idx,1);
+  renderMealBuilder();
+  if(gone) toast(gone.n+' retiré 🗑️',{label:'Annuler',fn:()=>{builderState.ingr.splice(idx,0,gone);renderMealBuilder();}});
+}
 function builderSetG(idx,val){ builderState.ingr[idx].g=Math.max(5,+val||5); renderMealBuilder(); }
+/* Nom suggéré à partir des ingrédients les plus caloriques : personne n'a
+   envie de baptiser chacun de ses repas, et « Repas perso déjeuner » ne dit rien. */
+function builderPlaceholderName(){
+  if(!builderState.ingr.length) return 'ex : Ma salade riz-thon';
+  return voiceMealName(builderState.ingr);
+}
 function builderMealName(){
-  return (builderState.name||'').trim() || 'Repas perso '+mealLabels[builderState.key].replace(/^\S+\s/,'').toLowerCase();
+  return (builderState.name||'').trim() || builderPlaceholderName();
 }
 function builderSaveToLibrary(){
   if(!builderState.ingr.length){toast('Ajoutez au moins un ingrédient 🥕');return null}
-  const m={id:Date.now(), slot:builderState.key, name:builderMealName(), ingr:JSON.parse(JSON.stringify(builderState.ingr)), prep:builderState.prep||''};
+  const name=builderMealName();
+  if(builderState.editId){
+    const ex=myMeals.find(x=>x.id===builderState.editId);
+    if(ex){
+      ex.slot=builderState.key; ex.name=name;
+      ex.ingr=JSON.parse(JSON.stringify(builderState.ingr)); ex.prep=builderState.prep||'';
+      persistMyMeals(); return ex;
+    }
+  }
+  const m={id:Date.now(), slot:builderState.key, name, ingr:JSON.parse(JSON.stringify(builderState.ingr)), prep:builderState.prep||''};
   myMeals=myMeals.filter(x=>!(x.slot===m.slot && x.name===m.name));
   myMeals.push(m); persistMyMeals();
+  builderState.editId=m.id;   /* on continue d'éditer le même repas, pas un clone */
   return m;
+}
+/* Complète le repas en cours jusqu'à la cible calorique du créneau */
+function builderComplete(){
+  const r=completeToTarget(builderState.key,builderState.ingr);
+  builderState.ingr=r.items;
+  renderMealBuilder();
+  toast(r.msg);
 }
 function builderApply(){
   const m=builderSaveToLibrary(); if(!m) return;
-  const d=menuData.find(x=>x.day===builderState.day);
-  d.meals[builderState.key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true, prep:m.prep||''};
-  saveWeekOverride(builderState.day,builderState.key);
-  openMealModal(builderState.day,builderState.key);
+  const days=(builderState.days&&builderState.days.length)?builderState.days.slice():[builderState.day];
+  const snaps=days.map(day=>mealSnapshot(day,builderState.key)).filter(Boolean);
+  days.forEach(day=>{
+    const d=menuData.find(x=>x.day===day); if(!d) return;
+    d.meals[builderState.key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true, prep:m.prep||''};
+    saveWeekOverride(day,builderState.key);
+  });
+  const back=days.indexOf(builderState.day)>=0?builderState.day:days[0];
+  openMealModal(back,builderState.key);
   renderMenuDay(); renderHome();
-  toast('Repas perso enregistré et appliqué 🌿');
+  toast(days.length>1
+    ? `« ${m.name} » au menu de ${days.length} jours 🌿`
+    : `« ${m.name} » au menu de ${fullDayNames[days[0]]||days[0]} 🌿`,
+    {label:'Annuler',fn:()=>{snaps.forEach(mealRestore);}});
 }
 function builderSaveOnly(){
   const m=builderSaveToLibrary(); if(!m) return;
   renderMealBuilder();
-  toast('Gardé dans « Mes repas » 💾');
+  toast('« '+m.name+' » est dans mes repas 💾');
 }
 function applyMyMeal(day,key,id){
   const m=myMeals.find(x=>x.id===id); if(!m) return;
-  const d=menuData.find(x=>x.day===day);
+  const d=menuData.find(x=>x.day===day); if(!d) return;
+  const snap=mealSnapshot(day,key);
   d.meals[key]={name:m.name, ingr:JSON.parse(JSON.stringify(m.ingr)), customized:true, prep:m.prep||''};
   saveWeekOverride(day,key);
   openMealModal(day,key);
   renderMenuDay(); renderHome();
-  toast('« '+m.name+' » appliqué 🌿');
+  toast('« '+m.name+' » appliqué 🌿',{label:'Annuler',fn:()=>mealRestore(snap)});
 }
-function deleteMyMeal(day,key,id){
+function deleteMyMeal(id,ctx){
+  const m=myMeals.find(x=>x.id===id); if(!m) return;
+  const idx=myMeals.indexOf(m);
   myMeals=myMeals.filter(x=>x.id!==id); persistMyMeals();
-  openMealModal(day,key);
-  toast('Repas perso supprimé 🗑️');
+  openMyMeals(ctx||myMealsCtx);
+  toast('« '+m.name+' » supprimé 🗑️',{label:'Annuler',fn:()=>{
+    myMeals.splice(Math.min(idx,myMeals.length),0,m); persistMyMeals(); openMyMeals(ctx||myMealsCtx);
+  }});
+}
+function duplicateMyMeal(id){
+  const m=myMeals.find(x=>x.id===id); if(!m) return;
+  openMealBuilder(myMealsCtx?myMealsCtx.day:null,m.slot,false,
+    {meal:{name:m.name+' (copie)',slot:m.slot,ingr:m.ingr,prep:m.prep},back:'library',returnCtx:myMealsCtx});
+}
+function editMyMeal(id){
+  const m=myMeals.find(x=>x.id===id); if(!m) return;
+  openMealBuilder(myMealsCtx?myMealsCtx.day:null,m.slot,false,
+    {editId:m.id,meal:m,back:'library',returnCtx:myMealsCtx});
+}
+
+/* ============ BIBLIOTHÈQUE « MES REPAS » ============
+   Jusqu'ici les repas enregistrés n'existaient que dans la fiche du créneau
+   correspondant, en liste de noms : ni aperçu, ni modification, ni réemploi
+   ailleurs. C'est maintenant un écran à part entière, atteignable depuis le
+   menu, avec recherche, filtres, macros et actions complètes. */
+let myMealsCtx=null;      /* {day,key} quand on vient d'une fiche repas */
+let myMealsQuery='', myMealsFilter='all';
+function openMyMeals(ctx){
+  if(ctx!==undefined) myMealsCtx=ctx||null;
+  if(myMealsCtx&&myMealsCtx.key&&myMealsFilter==='all'&&myMeals.some(m=>m.slot===myMealsCtx.key)) myMealsFilter=myMealsCtx.key;
+  renderMyMeals();
+}
+function myMealsNew(){
+  openMealBuilder(myMealsCtx?myMealsCtx.day:null, myMealsCtx?myMealsCtx.key:(myMealsFilter!=='all'?myMealsFilter:null),
+    false, {back:'library',returnCtx:myMealsCtx});
+}
+function myMealsSetFilter(v){ myMealsFilter=v; renderMyMeals(); }
+function myMealsSetQuery(v){ myMealsQuery=v; renderMyMeals(); }
+function renderMyMeals(){
+  const q=normNameFP(myMealsQuery);
+  const list=myMeals.slice().reverse().filter(m=>
+    (myMealsFilter==='all'||m.slot===myMealsFilter) &&
+    (!q||normNameFP(m.name).includes(q)||m.ingr.some(i=>normNameFP(i.n).includes(q))));
+  const filters=[['all','Tous']].concat(Object.keys(mealLabels).map(k=>[k,mealLabels[k]]))
+    .map(([k,l])=>{
+      const n=k==='all'?myMeals.length:myMeals.filter(m=>m.slot===k).length;
+      return `<button type="button" class="pcat ${myMealsFilter===k?'on':''}" onclick="myMealsSetFilter('${k}')">${l}${n?' · '+n:''}</button>`;
+    }).join('');
+  const cards=list.map(m=>{
+    const t=mealTotalsOf(m.ingr);
+    const target=slotKcalTarget(m.slot);
+    const ings=m.ingr.map(i=>{const f=findFood(i.n);return (f?f.e+' ':'')+htmlEsc(i.n.split(' (')[0])+' '+i.g+'g';}).join(' · ');
+    const dest=myMealsCtx&&myMealsCtx.day?`${fullDayNames[myMealsCtx.day]||myMealsCtx.day}`:"aujourd'hui";
+    const destDay=myMealsCtx&&myMealsCtx.day?myMealsCtx.day:todayDayCode();
+    const destKey=myMealsCtx&&myMealsCtx.key?myMealsCtx.key:m.slot;
+    const mismatch=destKey!==m.slot;
+    return `<div class="mm-card">
+      <div class="mm-card-hd">
+        <div class="mm-card-name">${htmlEsc(m.name)}</div>
+        <span class="mm-slot">${mealLabels[m.slot]}</span>
+      </div>
+      <div class="mm-macros"><b>${Math.round(t.k)} kcal</b><span>sur ${target} visés</span><i>·</i><b>${Math.round(t.pr)} g</b><span>protéines</span><i>·</i><b>${t.price.toFixed(2)} €</b></div>
+      <div class="mm-ings">${ings||'—'}</div>
+      <div class="mm-actions">
+        <button class="mm-btn primary" onclick="applyMyMeal('${destDay}','${destKey}',${m.id})">Mettre au menu · ${dest}${mismatch?' ('+mealLabels[destKey]+')':''}</button>
+        <button class="mm-btn" onclick="editMyMeal(${m.id})">✏️ Modifier</button>
+        <button class="mm-btn" onclick="duplicateMyMeal(${m.id})">⧉ Dupliquer</button>
+        <button class="mm-btn danger" onclick="deleteMyMeal(${m.id})">🗑️ Supprimer</button>
+      </div>
+    </div>`;
+  }).join('');
+  const empty=`<div class="mm-empty"><b>Aucun repas enregistré ${myMeals.length?'ici':''}</b>
+    ${myMeals.length
+      ? 'Aucun repas ne correspond à ce filtre ou à cette recherche.'
+      : 'Composez un repas, gardez-le, et il vous suivra de semaine en semaine — applicable à n\'importe quel jour en un clic.'}
+    <div style="margin-top:14px"><button class="mm-btn primary" onclick="myMealsNew()">+ Composer un repas</button></div></div>`;
+  modalRender(`
+    <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <div class="modal-body">
+      <div class="modal-title">Mes repas</div>
+      <div class="modal-badge safe">${myMeals.length} repas enregistré${myMeals.length>1?'s':''}</div>
+      ${myMealsCtx&&myMealsCtx.day?`<div class="field-hint" style="margin-top:0">Destination : ${mealLabels[myMealsCtx.key]} de ${fullDayNames[myMealsCtx.day]||myMealsCtx.day}.</div>`:''}
+      <div class="mm-toolbar">
+        <input type="text" id="mmSearch" placeholder="🔍 Chercher un repas ou un ingrédient…" value="${htmlEsc(myMealsQuery)}" oninput="myMealsSetQuery(this.value)">
+      </div>
+      <div class="mm-filters">${filters}</div>
+      <div class="mm-list">${cards||empty}</div>
+      <div class="modal-sticky">
+        <button class="btn-p" onclick="myMealsNew()">+ Composer un repas</button>
+        ${myMealsCtx&&myMealsCtx.day?`<button class="reset-btn" onclick="openMealModal('${myMealsCtx.day}','${myMealsCtx.key}')">← Retour au repas</button>`:`<button class="reset-btn" onclick="closeModal()">Fermer</button>`}
+      </div>
+    </div>`);
 }
 
 /* ============ ALIMENTS PERSONNALISÉS + ASSISTANT PERPLEXITY ============
@@ -4178,16 +4616,34 @@ const SLOT_CATS={
   snack:['fruit','noix','laitier','cereale','condiment','proteine','boisson','legume','legumineuse']
 };
 let pickerQuery='', pickerCat='sugg', pickerCtx=null; /* {slot, target:'meal'|'builder', day, key} */
+let pickerSig='', pickerRefocus=false;
+/* La recherche et la catégorie survivent aux re-rendus : composer un repas,
+   c'est enchaîner cinq ajouts, pas retaper « courgette » cinq fois. On ne
+   remet le sélecteur à zéro qu'en changeant réellement de repas. */
 function pickerHtml(ctx){
-  pickerCtx=ctx; pickerQuery=''; pickerCat='sugg';
+  const sig=[ctx.target,ctx.slot,ctx.day||'',ctx.key||''].join('|');
+  if(sig!==pickerSig){ pickerSig=sig; pickerQuery=''; pickerCat='sugg'; }
+  pickerCtx=ctx;
   return `<div class="ing-picker">
-    <input type="text" id="pickerSearch" class="picker-search" placeholder="🔍 Chercher un aliment…" oninput="pickerQuery=this.value;renderPickerResults()">
+    <div class="picker-search-wrap">
+      <input type="text" id="pickerSearch" class="picker-search" placeholder="🔍 Chercher un aliment…" autocomplete="off"
+             value="${htmlEsc(pickerQuery)}" oninput="pickerQuery=this.value;renderPickerResults()">
+      ${pickerQuery?`<button class="picker-clear" type="button" onclick="pickerClear()" aria-label="Effacer la recherche">✕</button>`:''}
+    </div>
     <div class="picker-cats" id="pickerCats"></div>
     <div class="picker-results" id="pickerResults"></div>
     <button class="picker-newfood" onclick="openCustomFoodModal({target:'${ctx.target}',day:'${ctx.day||''}',key:'${ctx.key||''}'},pickerQuery)"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Aliment hors liste (assistant Perplexity)</button>
     <button class="picker-newfood" onclick="openScanner('${ctx.slot}','${ctx.day||''}')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-camera"/></svg> Scanner un produit emballé</button>
   </div>`;
 }
+function pickerClear(){
+  pickerQuery='';
+  const el=document.getElementById('pickerSearch');
+  if(el){ el.value=''; el.focus(); }
+  const b=document.querySelector('.picker-clear'); if(b) b.remove();
+  renderPickerResults();
+}
+function pickerReset(){ pickerSig=''; pickerQuery=''; pickerCat='sugg'; }
 function renderPickerCats(){
   const el=document.getElementById('pickerCats'); if(!el) return;
   const cats=SLOT_CATS[pickerCtx.slot]||Object.keys(catLabels);
@@ -4197,9 +4653,26 @@ function renderPickerCats(){
 function renderPickerResults(){
   renderPickerCats();
   const el=document.getElementById('pickerResults'); if(!el) return;
+  /* le bouton d'effacement suit la frappe, sans re-rendre toute la fiche */
+  const wrap=document.querySelector('.picker-search-wrap');
+  if(wrap){
+    const btn=wrap.querySelector('.picker-clear');
+    if(pickerQuery&&!btn){
+      const b=document.createElement('button');
+      b.type='button'; b.className='picker-clear'; b.textContent='✕';
+      b.setAttribute('aria-label','Effacer la recherche'); b.onclick=pickerClear;
+      wrap.appendChild(b);
+    } else if(!pickerQuery&&btn) btn.remove();
+  }
+  /* Recherche par mots, dans n'importe quel ordre : « riz basmati » doit
+     trouver « Riz blanc / basmati », et « lait sans lactose » aussi. */
   const q=normNameFP(pickerQuery);
+  const terms=q?q.split(' ').filter(Boolean):[];
   let list=foods.filter(f=>f.s!=='avoid'&&!dietPrefs.excluded.has(f.n.toLowerCase()));
-  if(q) list=list.filter(f=>normNameFP(f.n).includes(q));
+  if(terms.length){
+    list=list.filter(f=>{const n=normNameFP(f.n);return terms.every(t=>n.includes(t))})
+      .sort((a,b)=>normNameFP(a.n).indexOf(terms[0])-normNameFP(b.n).indexOf(terms[0]));
+  }
   else if(pickerCat==='sugg'){
     const order=SLOT_CATS[pickerCtx.slot]||[];
     list=list.slice().sort((a,b)=>{
@@ -4207,17 +4680,42 @@ function renderPickerResults(){
       return (ia<0?99:ia)-(ib<0?99:ib)||(a.s==='safe'?-1:1)-(b.s==='safe'?-1:1);
     });
   } else list=list.filter(f=>f.c===pickerCat);
-  if(!list.length){ el.innerHTML='<div class="picker-empty">Aucun résultat — crée-le avec le bouton ci-dessous 👇</div>'; return; }
-  el.innerHTML=list.slice(0,14).map(f=>`
-    <button class="pick-row" onclick="pickerAdd(${JSON.stringify(f.n).replace(/"/g,'&quot;')})">
+  if(!list.length){ el.innerHTML='<div class="picker-empty">Aucun résultat — créez-le avec le bouton ci-dessous 👇</div>'; return; }
+  /* Ce qui est déjà dans le repas est signalé : le bouton dit « +50 g de plus ». */
+  const present=pickerPresent();
+  el.innerHTML=list.slice(0,14).map(f=>{
+    const inMeal=present[f.n];
+    return `<button class="pick-row" onclick="pickerAdd(${JSON.stringify(f.n).replace(/"/g,'&quot;')})">
       <span class="pick-emoji">${f.e}</span>
       <span class="pick-name">${f.n}${f.custom?' <i class="pick-custom">✏️</i>':''}</span>
-      <span class="bld-chip ${f.s==='safe'?'safe':'moderate'}">${f.s==='safe'?'safe':'≤'+f.g+'g'}</span>
+      ${inMeal?`<span class="pick-have">déjà ${Math.round(inMeal)} g</span>`
+              :`<span class="bld-chip ${f.s==='safe'?'safe':'moderate'}">${f.s==='safe'?'safe':'≤'+f.g+'g'}</span>`}
       <span class="pick-add">+${f.g}g</span>
-    </button>`).join('')+(list.length>14?`<div class="picker-empty">…${list.length-14} de plus — affine la recherche</div>`:'');
+    </button>`;
+  }).join('')+(list.length>14?`<div class="picker-empty">…${list.length-14} de plus — affinez la recherche</div>`:'');
+}
+/* Grammages déjà présents dans le repas en cours d'édition, par nom d'aliment */
+function pickerPresent(){
+  const out={};
+  if(!pickerCtx) return out;
+  let list=null;
+  if(pickerCtx.target==='builder'&&builderState) list=builderState.ingr;
+  else if(pickerCtx.target==='voice'&&voiceDraft) list=voiceDraft.items;
+  else if(pickerCtx.target==='meal'){
+    const d=menuData.find(x=>x.day===pickerCtx.day);
+    if(d&&d.meals[pickerCtx.key]){
+      const meal=d.meals[pickerCtx.key];
+      const scale=meal.customized?1:dayScaleFactor(d);
+      meal.ingr.forEach(i=>{ out[i.n]=(out[i.n]||0)+scaledGrams(meal,i,scale); });
+      return out;
+    }
+  }
+  (list||[]).forEach(i=>{ out[i.n]=(out[i.n]||0)+i.g; });
+  return out;
 }
 function pickerAdd(name){
   const f=findFood(name); if(!f) return;
+  pickerRefocus=!!pickerQuery;  /* on enchaîne : la recherche garde la main */
   if(pickerCtx.target==='builder'){
     const ex=builderState.ingr.find(i=>i.n===name);
     if(ex) ex.g+=f.g; else builderState.ingr.push({n:name,g:f.g});
@@ -4231,11 +4729,13 @@ function pickerAdd(name){
 function addIngredientByName(day,key,name,g){
   const d=menuData.find(x=>x.day===day); const meal=d.meals[key];
   bakeIfNeeded(d,meal);
-  meal.ingr.push({n:name,g:g||100});
+  /* même aliment deux fois = une seule ligne cumulée, comme dans le créateur */
+  const ex=meal.ingr.find(i=>i.n===name);
+  if(ex) ex.g+=(g||100); else meal.ingr.push({n:name,g:g||100});
   saveWeekOverride(day,key);
   openMealModal(day,key);
   renderMenuDay();
-  toast(name+' ajouté au repas 🌿');
+  toast(ex?`${name} : +${g||100} g (${ex.g} g au total) 🌿`:name+' ajouté au repas 🌿');
 }
 
 /* ============ ASSISTANT PERPLEXITY : RECETTE COMPLÈTE ============ */
@@ -4851,7 +5351,7 @@ function coachKeep(id){
   const p=coachProps[id]; if(!p) return;
   const m={id:Date.now(),slot:p.slot,name:p.name,ingr:JSON.parse(JSON.stringify(p.ingr)),prep:p.prep||''};
   myMeals=myMeals.filter(x=>!(x.slot===m.slot&&x.name===m.name)); myMeals.push(m); persistMyMeals();
-  pushMsg(`Dans la boîte 💾 — tu le retrouveras dans « Mes repas » depuis n'importe quelle fiche ${SLOT_FR[p.slot]}. Tu veux que je t'en propose un autre ?`,'bot');
+  pushMsg(`Dans la boîte 💾 — tu le retrouveras dans « Mes repas » (onglet Menu, ou depuis n'importe quelle fiche repas), applicable à n'importe quel jour. Tu veux que je t'en propose un autre ?`,'bot');
 }
 function coachDayMenu(){
   pushMsg('Voici une proposition de journée complète, calée sur vos '+profile.calTarget+' kcal :','bot');
@@ -5345,9 +5845,21 @@ function generateCoachReply(q){
 
 /* ============ TOAST ============ */
 let toastTimer;
-function toast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+/* toast(msg) — simple ; toast(msg,{label,fn}) — avec une action (annulation),
+   affichée plus longtemps parce qu'il faut le temps de la lire et de cliquer. */
+function toast(msg,action){
+  const t=document.getElementById('toast');
+  t.innerHTML='';
+  const s=document.createElement('span'); s.textContent=msg; t.appendChild(s);
+  if(action&&typeof action.fn==='function'){
+    const b=document.createElement('button');
+    b.className='toast-act'; b.type='button'; b.textContent=action.label||'Annuler';
+    b.onclick=()=>{ clearTimeout(toastTimer); t.classList.remove('show'); action.fn(); };
+    t.appendChild(b);
+  }
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'), action?6500:2600);
 }
 
 /* ============ SYNCHRO CLOUD (GitHub Gist, privé) ============
@@ -6019,26 +6531,15 @@ function renderVoiceReview(){
   const st=voiceVerdict();
   const target=slotKcalTarget(voiceDraft.slot);
   const gap=target-Math.round(t.k);
-  const rows=voiceDraft.items.map((i,idx)=>{
-    const f=findFood(i.n);
-    const over=f&&f.s==='moderate'&&i.g>f.g;
-    const chip=!f?'':f.s==='safe'?'<span class="bld-chip safe">safe</span>'
-      :f.s==='avoid'?'<span class="bld-chip avoid">à éviter</span>'
-      :`<span class="bld-chip ${over?'avoid':'moderate'}">modéré · ≤${f.g}g</span>`;
-    const ik=f?Math.round(f.k/f.g*i.g):0;
-    return `<li class="ing-row">
-      <span class="ing-name">${f?f.e+' ':''}${voiceEsc(i.n)} ${chip}${i.est?'<span class="vc-est">estimé</span>':''}</span>
-      <input type="number" class="ing-g-input" value="${i.g}" min="1" step="5" onchange="voiceSetG(${idx},this.value)">
-      <span class="ing-unit">g</span>
-      <span class="ing-kcal">${ik} kcal</span>
-      <button class="ing-del" onclick="voiceDelItem(${idx})" title="Retirer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
-    </li>`;
-  }).join('');
+  const rows=voiceDraft.items.map((i,idx)=>ingRowHtml('voice',idx,i.n,i.g,{
+    chip:ingChip(i.n,i.g),
+    extra:i.est?'<span class="vc-est">estimé</span>':''
+  })).join('');
   const dayOpts=menuData.map(d=>`<option value="${d.day}" ${d.day===voiceDraft.day?'selected':''}>${fullDayNames[d.day]}</option>`).join('');
   const slotOpts=Object.keys(mealLabels).map(k=>`<option value="${k}" ${k===voiceDraft.slot?'selected':''}>${mealLabels[k]}</option>`).join('');
   const weekNote = programWeek!==1
     ? `<div class="modal-tip warn">📅 Tu consultes la semaine ${programWeek} du programme : le repas dicté sera enregistré sur la semaine en cours, celle qui correspond aux vraies dates.</div>` : '';
-  document.getElementById('modalContent').innerHTML=`
+  modalRender(`
     <div class="modal-hd"><div class="me"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <div class="modal-body">
       <div class="modal-title">Ce que j'ai compris</div>
@@ -6061,15 +6562,13 @@ function renderVoiceReview(){
         <div><button class="btn-s" style="padding:9px 14px;font-size:12px" onclick="voiceComplete()"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-sparkles"/></svg> Compléter le repas</button></div></div>`:''}
       ${pickerHtml({slot:voiceDraft.slot,target:'voice'})}
       ${weekNote}
-      <div class="modal-actions-row">
-        <button class="btn-p" style="padding:12px 20px;font-size:13px" onclick="voiceSave('replace')">✓ En faire le repas du moment</button>
+      <div class="modal-tip">💡 « En faire le repas du moment » remplace le repas prévu du créneau, l'enregistre comme recette personnalisée et le marque comme mangé : ton bilan de la journée est à jour immédiatement.</div>
+      <div class="modal-sticky">
+        <button class="btn-p" onclick="voiceSave('replace')">✓ En faire le repas du moment</button>
         <button class="reset-btn" onclick="voiceSave('add')"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Ajouter au repas existant</button>
         <button class="reset-btn" onclick='openVoiceMeal(${JSON.stringify(voiceDraft.slot)},${JSON.stringify(voiceDraft.day)})'><svg class="ic ic-sm" aria-hidden="true"><use href="#i-mic"/></svg> Redicter</button>
       </div>
-      <div class="modal-tip">💡 « En faire le repas du moment » remplace le repas prévu du créneau, l'enregistre comme recette personnalisée et le marque comme mangé : ton bilan de la journée est à jour immédiatement.</div>
-    </div>`;
-  document.getElementById('modalBg').classList.add('show');
-  renderPickerResults();
+    </div>`);
 }
 function voiceSetG(idx,val){ voiceDraft.items[idx].g=Math.max(1,+val||1); voiceDraft.items[idx].est=false; renderVoiceReview(); }
 function voiceDelItem(idx){ voiceDraft.items.splice(idx,1); renderVoiceReview(); }
@@ -6101,53 +6600,71 @@ function voiceMakeSafe(){
 }
 /* Pour compléter, on pioche d'abord dans les aliments déjà utilisés par les recettes
    du créneau (et vos repas persos) : un petit-déj ne se complète pas avec des pâtes. */
-function voiceSlotPool(cat,have){
+function voiceSlotPool(cat,have,slot){
+  slot=slot||voiceDraft.slot;
   const slotNames={};
-  (altRecipes[voiceDraft.slot]||[]).forEach(r=>r.ingr.forEach(i=>{slotNames[i.n]=1}));
-  myMeals.filter(m=>m.slot===voiceDraft.slot).forEach(m=>m.ingr.forEach(i=>{slotNames[i.n]=1}));
-  menuDataOriginal.forEach(d=>{ const m=d.meals[voiceDraft.slot]; if(m) m.ingr.forEach(i=>{slotNames[i.n]=1}); });
+  (altRecipes[slot]||[]).forEach(r=>r.ingr.forEach(i=>{slotNames[i.n]=1}));
+  myMeals.filter(m=>m.slot===slot).forEach(m=>m.ingr.forEach(i=>{slotNames[i.n]=1}));
+  menuDataOriginal.forEach(d=>{ const m=d.meals[slot]; if(m) m.ingr.forEach(i=>{slotNames[i.n]=1}); });
   const base=eligibleCoachFoods().filter(f=>f.c===cat&&f.s==='safe'&&have.indexOf(f.n)<0&&VOICE_SEASON.indexOf(f.n)<0);
   const pref=base.filter(f=>slotNames[f.n]);
   return pref.length?pref:base;
 }
-function voiceComplete(){
-  const target=slotKcalTarget(voiceDraft.slot);
-  const cur=voiceTotals().k;
-  const gap=target-cur;
-  if(gap<=target*0.08){ toast("Ce repas couvre déjà l'objectif du créneau ✅"); return; }
-  const have=voiceDraft.items.map(i=>i.n);
-  const cats=voiceDraft.items.map(i=>{const f=findFood(i.n);return f?f.c:null}).filter(Boolean);
-  const roles = voiceDraft.slot==='breakfast'?['cereale','fruit','laitier']
-    : voiceDraft.slot==='snack'?['fruit','noix']
+/* Complète une liste d'ingrédients jusqu'à la cible calorique du créneau.
+   Partagé par la dictée et le créateur de repas : même logique, même résultat. */
+function completeToTarget(slot,items){
+  const target=slotKcalTarget(slot);
+  const gap0=target-mealTotalsOf(items).k;
+  if(gap0<=target*0.08) return {items:items,msg:"Ce repas couvre déjà la cible du créneau ✅",changed:false};
+  let out=items.map(i=>({...i}));
+
+  /* 1) On ajoute d'abord les rôles manquants du créneau (protéine, féculent,
+        légume — céréale, fruit, laitier au petit-déjeuner). */
+  const have=out.map(i=>i.n);
+  const cats=out.map(i=>{const f=findFood(i.n);return f?f.c:null}).filter(Boolean);
+  const roles = slot==='breakfast'?['cereale','fruit','laitier']
+    : slot==='snack'?['fruit','noix']
     : ['proteine','cereale','legume'];
   const missing=roles.filter(r=>cats.indexOf(r)<0);
   const added=[];
   missing.forEach(cat=>{
-    const c=voiceSlotPool(cat,have.concat(added.map(a=>a.n)));
+    const c=voiceSlotPool(cat,have.concat(added.map(a=>a.n)),slot);
     if(c.length) added.push(c[Math.floor(Math.random()*c.length)]);
   });
   if(added.length){
-    const share=gap/added.length;
+    const share=gap0/added.length;
     added.forEach(f=>{
       const perG=f.k/f.g;
-      let g=perG>0?Math.round(share/perG/5)*5:f.g;
-      voiceDraft.items.push({n:f.n,g:Math.max(20,Math.min(Math.round(f.g*2.2),g)),est:true});
+      const g=perG>0?Math.round(share/perG/5)*5:f.g;
+      out.push({n:f.n,g:Math.max(20,Math.min(Math.round(f.g*2.2),g)),est:true});
     });
-    renderVoiceReview();
-    toast('Complété avec '+added.map(f=>f.n.split(' (')[0].split(' /')[0].toLowerCase()).join(', ')+' 🌿');
-    return;
   }
-  /* Tous les rôles sont déjà là : on remonte les portions (hors modérés et matières grasses) */
-  const factor=Math.min(1.8,target/Math.max(1,cur));
+  /* 2) Un légume peu calorique ne comble pas 250 kcal : s'il manque encore de
+        quoi couvrir le créneau, on remonte les portions safe dans la foulée.
+        Un clic doit suffire — sinon la promesse « compléter » est mensongère. */
+  const cur=mealTotalsOf(out).k;
   let bumped=false;
-  voiceDraft.items=voiceDraft.items.map(i=>{
-    const f=findFood(i.n); if(!f) return i;
-    if(f.s!=='safe'||/huile|sirop|miel|sucre/i.test(f.n)) return i;
-    bumped=true;
-    return {n:i.n,g:voiceClampG(Math.round(i.g*factor/5)*5),est:true};
-  });
+  if(target-cur>target*0.08){
+    const factor=Math.min(1.8,target/Math.max(1,cur));
+    out=out.map(i=>{
+      const f=findFood(i.n); if(!f) return i;
+      if(f.s!=='safe'||/huile|sirop|miel|sucre/i.test(f.n)) return i;
+      bumped=true;
+      return {...i,g:voiceClampG(Math.round(i.g*factor/5)*5),est:true};
+    });
+  }
+  let msg;
+  if(added.length&&bumped) msg='Complété avec '+added.map(f=>f.n.split(' (')[0].split(' /')[0].toLowerCase()).join(', ')+', portions ajustées 🌿';
+  else if(added.length) msg='Complété avec '+added.map(f=>f.n.split(' (')[0].split(' /')[0].toLowerCase()).join(', ')+' 🌿';
+  else if(bumped) msg='Portions ajustées à la cible du créneau 🎯';
+  else msg='Impossible de compléter sans dépasser les seuils Monash';
+  return {items:out,changed:!!(added.length||bumped),msg};
+}
+function voiceComplete(){
+  const r=completeToTarget(voiceDraft.slot,voiceDraft.items);
+  voiceDraft.items=r.items;
   renderVoiceReview();
-  toast(bumped?"Portions ajustées à ton objectif du créneau 🎯":"Impossible de compléter sans dépasser les seuils Monash");
+  toast(r.msg);
 }
 function voiceMealName(ingr){
   const named=ingr.map(i=>({i,f:findFood(i.n)})).filter(x=>x.f)
