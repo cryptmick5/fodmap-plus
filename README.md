@@ -13,6 +13,9 @@ Trois fonctions sortent du navigateur, toutes optionnelles et à votre initiativ
 - **131 aliments classés FODMAP** (safe / modéré / à éviter) avec calories, protéines, grammage de référence et prix moyen.
 - **Profil nutritionnel** (formule de Mifflin-St Jeor) : BMR, TDEE, objectif calorique et protéique selon poids/taille/âge/sexe/activité/objectif.
 - **Menus adaptatifs** : grammages recalculés automatiquement selon l'objectif calorique (70–160 % de la recette de base), ingrédients modifiables (ajout/suppression/grammage), recettes personnalisées réinitialisables.
+- **Repas personnalisés** : un créateur de repas accessible directement depuis l'onglet Menu (plus seulement depuis la fiche d'un repas), avec cible calorique du créneau affichée en direct, bouton **Compléter automatiquement** qui comble l'écart en un clic, choix du créneau et application à **plusieurs jours d'un coup**. Le sélecteur d'ingrédients garde sa recherche et sa catégorie d'un ajout à l'autre, signale ce qui est déjà dans l'assiette, cumule les doublons, et propose des pas −/+ plutôt que le clavier numérique. Chaque ligne porte son statut FODMAP et son seuil Monash.
+- **Bibliothèque « Mes repas »** : écran dédié (Menu → *Mes repas*, ou depuis n'importe quelle fiche repas) avec recherche, filtre par créneau, aperçu des macros et des ingrédients, et actions complètes — mettre au menu, modifier, dupliquer, supprimer. Un repas du menu peut y être gardé tel quel en un clic.
+- **Annulation** : retirer un ingrédient, réinitialiser une recette, remplacer un repas, appliquer ou supprimer un repas perso — chaque action destructive propose *Annuler* dans la notification.
 - **3 templates de menu qui tournent par semaine** (pas de répétition d'une semaine à l'autre), avec sauvegarde des personnalisations par semaine.
 - **Programme sur plusieurs semaines** : durée d'élimination réglable (2–6 semaines), 6 semaines de réintroduction générées automatiquement (une famille FODMAP testée par semaine, dose test lundi/mardi), puis phase de personnalisation.
 - **Recettes générées automatiquement** à partir des ingrédients réels de chaque plat (méthode de cuisson détectée, étapes, temps de préparation).
@@ -70,7 +73,18 @@ Prérequis techniques (déjà remplis par GitHub Pages) : servir l'app en **HTTP
 - **Contenu médical** : les classifications FODMAP, grammages et valeurs nutritionnelles sont indicatives. L'app ne remplace pas l'avis d'un médecin ou d'un diététicien, en particulier pendant la phase de réintroduction.
 - **Scanner** : le verdict repose sur la **liste d'ingrédients**, pas sur les quantités — alors que les seuils Monash, eux, dépendent de la dose. Un produit contenant 0,1 % d'oignon peut très bien passer : la liste complète est donc toujours affichée, c'est vous qui tranchez. La couverture d'Open Food Facts est excellente en France mais pas exhaustive, et les fiches sont collaboratives : une liste d'ingrédients peut être absente, incomplète ou datée. Un produit sans liste affiche « impossible de se prononcer », jamais un feu vert.
 - **Dictée vocale** : la transcription est assurée par le navigateur (Web Speech API). Elle fonctionne sur Chrome/Edge (Android et desktop) et Safari (iOS 14.5+), exige HTTPS et l'autorisation du micro, et passe par les serveurs du navigateur — pas par FODMAP+. Firefox ne l'implémente pas : la saisie clavier prend le relais, avec la même analyse. L'analyse (aliments, quantités, FODMAP) est 100% locale.
-- **Stockage** : toutes les données (profil, poids, préférences, personnalisations de menu) sont stockées uniquement dans le `localStorage` du navigateur utilisé — pas de synchronisation multi-appareils.
+- **Stockage** : toutes les données (profil, poids, préférences, personnalisations de menu) vivent dans le `localStorage` du navigateur utilisé. La synchronisation multi-appareils est possible mais facultative, et passe par *votre* gist GitHub privé (voir ci-dessous).
+- **Synchronisation** : la fusion s'appuie sur l'horloge des appareils. Une horloge très décalée (plusieurs minutes) peut faire gagner la mauvaise version en cas de modification simultanée du **même** repas sur deux appareils. Les suppressions sont mémorisées 60 jours ; un appareil resté hors ligne plus longtemps peut faire réapparaître un repas supprimé entre-temps.
+
+## Synchronisation multi-appareils
+
+Un gist GitHub secret (`fodmap-plus-sync`) porte l'état de l'app. Le même token collé sur chaque appareil suffit : l'app retrouve le gist toute seule (Profil → ☁️).
+
+La fusion se fait **entrée par entrée**, pas fichier par fichier : menus personnalisés (par semaine / jour / créneau), repas validés, repas persos, aliments personnalisés, pesées et symptômes portent chacun leur horodatage. Deux appareils peuvent donc modifier deux jours différents sans que le dernier à se synchroniser efface le travail de l'autre. Chaque entrée supprimée laisse une trace horodatée, pour que la suppression se propage au lieu d'être annulée par une copie plus ancienne — et pour qu'un appareil resté hors ligne retrouve ses créations plutôt que de les perdre.
+
+Réglages, quiz, thème et journal du coach restent indivisibles : pour ceux-là, la version la plus récente gagne.
+
+Toute synchronisation **lit et fusionne avant d'écrire** — y compris l'envoi automatique déclenché quelques secondes après une modification. Les données reçues sont appliquées à chaud (le menu se met à jour tout seul) ; une saisie en cours dans le créateur de repas ou la dictée n'est jamais interrompue.
 
 ## Structure
 
